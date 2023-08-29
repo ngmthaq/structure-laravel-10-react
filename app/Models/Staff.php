@@ -9,31 +9,22 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class Staff extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    public const ROLE_ADMIN = 0;
+    public const ROLE_STAFF = 1;
 
     protected $fillable = [
         'name',
         'email',
         'password',
-        'phone',
-        'address',
         'date_of_birth'
-    ];
-
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
     ];
 
     public function bills()
     {
-        return $this->hasMany(Bill::class, 'user_id', 'id');
+        return $this->hasMany(Bill::class, 'staff_id', 'id');
     }
 }
