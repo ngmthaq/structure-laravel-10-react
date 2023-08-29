@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Staff;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('email')->unique();
             $table->date('date_of_birth');
-            $table->tinyInteger('role')->comment('0: admin | 1: staff');
+            $table->tinyInteger('role')->default(Staff::ROLE_STAFF)->comment('0: admin | 1: staff');
             $table->softDeletes();
             $table->timestamps();
         });

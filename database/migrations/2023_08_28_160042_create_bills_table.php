@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('bills', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
-            $table->foreignId('table_id');
+            $table->foreignId('staff_id')->nullable();
             $table->timestamp('start_at');
             $table->timestamp('end_at');
-            $table->timestamp('user_started_at');
-            $table->timestamp('completed_at');
-            $table->timestamp('cancel_at');
-            $table->timestamp('confirmed_at');
+            $table->timestamp('user_started_at')->nullable();
+            $table->timestamp('completed_at')->nullable();
+            $table->timestamp('cancel_at')->nullable();
+            $table->timestamp('confirmed_at')->nullable();
             $table->integer('adults');
             $table->integer('children');
             $table->softDeletes();
