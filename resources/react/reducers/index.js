@@ -1,0 +1,3 @@
+const reducers = {};
+
+export { reducers };
