@@ -11,12 +11,14 @@ export default defineConfig({
                 "resources/react/index.jsx",
                 "resources/scss/app.scss",
             ],
-            resolve: {
-                alias: {
-                    "@": "/resources/react",
-                },
-            },
+            refresh: true,
         }),
         react(),
     ],
+    server: {
+        host: "0.0.0.0",
+        hmr: {
+            host: "localhost",
+        },
+    },
 });
