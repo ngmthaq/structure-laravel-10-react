@@ -6,8 +6,8 @@ services:
     volumes:
       - ./:/var/www/html/
     ports:
-      - 10001:80
-      - 10004:5173
+      - 80:80
+      - 5173:5173
     networks:
       - www-lrv
   mysql-service:
@@ -20,7 +20,7 @@ services:
     networks:
       - www-lrv
     ports:
-      - 10003:3306
+      - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     depends_on:
@@ -33,7 +33,7 @@ services:
       - mysql-service
     restart: always
     ports:
-      - "10002:80"
+      - "8080:80"
     environment:
       - PMA_ARBITRARY=1
     networks:
