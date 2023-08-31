@@ -1,0 +1,59 @@
+version: "3"
+services:
+  nginx-service:
+    container_name: laravel_nginx
+    build: ./docker/nginx/
+    restart: always
+    command: nginx -g "daemon off;"
+    depends_on:
+      - php-service
+    ports:
+      - 8000:80
+    volumes:
+      - ./:/var/www/html/
+      - ./docker/nginx/log:/var/log/nginx/
+    networks:
+      - www_laravel
+  php-service:
+    container_name: laravel_php
+    build: ./docker/php
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - 9000:9000
+    networks:
+      - www_laravel
+  mysql-service:
+    container_name: laravel_mysql
+    build: ./docker/mysql
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - database_laravel:/var/lib/mysql/
+    networks:
+      - www_laravel
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - php-service
+      - nginx-service
+  phpmyadmin-service:
+    container_name: laravel_phpmyadmin
+    build: ./docker/phpmyadmin
+    depends_on:
+      - php-service
+      - mysql-service
+      - nginx-service
+    restart: always
+    ports:
+      - "8001:80"
+    environment:
+      - PMA_ARBITRARY=1
+    networks:
+      - www_laravel
+volumes:
+  database_laravel:
+networks:
+  www_laravel:
