@@ -6,6 +6,7 @@ import { Provider as ReduxProvider } from "react-redux";
 import { router } from "./router/routes";
 import { theme } from "./plugins/material.plugin";
 import { store } from "./plugins/redux.plugin";
+import PrimaryLoadingComponent from "./components/PrimaryLoading";
 
 const App = () => {
     return (
@@ -14,6 +15,7 @@ const App = () => {
                 <ReduxProvider store={store}>
                     <CssBaseline />
                     <RouterProvider router={router} />
+                    <PrimaryLoadingComponent />
                 </ReduxProvider>
             </StyledEngineProvider>
         </ThemeProvider>
