@@ -1,7 +1,5 @@
 import { commonReducer } from "./common.reducer";
 
-const reducers = {
+export const reducers = {
     common: commonReducer,
 };
-
-export { reducers };

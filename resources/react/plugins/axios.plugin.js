@@ -1,6 +1,6 @@
 import axios from "axios";
 
-class AxiosPlugin {
+export class AxiosPlugin {
     constructor() {
         // Make an instant of axios
         this.api = axios.create();
@@ -118,5 +118,3 @@ class AxiosPlugin {
         }
     }
 }
-
-export default AxiosPlugin;

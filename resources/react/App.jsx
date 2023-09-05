@@ -1,25 +1,25 @@
 import React from "react";
 import { RouterProvider } from "react-router-dom";
+import { Provider as ReduxProvider } from "react-redux";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
-import { Provider as ReduxProvider } from "react-redux";
 import { router } from "./router/routes";
 import { theme } from "./plugins/material.plugin";
 import { store } from "./plugins/redux.plugin";
-import PrimaryLoadingComponent from "./components/PrimaryLoading";
+import { PrimaryNotificationComponent } from "./components/PrimaryNotification";
+import { PrimaryLoadingComponent } from "./components/PrimaryLoading";
 
-const App = () => {
+export const App = () => {
     return (
         <ThemeProvider theme={theme}>
             <StyledEngineProvider injectFirst>
                 <ReduxProvider store={store}>
                     <CssBaseline />
                     <RouterProvider router={router} />
+                    <PrimaryNotificationComponent />
                     <PrimaryLoadingComponent />
                 </ReduxProvider>
             </StyledEngineProvider>
         </ThemeProvider>
     );
 };
-
-export default App;

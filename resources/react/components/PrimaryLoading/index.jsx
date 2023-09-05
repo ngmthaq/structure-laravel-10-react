@@ -1,8 +1,8 @@
 import React from "react";
-import { Box, CircularProgress } from "@mui/material";
 import { useSelector } from "react-redux";
+import { Box, CircularProgress } from "@mui/material";
 
-const PrimaryLoadingComponent = () => {
+export const PrimaryLoadingComponent = () => {
     const isPrimaryLoading = useSelector(
         (state) => state.common.isPrimaryLoading
     );
@@ -19,11 +19,10 @@ const PrimaryLoadingComponent = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 background: "rgba(0, 0, 0, 0.25)",
+                zIndex: 10,
             }}
         >
             <CircularProgress />
         </Box>
     );
 };
-
-export default PrimaryLoadingComponent;

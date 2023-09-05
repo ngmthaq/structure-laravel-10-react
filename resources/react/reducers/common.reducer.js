@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const state = {
     name: "common",
     isPrimaryLoading: false,
-    primaryNotifications: [],
+    primaryNotification: null,
 };
 
 const slice = createSlice({
@@ -17,7 +17,7 @@ const slice = createSlice({
             state.isPrimaryLoading = false;
         },
         appendPrimaryNotification: (state, action) => {
-            state.primaryNotifications.push(action.payload);
+            state.primaryNotification = action.payload;
         },
     },
 });

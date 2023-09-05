@@ -1,9 +1,7 @@
 import { createTheme } from "@mui/material/styles";
 
-const palette = {};
+export const palette = {};
 
-const theme = createTheme({ palette });
+export const theme = createTheme({ palette });
 
-const makeStyle = (callback) => () => callback(theme);
-
-export { palette, theme, makeStyle };
+export const makeStyle = (callback) => () => callback(theme);

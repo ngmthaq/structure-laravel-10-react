@@ -1,30 +1,28 @@
 import { createBrowserRouter } from "react-router-dom";
-import PageUserHome from "../pages/User/Home";
-import PageStaffLogin from "../pages/Staff/Login";
+import { PageUserHome } from "../pages/User/Home";
+import { PageStaffLogin } from "../pages/Staff/Login";
 
-const userRoutes = {
+export const userRoutes = {
     home: {
         path: "/",
         element: <PageUserHome />,
     },
 };
 
-const staffRoutes = {};
+export const staffRoutes = {};
 
-const adminRoutes = {};
+export const adminRoutes = {};
 
-const authRoutes = {
+export const authRoutes = {
     staffLogin: {
         path: "/staff/login",
         element: <PageStaffLogin />,
     },
 };
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
     ...Object.values(userRoutes),
     ...Object.values(staffRoutes),
     ...Object.values(adminRoutes),
     ...Object.values(authRoutes),
 ]);
-
-export { userRoutes, staffRoutes, adminRoutes, router };
