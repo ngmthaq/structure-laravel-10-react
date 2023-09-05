@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import { PageUserHome } from "../pages/User/Home";
 import { PageStaffLogin } from "../pages/Staff/Login";
+import { UserManagement } from "../pages/Staff/UserManagement";
 
 export const userRoutes = {
     home: {
@@ -11,7 +12,12 @@ export const userRoutes = {
 
 export const staffRoutes = {};
 
-export const adminRoutes = {};
+export const adminRoutes = {
+    userManagement: {
+        path: "/admin/manage/users",
+        element: <UserManagement />,
+    },
+};
 
 export const authRoutes = {
     staffLogin: {
