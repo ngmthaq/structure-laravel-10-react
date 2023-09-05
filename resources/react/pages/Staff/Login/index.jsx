@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { commonActions } from "../../../reducers/common.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary-notification.model";
 import { generateRandomString } from "../../../helpers/primitive.helper";
+import { __ } from "../../../plugins/i18n.plugin";
 
 export const PageStaffLogin = () => {
     const dispatch = useDispatch();
@@ -21,7 +22,7 @@ export const PageStaffLogin = () => {
 
     return (
         <div>
-            <button onClick={openNotification}>Click</button>
+            <button onClick={openNotification}>{__("custom.hello")}</button>
         </div>
     );
 };

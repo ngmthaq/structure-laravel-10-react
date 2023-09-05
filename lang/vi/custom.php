@@ -11,5 +11,5 @@ return [
     |
     */
 
-    "hello" => "hello"
+    "hello" => "xin chào"
 ];
