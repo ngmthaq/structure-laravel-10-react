@@ -17,7 +17,7 @@ export const AdminLayout = ({ children }) => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                background: `rgba(0, 0, 0, 0.025)`,
+                background: `rgba(0, 0, 0, 0.05)`,
             }}
         >
             <AdminSidebar />
@@ -36,7 +36,7 @@ export const AdminLayout = ({ children }) => {
                         padding: "8px",
                         background: "white",
                         borderRadius: "8px",
-                        boxShadow: "0px 0px 2px 0px gray",
+                        border: `1px solid rgba(0, 0, 0, 0.1)`,
                         overflowY: "scroll",
                     }}
                 >

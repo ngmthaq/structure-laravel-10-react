@@ -1,6 +1,6 @@
 import React from "react";
-import { Box } from "@mui/material";
+import { AdminLayout } from "../../../layouts/AdminLayout";
 
 export const StaffManagement = () => {
-    return <Box>StaffManagement</Box>;
+    return <AdminLayout>StaffManagement</AdminLayout>;
 };
