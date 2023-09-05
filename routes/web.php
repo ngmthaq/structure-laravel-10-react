@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ReactController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/{any}', [ReactController::class, "index"])->where('any', '.*')->name('react');
