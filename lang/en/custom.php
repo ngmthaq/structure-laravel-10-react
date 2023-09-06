@@ -20,8 +20,13 @@ return [
     "password" => "password",
     "remember-me" => "remember me",
     "forgot-password-login-text" => "Forgot your password?",
-    "welcome-back" => "Welcome back",
+    "welcome-back" => "Welcome Back",
     "api-failed-validation" => "Unprocessable Content",
+    "unauthorized" => "Unauthorized",
+    "login-success" => "Login Successfully",
+    "login-failed" => "Failure To Login",
+    "logout-success" => "Logout Successfully",
+    "logout-failed" => "Failure To Logout",
     "admin" => [
         "title" => "admin",
         "manage" => [

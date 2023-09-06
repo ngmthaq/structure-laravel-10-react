@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Auth\Staff\LoginRequest;
 use App\Models\Staff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class StaffController extends Controller
 {
@@ -20,22 +21,19 @@ class StaffController extends Controller
     public function login(LoginRequest $request)
     {
         try {
-            $is_authenticated = auth()->attempt([
-                "email" => $request->input("email"),
-                "password" => $request->input("password")
-            ]);
+            $staff = $this->staff->where("email", $request->input("email"))->first();
+
+            $is_authenticated = Hash::check($request->input("password"), $staff->password);
 
             if ($is_authenticated === false) {
                 return response()->json(["message" => __("custom.unauthorized")], 401);
             }
 
-            $staff = $this->staff->find(auth()->user()->id);
-            $token = $staff->createToken(Staff::AUTH_TOKEN_NAME)->plainTextToken;
+            $token = $staff->createToken(Staff::AUTH_TOKEN_NAME)->accessToken;
 
             return response()->json([
                 "token" => $token,
                 "token_type" => "Bearer",
-                "expired_after" => config("sanctum.expiration"),
                 "message" => __("custom.login-success"),
             ]);
         } catch (\Throwable $th) {
@@ -48,12 +46,18 @@ class StaffController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        auth()->logout();
+        $user = $request->user('staff');
+        if (isset($user)) {
+            $user->token()->revoke();
+
+            return response()->json([
+                "message" => __("custom.logout-success"),
+            ]);
+        }
 
         return response()->json([
-            "message" => __("custom.logout-success"),
-        ]);
+            "message" => __("custom.logout-failed"),
+        ], 403);
     }
 
     public function register()
