@@ -101,6 +101,7 @@ export const AdminAside = () => {
                 height: `calc(100% - ${LOGO_HEIGHT}px - 16px)`,
                 overflowY: "scroll",
                 marginTop: "16px",
+                position: "relative",
                 "&::-webkit-scrollbar": {
                     display: "none",
                 },
@@ -140,14 +141,18 @@ export const AdminAside = () => {
                         <Typography>{item.title}</Typography>
                     </Box>
                 ) : item.type === "divider" ? (
-                    <Divider sx={{ marginBottom: "24px" }} />
+                    <Divider key={index} sx={{ marginBottom: "24px" }} />
                 ) : (
                     <Typography
+                        key={index}
                         sx={{
                             textTransform: "capitalize",
                             fontWeight: 700,
                             marginBottom: "8px",
                             color: theme.palette.grey[900],
+                            position: "sticky",
+                            top: 0,
+                            background: "white",
                         }}
                     >
                         {item.title}

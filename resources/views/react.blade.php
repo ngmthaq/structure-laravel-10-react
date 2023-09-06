@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
     <link rel="manifest" href="{{ asset('site.webmanifest') }}">
 
-    <title></title>
+    <title>Seat Management</title>
 
     @viteReactRefresh
 
