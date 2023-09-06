@@ -12,6 +12,9 @@ return [
     */
 
     "hello" => "hello",
+    "profile" => "profile",
+    "change-password" => "chang password",
+    "logout" => "logout",
     "admin" => [
         "title" => "admin",
         "manage" => [
