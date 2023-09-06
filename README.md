@@ -10,7 +10,7 @@
 ## SETUP
 
 ```
-Enable extension "fileinfo" in "php.ini"
+Enable extension "fileinfo" & "sodium" in "php.ini"
 ```
 
 ```
@@ -37,6 +37,9 @@ php artisan storage:link
 php artisan migrate:refresh --seed
 ```
 
+```
+php artisan passport:install
+```
 ## DEVELOPMENT
 
 ```
@@ -51,4 +54,8 @@ php artisan serve
 
 ```
 yarn build
+```
+
+```
+php artisan passport:keys
 ```

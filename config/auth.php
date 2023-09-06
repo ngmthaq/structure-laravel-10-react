@@ -41,11 +41,11 @@ return [
             'provider' => 'users',
         ],
         'user' => [
-            'driver' => 'session',
+            'driver' => 'passport',
             'provider' => 'users',
         ],
         'staff' => [
-            'driver' => 'session',
+            'driver' => 'passport',
             'provider' => 'staffs',
         ],
     ],

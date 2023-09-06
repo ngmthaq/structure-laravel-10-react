@@ -20,7 +20,7 @@ class StaffController extends Controller
     public function login(LoginRequest $request)
     {
         try {
-            $is_authenticated = auth("staff")->attempt([
+            $is_authenticated = auth()->attempt([
                 "email" => $request->input("email"),
                 "password" => $request->input("password")
             ]);
@@ -29,7 +29,7 @@ class StaffController extends Controller
                 return response()->json(["message" => __("custom.unauthorized")], 401);
             }
 
-            $staff = $this->staff->find(auth("staff")->user()->id);
+            $staff = $this->staff->find(auth()->user()->id);
             $token = $staff->createToken(Staff::AUTH_TOKEN_NAME)->plainTextToken;
 
             return response()->json([
@@ -48,8 +48,8 @@ class StaffController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user("staff")->currentAccessToken()->delete();
-        auth("staff")->logout();
+        $request->user()->currentAccessToken()->delete();
+        auth()->logout();
 
         return response()->json([
             "message" => __("custom.logout-success"),
