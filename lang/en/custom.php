@@ -15,6 +15,12 @@ return [
     "profile" => "profile",
     "change-password" => "chang password",
     "logout" => "logout",
+    "login" => "login",
+    "email" => "email",
+    "password" => "password",
+    "remember-me" => "remember me",
+    "forgot-password-login-text" => "Forgot your password?",
+    "welcome-back" => "Welcome back",
     "admin" => [
         "title" => "admin",
         "manage" => [
