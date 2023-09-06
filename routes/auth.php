@@ -20,6 +20,9 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
     // Staff API
     Route::prefix("staff")->name("staff.")->group(function () {
         Route::post("login", [StaffController::class, "login"])->name("login");
+        Route::middleware(["auth.staff"])->group(function () {
+            Route::post("logout", [StaffController::class, "logout"])->name("logout");
+        });
     });
 
     // User

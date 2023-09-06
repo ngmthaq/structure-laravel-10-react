@@ -21,6 +21,7 @@ return [
     "remember-me" => "remember me",
     "forgot-password-login-text" => "Forgot your password?",
     "welcome-back" => "Welcome back",
+    "api-failed-validation" => "Unprocessable Content",
     "admin" => [
         "title" => "admin",
         "manage" => [
