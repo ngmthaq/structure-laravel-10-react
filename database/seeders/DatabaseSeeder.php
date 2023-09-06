@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Configuration;
 use App\Models\Staff;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -24,6 +25,9 @@ class DatabaseSeeder extends Seeder
 
         // Mock staff records
         Staff::factory(10)->create();
+
+        // Setup configurations
+        $this->setupConfigurations();
     }
 
     private function createAdmin()
@@ -39,5 +43,13 @@ class DatabaseSeeder extends Seeder
         $admin->date_of_birth = now();
         $admin->role = Staff::ROLE_ADMIN;
         $admin->save();
+    }
+
+    private function setupConfigurations()
+    {
+        $conf = new Configuration();
+        $conf->key = Configuration::VERIFY_NEW_USER_KEY;
+        $conf->value = Configuration::VERIFY_NEW_USER_ENABLE;
+        $conf->save();
     }
 }
