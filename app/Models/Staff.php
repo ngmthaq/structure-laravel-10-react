@@ -23,6 +23,8 @@ class Staff extends Authenticatable
         'date_of_birth'
     ];
 
+    protected $table = "staffs";
+
     public function bills()
     {
         return $this->hasMany(Bill::class, 'staff_id', 'id');

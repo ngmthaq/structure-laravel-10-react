@@ -10,7 +10,7 @@
 ## SETUP
 
 ```
-Enable "ext-fileinfo" in "php.ini"
+Enable extension "fileinfo" in "php.ini"
 ```
 
 ```
@@ -31,6 +31,10 @@ php artisan key:generate
 
 ```
 php artisan storage:link
+```
+
+```
+php artisan migrate:refresh --seed
 ```
 
 ## DEVELOPMENT

@@ -3,7 +3,11 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +16,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        // Mock user records
+        User::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Mock admin record
+        $this->createAdmin();
+
+        // Mock staff records
+        Staff::factory(10)->create();
+    }
+
+    private function createAdmin()
+    {
+        $admin = new Staff();
+        $admin->name = "Admin";
+        $admin->email = "email@admin.com";
+        $admin->email_verified_at = now();
+        $admin->password = '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi';
+        $admin->remember_token = Str::random(10);
+        $admin->phone = "0000000000";
+        $admin->address = "Ha Noi, Viet Nam";
+        $admin->date_of_birth = now();
+        $admin->role = Staff::ROLE_ADMIN;
+        $admin->save();
     }
 }
