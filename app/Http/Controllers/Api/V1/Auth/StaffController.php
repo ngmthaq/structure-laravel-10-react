@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Helpers\Logger;
+use App\Helpers\Server;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Auth\Staff\LoginRequest;
 use App\Models\Staff;
@@ -30,6 +32,8 @@ class StaffController extends Controller
             }
 
             $token = $staff->createToken(Staff::AUTH_TOKEN_NAME)->accessToken;
+
+            Logger::write("passport", "IP address: " . Server::getUserIP(), Logger::STATUS_INFO, $staff->id, Logger::ROLE_STAFF, $request->getRequestUri());
 
             return response()->json([
                 "token" => $token,
