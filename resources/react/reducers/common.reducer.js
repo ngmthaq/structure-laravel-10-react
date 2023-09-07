@@ -1,4 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { authAsyncActions } from "./auth.reducer";
+import { PrimaryNotificationModel } from "../models/primary-notification.model";
+import { __ } from "../plugins/i18n.plugin";
 
 const state = {
     name: "common",
@@ -19,6 +22,35 @@ const slice = createSlice({
         appendPrimaryNotification: (state, action) => {
             state.primaryNotification = action.payload;
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(authAsyncActions.staffLogin.pending, (state) => {
+            state.isPrimaryLoading = true;
+        });
+        builder.addCase(authAsyncActions.staffLogin.fulfilled, (state) => {
+            state.isPrimaryLoading = false;
+        });
+        builder.addCase(
+            authAsyncActions.staffLogin.rejected,
+            (state, action) => {
+                if (action.payload.status === 401) {
+                    state.primaryNotification = PrimaryNotificationModel(
+                        "error",
+                        __("custom.wrong-email-password")
+                    );
+                } else if (action.payload.status === 422) {
+                    const notifications = Object.values(
+                        action.payload.data.errors
+                    ).map((error) =>
+                        PrimaryNotificationModel("error", error[0])
+                    );
+
+                    state.primaryNotification = JSON.stringify(notifications);
+                }
+
+                state.isPrimaryLoading = false;
+            }
+        );
     },
 });
 

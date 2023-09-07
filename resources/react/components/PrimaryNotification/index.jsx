@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Alert, Box } from "@mui/material";
+import { isJsonString } from "../../helpers/primitive.helper";
 
 export const PrimaryNotificationComponent = () => {
     const primaryNotification = useSelector(
@@ -23,14 +24,28 @@ export const PrimaryNotificationComponent = () => {
 
     useEffect(() => {
         if (primaryNotification) {
-            setNotifications((state) => [
-                ...state,
-                { ...primaryNotification, isOpen: true },
-            ]);
+            if (isJsonString(primaryNotification)) {
+                const notifications = JSON.parse(primaryNotification).map(
+                    (notification) => ({ ...notification, isOpen: true })
+                );
 
-            setTimeout(() => {
-                onClose(primaryNotification.uid);
-            }, 6000);
+                setNotifications((state) => [...state, ...notifications]);
+
+                notifications.forEach((notification) => {
+                    setTimeout(() => {
+                        onClose(notification.uid);
+                    }, 6000);
+                });
+            } else {
+                setNotifications((state) => [
+                    ...state,
+                    { ...primaryNotification, isOpen: true },
+                ]);
+
+                setTimeout(() => {
+                    onClose(primaryNotification.uid);
+                }, 6000);
+            }
         }
     }, [primaryNotification]);
 
@@ -51,6 +66,7 @@ export const PrimaryNotificationComponent = () => {
                         key={notification.uid}
                         sx={{
                             margin: "4px 8px",
+                            whiteSpace: "pre-line",
                         }}
                         onClose={() => onClose(notification.uid)}
                     >

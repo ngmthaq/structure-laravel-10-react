@@ -6,7 +6,9 @@ export class AxiosPlugin {
         this.api = axios.create();
 
         // Config axios default headers
+        this.api.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
         this.api.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+        this.api.defaults.headers.common["Accept"] = "application/json";
 
         // Config axios request interceptor
         this.api.interceptors.request.use(
@@ -60,7 +62,7 @@ export class AxiosPlugin {
 
     // Config post request
     async _post(url, data = {}, headers = {}, config = {}) {
-        return await this._request("get", url, {}, data, headers, config);
+        return await this._request("post", url, {}, data, headers, config);
     }
 
     // Config put request
@@ -74,47 +76,18 @@ export class AxiosPlugin {
     }
 
     async get(url, params = {}, headers = {}) {
-        try {
-            let result = await this._get(url, params, headers);
-            return result;
-        } catch (e) {
-            return e;
-        }
-    }
-
-    async getWithLoading(url, params = {}, headers = {}) {
-        try {
-            let result = await this._get(url, params, headers);
-            return result;
-        } catch (e) {
-            return e;
-        }
+        return this._get(url, params, headers);
     }
 
     async post(url, data = {}, headers = {}) {
-        try {
-            let result = await this._post(url, data, headers);
-            return result;
-        } catch (e) {
-            return e;
-        }
+        return this._post(url, data, headers);
     }
 
     async put(url, data = {}, headers = {}) {
-        try {
-            let result = await this._put(url, data, headers);
-            return result;
-        } catch (e) {
-            return e;
-        }
+        return this._put(url, data, headers);
     }
 
     async delete(url, data = {}, headers = {}) {
-        try {
-            let result = await this._delete(url, data, headers);
-            return result;
-        } catch (e) {
-            return e;
-        }
+        return this._delete(url, data, headers);
     }
 }

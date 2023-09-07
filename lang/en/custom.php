@@ -29,6 +29,8 @@ return [
     "logout-success" => "Logout successfully",
     "logout-failed" => "Failure to logout",
     "password-incorrect" => "Your password is incorrect",
+    "contact-your-admin" => "Please contact your administrator to take this action",
+    "wrong-email-password" => "Wrong email or password",
     "admin" => [
         "title" => "admin",
         "manage" => [

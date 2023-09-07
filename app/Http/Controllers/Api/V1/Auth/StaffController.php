@@ -51,6 +51,7 @@ class StaffController extends Controller
                 "token" => $token,
                 "token_type" => "Bearer",
                 "message" => __("custom.login-success"),
+                "staff" => $staff,
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -113,7 +114,7 @@ class StaffController extends Controller
 
         return response()->json([
             "message" => __("custom.password-incorrect"),
-        ], 422);
+        ], 400);
     }
 
     public function resetPassword(Staff $staff)

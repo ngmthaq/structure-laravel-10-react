@@ -35,3 +35,12 @@ export const convertHex2Rgba = (hex, opacity = 1) => {
     }
     throw new Error("Bad Hex");
 };
+
+export const isJsonString = (str) => {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+};
