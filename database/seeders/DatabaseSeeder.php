@@ -56,5 +56,15 @@ class DatabaseSeeder extends Seeder
         $conf->key = Configuration::DEFAULT_STAFF_PASSWORD_KEY;
         $conf->value = 'password';
         $conf->save();
+
+        $conf = new Configuration();
+        $conf->key = Configuration::SPA_DOCUMENT_TITLE_KEY;
+        $conf->value = 'Seat Management';
+        $conf->save();
+
+        $conf = new Configuration();
+        $conf->key = Configuration::SPA_DOCUMENT_FAVICON_KEY;
+        $conf->value = '/favicon.ico';
+        $conf->save();
     }
 }
