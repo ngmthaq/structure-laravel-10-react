@@ -14,6 +14,7 @@ class Configuration extends Model
     public const VERIFY_NEW_USER_KEY = "VERIFY_NEW_USER_KEY";
     public const VERIFY_NEW_USER_ENABLE = "VERIFY_NEW_USER_ENABLE";
     public const VERIFY_NEW_USER_DISABLE = "VERIFY_NEW_USER_DISABLE";
+    public const DEFAULT_STAFF_PASSWORD_KEY = "DEFAULT_STAFF_PASSWORD_KEY";
 
     protected $fillable = [
         'key',

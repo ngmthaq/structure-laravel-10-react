@@ -2,11 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Staff;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class StaffAuthenticate
+class AdminAuthenticate
 {
     /**
      * Handle an incoming request.
@@ -15,8 +16,8 @@ class StaffAuthenticate
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $staff = $request->user('staff');
-        if (empty($staff)) {
+        $admin = $request->user('staff');
+        if (empty($admin) || (isset($admin) && $admin->role !== Staff::ROLE_ADMIN)) {
             if ($request->wantsJson()) {
                 return response()->json([
                     "message" => __("custom.forbidden"),

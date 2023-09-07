@@ -19,10 +19,24 @@ use Illuminate\Support\Facades\Route;
 Route::prefix("v1")->name("api.v1.")->group(function () {
     // Staff API
     Route::prefix("staff")->name("staff.")->group(function () {
+        // GET
+        Route::get("info", [StaffController::class, "info"])->middleware("auth.staff")->name("info");
+
+        // POST
         Route::post("login", [StaffController::class, "login"])->name("login");
-        Route::middleware(["auth.staff"])->group(function () {
-            Route::post("logout", [StaffController::class, "logout"])->name("logout");
-        });
+        Route::post("logout", [StaffController::class, "logout"])->middleware("auth.staff")->name("logout");
+
+        // PUT
+        Route::put("password/change", [StaffController::class, "changePassword"])->middleware("auth.staff")->name("password.change");
+    });
+
+    // Admin API
+    Route::prefix("admin")->name("admin.")->group(function () {
+        // POST
+        Route::post("staffs/create", [StaffController::class, "register"])->middleware("auth.admin")->name("staffs.create");
+
+        // PUT
+        Route::put("staffs/{staff}/password/reset", [StaffController::class, "resetPassword"])->middleware("auth.admin")->name("password.change");
     });
 
     // User

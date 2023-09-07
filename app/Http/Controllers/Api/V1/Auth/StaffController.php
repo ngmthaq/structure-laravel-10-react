@@ -5,24 +5,36 @@ namespace App\Http\Controllers\Api\V1\Auth;
 use App\Helpers\Logger;
 use App\Helpers\Server;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\Auth\Staff\CreateStaffRequest;
 use App\Http\Requests\V1\Auth\Staff\LoginRequest;
+use App\Http\Requests\V1\Auth\Staff\StaffChangePasswordRequest;
+use App\Models\Configuration;
 use App\Models\Staff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
 class StaffController extends Controller
 {
 
     protected Staff $staff;
+    protected Configuration $conf;
 
     public function __construct()
     {
         $this->staff = new Staff();
+        $this->conf = new Configuration();
     }
 
     public function login(LoginRequest $request)
     {
         try {
+            $staff = $request->user('staff');
+
+            if (isset($staff)) {
+                $staff->token()->revoke();
+            }
+
             $staff = $this->staff->where("email", $request->input("email"))->first();
 
             $is_authenticated = Hash::check($request->input("password"), $staff->password);
@@ -51,36 +63,68 @@ class StaffController extends Controller
     public function logout(Request $request)
     {
         $user = $request->user('staff');
-        if (isset($user)) {
-            $user->token()->revoke();
+        $user->token()->revoke();
 
-            return response()->json([
-                "message" => __("custom.logout-success"),
-            ]);
+        return response()->json([
+            "message" => __("custom.logout-success"),
+        ]);
+    }
+
+    public function register(CreateStaffRequest $request)
+    {
+        $conf = $this->conf->where("key", Configuration::DEFAULT_STAFF_PASSWORD_KEY)->first();
+        $default_password = $conf->value;
+
+        $staff = new Staff();
+        $staff->name = $request->input("name");
+        $staff->email = $request->input("email");
+        $staff->email_verified_at = now();
+        $staff->password = Hash::make($default_password);
+        $staff->remember_token = Str::random(10);
+        $staff->phone = $request->input("phone");
+        $staff->address = $request->input("address");
+        $staff->date_of_birth = $request->input("date_of_birth");
+        $staff->role = Staff::ROLE_STAFF;
+        $staff->save();
+        $staff->refresh();
+
+        return response()->json(compact("staff"));
+    }
+
+    public function info(Request $request)
+    {
+        $staff = $request->user('staff');
+
+        return response()->json(compact("staff"));
+    }
+
+    public function changePassword(StaffChangePasswordRequest $request)
+    {
+        $auth = $request->user('staff');
+        $staff = $this->staff->find($auth->id);
+
+        if (Hash::check($request->input("password"), $staff->password)) {
+            $staff->password = Hash::make($request->input("new_password"));
+            $staff->save();
+            $staff->refresh();
+
+            return response()->json(compact("staff"));
         }
 
         return response()->json([
-            "message" => __("custom.logout-failed"),
-        ], 403);
+            "message" => __("custom.password-incorrect"),
+        ], 422);
     }
 
-    public function register()
+    public function resetPassword(Staff $staff)
     {
-        //
-    }
+        $conf = $this->conf->where("key", Configuration::DEFAULT_STAFF_PASSWORD_KEY)->first();
+        $default_password = $conf->value;
 
-    public function info()
-    {
-        //
-    }
+        $staff->password = Hash::make($default_password);
+        $staff->save();
+        $staff->refresh();
 
-    public function changePassword()
-    {
-        //
-    }
-
-    public function resetPassword()
-    {
-        //
+        return response()->json(compact("staff"));
     }
 }

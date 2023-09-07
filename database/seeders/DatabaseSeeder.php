@@ -51,5 +51,10 @@ class DatabaseSeeder extends Seeder
         $conf->key = Configuration::VERIFY_NEW_USER_KEY;
         $conf->value = Configuration::VERIFY_NEW_USER_ENABLE;
         $conf->save();
+
+        $conf = new Configuration();
+        $conf->key = Configuration::DEFAULT_STAFF_PASSWORD_KEY;
+        $conf->value = 'password';
+        $conf->save();
     }
 }
