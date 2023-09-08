@@ -51,6 +51,9 @@ return [
             "create" => [
                 "title" => "create new table"
             ]
+        ],
+        "configurations" => [
+            "title" => "configurations"
         ]
     ],
     "staff" => [

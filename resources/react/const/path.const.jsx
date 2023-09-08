@@ -10,6 +10,7 @@ import { StaffOrderHistory } from "../pages/Staff/StaffOrderHistory";
 import { EditTableMap } from "../pages/Staff/EditTableMap";
 import { CreateNewTable } from "../pages/Staff/CreateNewTable";
 import { PageError } from "../pages/Error";
+import { Configurations } from "../pages/Staff/Configurations";
 
 export const userRoutes = {
     home: {
@@ -66,6 +67,11 @@ export const adminRoutes = {
     createNewTable: {
         path: "/admin/tables/create",
         element: <CreateNewTable />,
+        errorElement: <PageError />,
+    },
+    configurations: {
+        path: "/admin/configurations",
+        element: <Configurations />,
         errorElement: <PageError />,
     },
 };

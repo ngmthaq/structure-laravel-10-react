@@ -39,7 +39,7 @@ export const AdminHeader = () => {
                 margin: MARGIN + "px",
                 padding: "8px",
                 background: "white",
-                borderRadius: "8px",
+                borderRadius: "4px",
                 border: `1px solid rgba(0, 0, 0, 0.1)`,
                 display: "flex",
                 alignItems: "center",

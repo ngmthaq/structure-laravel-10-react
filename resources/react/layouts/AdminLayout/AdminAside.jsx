@@ -9,6 +9,7 @@ import {
     ContentPaste,
     Dashboard,
     History,
+    Settings,
     SupervisedUserCircle,
     TableBarRounded,
 } from "@mui/icons-material";
@@ -55,6 +56,12 @@ export const AdminAside = () => {
             path: adminRoutes.editTableMap.path,
             title: __("custom.admin.tables.edit.title"),
             Icon: Construction,
+        },
+        {
+            type: "route",
+            path: adminRoutes.configurations.path,
+            title: __("custom.admin.configurations.title"),
+            Icon: Settings,
         },
         {
             type: "divider",

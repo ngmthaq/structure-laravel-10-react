@@ -31,11 +31,11 @@ export const AdminLayout = ({ children }) => {
                 <Box
                     id="admin-layout-content"
                     sx={{
-                        height: `calc(100vh - ${ADMIN_HEADER_HEIGHT}px - (${ADMIN_HEADER_MARGIN}px * 2) - 8px)`,
-                        margin: "8px",
+                        height: `calc(100vh - ${ADMIN_HEADER_HEIGHT}px - (${ADMIN_HEADER_MARGIN}px * 2))`,
+                        margin: "0 8px",
                         padding: "8px",
                         background: "white",
-                        borderRadius: "8px",
+                        borderRadius: "4px 4px 0 0",
                         border: `1px solid rgba(0, 0, 0, 0.1)`,
                         overflowY: "scroll",
                     }}
