@@ -9,7 +9,7 @@ import {
     openPrimaryLoading,
 } from "../helpers/element.helper";
 
-export const adminLoader = async ({ params, request }) => {
+export const staffLoader = async ({ params, request }) => {
     openPrimaryLoading();
 
     const token = localStorage.getItem(KEY_STAFF_ACCESS_TOKEN);
@@ -19,29 +19,23 @@ export const adminLoader = async ({ params, request }) => {
         const response = await api.get(API_ENDPOINTS.getStaffInfo);
 
         if (response.status === 200) {
-            const rawStaff = camelizeKeys(response.data.staff);
+            const staff = camelizeKeys(response.data.staff);
 
             setTimeout(() => {
                 closePrimaryLoading();
             }, 1000);
 
-            const staff = StaffModel(
-                rawStaff.id,
-                rawStaff.name,
-                rawStaff.email,
-                rawStaff.phone,
-                rawStaff.address,
-                rawStaff.dateOfBirth,
-                rawStaff.role
-            );
-
-            if (staff.isAdmin) {
-                return { staff };
-            } else {
-                location.replace(authRoutes.staffLogin.path);
-
-                return null;
-            }
+            return {
+                staff: StaffModel(
+                    staff.id,
+                    staff.name,
+                    staff.email,
+                    staff.phone,
+                    staff.address,
+                    staff.dateOfBirth,
+                    staff.role
+                ),
+            };
         } else {
             location.replace(authRoutes.staffLogin.path);
 

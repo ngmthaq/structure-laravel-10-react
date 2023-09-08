@@ -2,6 +2,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Box, CircularProgress } from "@mui/material";
 
+export const PRIMARY_LOADING_ID = "primary-loading-id";
+
 export const PrimaryLoadingComponent = () => {
     const isPrimaryLoading = useSelector(
         (state) => state.common.isPrimaryLoading
@@ -21,6 +23,7 @@ export const PrimaryLoadingComponent = () => {
                 background: "rgba(0, 0, 0, 0.25)",
                 zIndex: 10,
             }}
+            id={PRIMARY_LOADING_ID}
         >
             <CircularProgress />
         </Box>

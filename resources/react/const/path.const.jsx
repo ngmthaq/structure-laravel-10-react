@@ -11,6 +11,9 @@ import { EditTableMap } from "../pages/Staff/EditTableMap";
 import { CreateNewTable } from "../pages/Staff/CreateNewTable";
 import { PageError } from "../pages/Error";
 import { Configurations } from "../pages/Staff/Configurations";
+import { notStaffLoader } from "../router/not.staff.loader";
+import { staffLoader } from "../router/staff.loader";
+import { adminLoader } from "../router/admin.loader";
 
 export const userRoutes = {
     home: {
@@ -25,21 +28,25 @@ export const staffRoutes = {
         path: "/staff/manage/tables",
         element: <TableManagement />,
         errorElement: <PageError />,
+        loader: staffLoader,
     },
     billManagement: {
         path: "/staff/manage/bills",
         element: <BillManagement />,
         errorElement: <PageError />,
+        loader: staffLoader,
     },
     order: {
         path: "/staff/order",
         element: <StaffOrder />,
         errorElement: <PageError />,
+        loader: staffLoader,
     },
     orderHistory: {
         path: "/staff/order/history",
         element: <StaffOrderHistory />,
         errorElement: <PageError />,
+        loader: staffLoader,
     },
 };
 
@@ -48,31 +55,37 @@ export const adminRoutes = {
         path: "/admin/manage/users",
         element: <UserManagement />,
         errorElement: <PageError />,
+        loader: adminLoader,
     },
     staffManagement: {
         path: "/admin/manage/staffs",
         element: <StaffManagement />,
         errorElement: <PageError />,
+        loader: adminLoader,
     },
     dashboard: {
         path: "/admin/dashboard",
         element: <Dashboard />,
         errorElement: <PageError />,
+        loader: adminLoader,
     },
     editTableMap: {
         path: "/admin/tables/edit",
         element: <EditTableMap />,
         errorElement: <PageError />,
+        loader: adminLoader,
     },
     createNewTable: {
         path: "/admin/tables/create",
         element: <CreateNewTable />,
         errorElement: <PageError />,
+        loader: adminLoader,
     },
     configurations: {
         path: "/admin/configurations",
         element: <Configurations />,
         errorElement: <PageError />,
+        loader: adminLoader,
     },
 };
 
@@ -81,5 +94,6 @@ export const authRoutes = {
         path: "/staff/login",
         element: <PageStaffLogin />,
         errorElement: <PageError />,
+        loader: notStaffLoader,
     },
 };

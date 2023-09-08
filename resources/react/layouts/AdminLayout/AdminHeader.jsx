@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import { useLoaderData } from "react-router-dom";
 import {
     Avatar,
     Box,
@@ -9,17 +10,18 @@ import {
     MenuList,
     Paper,
     Popover,
+    Typography,
 } from "@mui/material";
 import { Logout, Password, Person } from "@mui/icons-material";
-import { generateRandomColor } from "../../helpers/primitive.helper";
 import { __ } from "../../plugins/i18n.plugin";
+import { theme } from "../../plugins/material.plugin";
 
 export const HEIGHT = 40;
 
 export const MARGIN = 8;
 
 export const AdminHeader = () => {
-    const color = useMemo(() => generateRandomColor(), []);
+    const { staff } = useLoaderData();
 
     const [avatarElement, setAvatarElement] = useState(null);
 
@@ -46,78 +48,76 @@ export const AdminHeader = () => {
                 justifyContent: "center",
             }}
         >
-            <Box sx={{ flex: 9 }}></Box>
+            <Box sx={{ flex: 8 }}></Box>
             <Box
                 sx={{
-                    flex: 1,
+                    flex: 2,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "flex-end",
                     padding: "0 16px",
+                    cursor: "pointer",
                 }}
+                onClick={onClickAvatar}
             >
+                <Typography>
+                    {__("custom.welcome") + " " + staff.name}
+                </Typography>
                 <Avatar
                     sx={{
                         width: 24,
                         height: 24,
-                        background: color,
-                        cursor: "pointer",
+                        background: theme.palette.primary.main,
+                        marginLeft: "8px",
                     }}
-                    onClick={onClickAvatar}
                 >
-                    A
+                    {staff.name.charAt(0)}
                 </Avatar>
-                <Popover
-                    open={Boolean(avatarElement)}
-                    anchorEl={avatarElement}
-                    onClose={onClosePopup}
-                    anchorOrigin={{
-                        vertical: "bottom",
-                        horizontal: "right",
-                    }}
-                    transformOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                    }}
-                    sx={{ marginTop: "8px" }}
-                >
-                    <Paper sx={{ width: 200, maxWidth: "100%" }}>
-                        <MenuList>
-                            <MenuItem>
-                                <ListItemIcon>
-                                    <Person fontSize="small" />
-                                </ListItemIcon>
-                                <ListItemText
-                                    sx={{ textTransform: "capitalize" }}
-                                >
-                                    {__("custom.profile")}
-                                </ListItemText>
-                            </MenuItem>
-                            <MenuItem>
-                                <ListItemIcon>
-                                    <Password fontSize="small" />
-                                </ListItemIcon>
-                                <ListItemText
-                                    sx={{ textTransform: "capitalize" }}
-                                >
-                                    {__("custom.change-password")}
-                                </ListItemText>
-                            </MenuItem>
-                            <Divider />
-                            <MenuItem>
-                                <ListItemIcon>
-                                    <Logout fontSize="small" />
-                                </ListItemIcon>
-                                <ListItemText
-                                    sx={{ textTransform: "capitalize" }}
-                                >
-                                    {__("custom.logout")}
-                                </ListItemText>
-                            </MenuItem>
-                        </MenuList>
-                    </Paper>
-                </Popover>
             </Box>
+            <Popover
+                open={Boolean(avatarElement)}
+                anchorEl={avatarElement}
+                onClose={onClosePopup}
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "right",
+                }}
+                transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right",
+                }}
+                sx={{ marginTop: "8px" }}
+            >
+                <Paper sx={{ width: 200, maxWidth: "100%" }}>
+                    <MenuList>
+                        <MenuItem>
+                            <ListItemIcon>
+                                <Person fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText sx={{ textTransform: "capitalize" }}>
+                                {__("custom.profile")}
+                            </ListItemText>
+                        </MenuItem>
+                        <MenuItem>
+                            <ListItemIcon>
+                                <Password fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText sx={{ textTransform: "capitalize" }}>
+                                {__("custom.change-password")}
+                            </ListItemText>
+                        </MenuItem>
+                        <Divider />
+                        <MenuItem>
+                            <ListItemIcon>
+                                <Logout fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText sx={{ textTransform: "capitalize" }}>
+                                {__("custom.logout")}
+                            </ListItemText>
+                        </MenuItem>
+                    </MenuList>
+                </Paper>
+            </Popover>
         </Box>
     );
 };

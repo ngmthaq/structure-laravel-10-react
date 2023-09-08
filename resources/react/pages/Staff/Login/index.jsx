@@ -5,7 +5,7 @@ import { __ } from "../../../plugins/i18n.plugin";
 import { theme } from "../../../plugins/material.plugin";
 import { convertHex2Rgba } from "../../../helpers/primitive.helper";
 import { commonActions } from "../../../reducers/common.reducer";
-import { PrimaryNotificationModel } from "../../../models/primary-notification.model";
+import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
 import { authAsyncActions } from "../../../reducers/auth.reducer";
 
 export const PageStaffLogin = () => {

@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { authAsyncActions } from "./auth.reducer";
-import { PrimaryNotificationModel } from "../models/primary-notification.model";
+import { PrimaryNotificationModel } from "../models/primary.notification.model";
 import { __ } from "../plugins/i18n.plugin";
 
 const state = {

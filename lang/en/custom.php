@@ -21,6 +21,7 @@ return [
     "remember-me" => "remember me",
     "forgot-password-login-text" => "Forgot your password?",
     "welcome-back" => "Welcome Back",
+    "welcome" => "Welcome",
     "api-failed-validation" => "Unprocessable content",
     "unauthorized" => "Unauthorized",
     "forbidden" => "Forbidden",

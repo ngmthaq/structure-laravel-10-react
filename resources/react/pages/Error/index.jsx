@@ -18,8 +18,11 @@ export const PageError = () => {
                 justifyContent: "center",
             }}
         >
-            <Box component="h1" sx={{ margin: "16px" }}>
-                {error.status} | {error.statusText}
+            <Box
+                component="h1"
+                sx={{ margin: "16px", textTransform: "uppercase" }}
+            >
+                {error.status} {error.statusText}
             </Box>
             <Box component="p" sx={{ margin: "8px" }}>
                 {error.data}

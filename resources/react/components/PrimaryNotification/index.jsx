@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { Alert, Box } from "@mui/material";
 import { isJsonString } from "../../helpers/primitive.helper";
 
+export const PRIMARY_NOTIFICATION_TIMEOUT = 10000;
+
 export const PrimaryNotificationComponent = () => {
     const primaryNotification = useSelector(
         (state) => state.common.primaryNotification
@@ -34,7 +36,7 @@ export const PrimaryNotificationComponent = () => {
                 notifications.forEach((notification) => {
                     setTimeout(() => {
                         onClose(notification.uid);
-                    }, 6000);
+                    }, PRIMARY_NOTIFICATION_TIMEOUT);
                 });
             } else {
                 setNotifications((state) => [
@@ -44,7 +46,7 @@ export const PrimaryNotificationComponent = () => {
 
                 setTimeout(() => {
                     onClose(primaryNotification.uid);
-                }, 6000);
+                }, PRIMARY_NOTIFICATION_TIMEOUT);
             }
         }
     }, [primaryNotification]);
