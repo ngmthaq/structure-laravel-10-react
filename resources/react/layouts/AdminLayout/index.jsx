@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useState } from "react";
 import { Box } from "@mui/material";
 import { AdminSidebar, WIDTH as ADMIN_SIDEBAR_WIDTH } from "./AdminSidebar";
 import {
@@ -6,43 +6,56 @@ import {
     HEIGHT as ADMIN_HEADER_HEIGHT,
     MARGIN as ADMIN_HEADER_MARGIN,
 } from "./AdminHeader";
+import { StaffInfoDialog } from "./StaffInfoDialog";
+
+export const AdminLayoutContext = createContext();
 
 export const AdminLayout = ({ children }) => {
+    const [isOpenStaffInfoDialog, setIsOpenStaffInfoDialog] = useState(false);
+
+    const context = {
+        isOpenStaffInfoDialog,
+        setIsOpenStaffInfoDialog,
+    };
+
     return (
-        <Box
-            id="admin-layout"
-            sx={{
-                width: "100vw",
-                height: "100vh",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: `rgba(0, 0, 0, 0.05)`,
-            }}
-        >
-            <AdminSidebar />
+        <AdminLayoutContext.Provider value={context}>
             <Box
+                id="admin-layout"
                 sx={{
+                    width: "100vw",
                     height: "100vh",
-                    width: `calc(100vw - ${ADMIN_SIDEBAR_WIDTH}px)`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: `rgba(0, 0, 0, 0.05)`,
                 }}
             >
-                <AdminHeader />
+                <AdminSidebar />
                 <Box
-                    id="admin-layout-content"
                     sx={{
-                        height: `calc(100vh - ${ADMIN_HEADER_HEIGHT}px - (${ADMIN_HEADER_MARGIN}px * 2))`,
-                        margin: "0 8px",
-                        padding: "8px",
-                        background: "white",
-                        borderRadius: "4px 4px 0 0",
-                        border: `1px solid rgba(0, 0, 0, 0.1)`,
-                        overflowY: "scroll",
+                        height: "100vh",
+                        width: `calc(100vw - ${ADMIN_SIDEBAR_WIDTH}px)`,
                     }}
                 >
-                    {children}
+                    <AdminHeader />
+                    <Box
+                        id="admin-layout-content"
+                        sx={{
+                            height: `calc(100vh - ${ADMIN_HEADER_HEIGHT}px - (${ADMIN_HEADER_MARGIN}px * 2))`,
+                            margin: "0 8px",
+                            padding: "8px",
+                            background: "white",
+                            borderRadius: "4px 4px 0 0",
+                            border: `1px solid rgba(0, 0, 0, 0.1)`,
+                            overflowY: "scroll",
+                        }}
+                    >
+                        {children}
+                    </Box>
                 </Box>
+                <StaffInfoDialog />
             </Box>
-        </Box>
+        </AdminLayoutContext.Provider>
     );
 };

@@ -12,11 +12,15 @@ return [
     */
 
     "hello" => "hello",
-    "profile" => "profile",
+    "profile" => "your profile",
     "change-password" => "chang password",
     "logout" => "logout",
     "login" => "login",
     "email" => "email",
+    "name" => "name",
+    "phone-number" => "phone number",
+    "address" => "address",
+    "date-of-birth" => "date of birth",
     "password" => "password",
     "remember-me" => "remember me",
     "forgot-password-login-text" => "Forgot your password?",
@@ -32,6 +36,10 @@ return [
     "password-incorrect" => "Your password is incorrect",
     "contact-your-admin" => "Please contact your administrator to take this action",
     "wrong-email-password" => "Wrong email or password",
+    "your-info" => "Your information",
+    "edit-your-info" => "Edit information",
+    "update" => "update",
+    "confirm-lost-changed" => "Your changes will be lost, are you sure you want to cancel this action?",
     "admin" => [
         "title" => "admin",
         "manage" => [

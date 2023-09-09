@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLoaderData } from "react-router-dom";
 import {
@@ -17,6 +17,7 @@ import { Logout, Password, Person } from "@mui/icons-material";
 import { __ } from "../../plugins/i18n.plugin";
 import { theme } from "../../plugins/material.plugin";
 import { authAsyncActions } from "../../reducers/auth.reducer";
+import { AdminLayoutContext } from ".";
 
 export const HEIGHT = 40;
 
@@ -26,6 +27,8 @@ export const AdminHeader = () => {
     const dispatch = useDispatch();
 
     const { staff } = useLoaderData();
+
+    const { setIsOpenStaffInfoDialog } = useContext(AdminLayoutContext);
 
     const [avatarElement, setAvatarElement] = useState(null);
 
@@ -39,6 +42,11 @@ export const AdminHeader = () => {
 
     const onClickLogout = () => {
         dispatch(authAsyncActions.staffLogout());
+    };
+
+    const onClickStaffInfo = () => {
+        setIsOpenStaffInfoDialog(true);
+        onClosePopup();
     };
 
     return (
@@ -96,9 +104,9 @@ export const AdminHeader = () => {
                 }}
                 sx={{ marginTop: "8px" }}
             >
-                <Paper sx={{ width: 200, maxWidth: "100%" }}>
+                <Paper sx={{ width: "100%" }}>
                     <MenuList>
-                        <MenuItem>
+                        <MenuItem onClick={onClickStaffInfo}>
                             <ListItemIcon>
                                 <Person fontSize="small" />
                             </ListItemIcon>
