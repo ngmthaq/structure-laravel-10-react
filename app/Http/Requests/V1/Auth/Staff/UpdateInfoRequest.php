@@ -5,7 +5,7 @@ namespace App\Http\Requests\V1\Auth\Staff;
 use App\Http\Requests\ApiRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateStaffRequest extends ApiRequest
+class UpdateInfoRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,10 +22,11 @@ class CreateStaffRequest extends ApiRequest
      */
     public function rules(): array
     {
+        $id = request()->user('staff')->id;
+
         return [
             "name" => "required|max:255",
-            "email" => "required|email|unique:staffs,email",
-            "phone" => "required|max:255",
+            "phone" => "required|max:255|unique:staffs,phone," . $id,
             "address" => "required|max:255",
             "date_of_birth" => "required|date|before:today"
         ];

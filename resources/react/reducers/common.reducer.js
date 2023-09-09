@@ -46,6 +46,11 @@ const slice = createSlice({
                     );
 
                     state.primaryNotification = JSON.stringify(notifications);
+                } else {
+                    state.primaryNotification = PrimaryNotificationModel(
+                        "error",
+                        __("custom.something-wrong")
+                    );
                 }
 
                 state.isOpenLinearLoading = false;
@@ -57,6 +62,38 @@ const slice = createSlice({
         builder.addCase(authAsyncActions.staffLogout.fulfilled, (state) => {
             state.isOpenLinearLoading = false;
         });
+        builder.addCase(authAsyncActions.staffUpdateInfo.pending, (state) => {
+            state.isOpenLinearLoading = true;
+        });
+        builder.addCase(authAsyncActions.staffUpdateInfo.fulfilled, (state) => {
+            state.isOpenLinearLoading = false;
+        });
+        builder.addCase(
+            authAsyncActions.staffUpdateInfo.rejected,
+            (state, action) => {
+                if (action.payload.status === 403) {
+                    state.primaryNotification = PrimaryNotificationModel(
+                        "error",
+                        __("custom.access-deny")
+                    );
+                } else if (action.payload.status === 422) {
+                    const notifications = Object.values(
+                        action.payload.data.errors
+                    ).map((error) =>
+                        PrimaryNotificationModel("error", error[0])
+                    );
+
+                    state.primaryNotification = JSON.stringify(notifications);
+                } else {
+                    state.primaryNotification = PrimaryNotificationModel(
+                        "error",
+                        __("custom.something-wrong")
+                    );
+                }
+
+                state.isOpenLinearLoading = false;
+            }
+        );
     },
 });
 

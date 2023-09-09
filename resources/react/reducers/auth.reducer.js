@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { camelizeKeys } from "humps";
+import { camelizeKeys, decamelizeKeys } from "humps";
 import {
     KEY_STAFF_ACCESS_TOKEN,
     KEY_USER_ACCESS_TOKEN,
@@ -23,7 +23,10 @@ export const authAsyncActions = {
     staffLogin: createAsyncThunk("auth/staffLogin", async (payload, thunk) => {
         try {
             const api = new GenericApi();
-            const response = await api.post(API_ENDPOINTS.staffLogin, payload);
+            const response = await api.post(
+                API_ENDPOINTS.staffLogin,
+                decamelizeKeys(payload)
+            );
 
             return thunk.fulfillWithValue(camelizeKeys(response.data));
         } catch (error) {
@@ -50,6 +53,29 @@ export const authAsyncActions = {
             }
         }
     ),
+    staffUpdateInfo: createAsyncThunk(
+        "auth/staffUpdateInfo",
+        async (payload, thunk) => {
+            try {
+                const api = new AuthStaffApi();
+                const response = await api.put(
+                    API_ENDPOINTS.updateStaffInfo,
+                    decamelizeKeys(payload)
+                );
+
+                return thunk.fulfillWithValue(camelizeKeys(response.data));
+            } catch (error) {
+                console.error(error);
+
+                return thunk.rejectWithValue(
+                    camelizeKeys({
+                        status: error.response.status,
+                        data: error.response.data,
+                    })
+                );
+            }
+        }
+    ),
 };
 
 const slice = createSlice({
@@ -71,6 +97,10 @@ const slice = createSlice({
         builder.addCase(authAsyncActions.staffLogout.fulfilled, () => {
             localStorage.clear();
             location.href = authRoutes.staffLogin.path;
+        });
+        builder.addCase(authAsyncActions.staffUpdateInfo.fulfilled, () => {
+            alert(__("custom.update-profile-success"));
+            location.reload();
         });
     },
 });

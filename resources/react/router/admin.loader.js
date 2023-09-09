@@ -11,37 +11,28 @@ import {
 
 export const adminLoader = async ({ params, request }) => {
     openLinearLoading();
-
     const token = localStorage.getItem(KEY_STAFF_ACCESS_TOKEN);
 
     if (token) {
         const api = new AuthStaffApi();
         const response = await api.get(API_ENDPOINTS.getStaffInfo);
+        const rawStaff = camelizeKeys(response.data.staff);
+        const staff = StaffModel(
+            rawStaff.id,
+            rawStaff.name,
+            rawStaff.email,
+            rawStaff.phone,
+            rawStaff.address,
+            rawStaff.dateOfBirth,
+            rawStaff.role
+        );
 
-        if (response.status === 200) {
-            const rawStaff = camelizeKeys(response.data.staff);
+        closeLinearLoading();
 
-            closeLinearLoading();
-
-            const staff = StaffModel(
-                rawStaff.id,
-                rawStaff.name,
-                rawStaff.email,
-                rawStaff.phone,
-                rawStaff.address,
-                rawStaff.dateOfBirth,
-                rawStaff.role
-            );
-
-            if (staff.isAdmin) {
-                return { staff };
-            } else {
-                location.replace(staffRoutes.tableManagement.path);
-
-                return null;
-            }
+        if (staff.isAdmin) {
+            return { staff };
         } else {
-            location.replace(authRoutes.staffLogin.path);
+            location.replace(staffRoutes.tableManagement.path);
 
             return null;
         }

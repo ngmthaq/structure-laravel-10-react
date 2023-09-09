@@ -17,7 +17,15 @@ class AdminAuthenticate
     public function handle(Request $request, Closure $next): Response
     {
         $admin = $request->user('staff');
-        if (empty($admin) || (isset($admin) && $admin->role !== Staff::ROLE_ADMIN)) {
+        if (empty($admin)) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    "message" => __("custom.unauthorized"),
+                ], 401);
+            }
+
+            return abort('401');
+        } else if (isset($admin) && $admin->role !== Staff::ROLE_ADMIN) {
             if ($request->wantsJson()) {
                 return response()->json([
                     "message" => __("custom.forbidden"),

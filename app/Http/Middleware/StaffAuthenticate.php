@@ -19,11 +19,11 @@ class StaffAuthenticate
         if (empty($staff)) {
             if ($request->wantsJson()) {
                 return response()->json([
-                    "message" => __("custom.forbidden"),
-                ], 403);
+                    "message" => __("custom.unauthorized"),
+                ], 401);
             }
 
-            return abort('403');
+            return abort('401');
         }
 
         return $next($request);

@@ -1,11 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouteError } from "react-router-dom";
 import { Box } from "@mui/material";
+import { AxiosError } from "axios";
+import { authRoutes } from "../../const/path.const";
+import { __ } from "../../plugins/i18n.plugin";
 
 export const PageError = () => {
     const error = useRouteError();
 
-    console.error(error);
+    const [status, setStatus] = useState("");
+
+    const [statusText, setStatusText] = useState("");
+
+    const [data, setData] = useState("");
+
+    useEffect(() => {
+        if (error) {
+            console.error(error);
+            if (error instanceof AxiosError) {
+                if (error.response.status === 401) {
+                    alert(__("custom.login-expired"));
+                    localStorage.clear();
+                    location.href = authRoutes.staffLogin.path;
+                } else if (error.response.status === 403) {
+                    setStatus(403);
+                    setStatusText(__("custom.forbidden"));
+                    setData(__("custom.access-deny"));
+                }
+            } else {
+                setStatus(error.status);
+                setStatusText(error.statusText);
+                setData(error.data);
+            }
+        }
+    }, [error]);
 
     return (
         <Box
@@ -22,10 +50,10 @@ export const PageError = () => {
                 component="h1"
                 sx={{ margin: "16px", textTransform: "uppercase" }}
             >
-                {error.status} {error.statusText}
+                {status} {statusText}
             </Box>
             <Box component="p" sx={{ margin: "8px" }}>
-                {error.data}
+                {data}
             </Box>
         </Box>
     );

@@ -28,6 +28,7 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
 
         // PUT
         Route::put("password/change", [StaffController::class, "changePassword"])->middleware("auth.staff")->name("password.change");
+        Route::put("info/update", [StaffController::class, "updateInfo"])->middleware("auth.staff")->name("info.update");
     });
 
     // Admin API

@@ -40,6 +40,10 @@ return [
     "edit-your-info" => "Edit information",
     "update" => "update",
     "confirm-lost-changed" => "Your changes will be lost, are you sure you want to cancel this action?",
+    "access-deny" => "You do not have permission to use this feature",
+    "something-wrong" => "An error occurred, please try again in a few minutes",
+    "update-profile-success" => "Update your profile successfully",
+    "login-expired" => "Your login session has expired",
     "admin" => [
         "title" => "admin",
         "manage" => [

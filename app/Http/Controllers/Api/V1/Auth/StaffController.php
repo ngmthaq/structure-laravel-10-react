@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Auth\Staff\CreateStaffRequest;
 use App\Http\Requests\V1\Auth\Staff\LoginRequest;
 use App\Http\Requests\V1\Auth\Staff\StaffChangePasswordRequest;
+use App\Http\Requests\V1\Auth\Staff\UpdateInfoRequest;
 use App\Models\Configuration;
 use App\Models\Staff;
 use Illuminate\Http\Request;
@@ -123,6 +124,20 @@ class StaffController extends Controller
         $default_password = $conf->value;
 
         $staff->password = Hash::make($default_password);
+        $staff->save();
+        $staff->refresh();
+
+        return response()->json(compact("staff"));
+    }
+
+    public function updateInfo(UpdateInfoRequest $request)
+    {
+        $auth = $request->user("staff");
+        $staff = $this->staff->find($auth->id);
+        $staff->name = $request->input("name");
+        $staff->phone = $request->input("phone");
+        $staff->address = $request->input("address");
+        $staff->date_of_birth = $request->input("date_of_birth");
         $staff->save();
         $staff->refresh();
 

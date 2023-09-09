@@ -17,28 +17,20 @@ export const staffLoader = async ({ params, request }) => {
     if (token) {
         const api = new AuthStaffApi();
         const response = await api.get(API_ENDPOINTS.getStaffInfo);
+        const staff = camelizeKeys(response.data.staff);
+        closeLinearLoading();
 
-        if (response.status === 200) {
-            const staff = camelizeKeys(response.data.staff);
-
-            closeLinearLoading();
-
-            return {
-                staff: StaffModel(
-                    staff.id,
-                    staff.name,
-                    staff.email,
-                    staff.phone,
-                    staff.address,
-                    staff.dateOfBirth,
-                    staff.role
-                ),
-            };
-        } else {
-            location.replace(authRoutes.staffLogin.path);
-
-            return null;
-        }
+        return {
+            staff: StaffModel(
+                staff.id,
+                staff.name,
+                staff.email,
+                staff.phone,
+                staff.address,
+                staff.dateOfBirth,
+                staff.role
+            ),
+        };
     } else {
         location.replace(authRoutes.staffLogin.path);
 

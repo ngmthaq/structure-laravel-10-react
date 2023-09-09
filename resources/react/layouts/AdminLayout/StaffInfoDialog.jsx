@@ -1,5 +1,6 @@
 import React, { Fragment, useContext, useState } from "react";
 import { useLoaderData } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
     Box,
     Button,
@@ -16,8 +17,11 @@ import { __ } from "../../plugins/i18n.plugin";
 import { convertHex2Rgba } from "../../helpers/primitive.helper";
 import { theme } from "../../plugins/material.plugin";
 import { isObjDeepEqual } from "../../helpers/reference.helper";
+import { authAsyncActions } from "../../reducers/auth.reducer";
 
 export const StaffInfoDialog = () => {
+    const dispatch = useDispatch();
+
     const { isOpenStaffInfoDialog, setIsOpenStaffInfoDialog } =
         useContext(AdminLayoutContext);
 
@@ -28,7 +32,14 @@ export const StaffInfoDialog = () => {
     const [info, setInfo] = useState(Object.assign({}, staff));
 
     const onClose = () => {
-        setIsOpenStaffInfoDialog(false);
+        if (isObjDeepEqual(staff, info)) {
+            setIsEditMode(false);
+            setIsOpenStaffInfoDialog(false);
+        } else if (confirm(__("custom.confirm-lost-changed"))) {
+            setIsEditMode(false);
+            setIsOpenStaffInfoDialog(false);
+            setInfo((state) => ({ ...state, ...staff }));
+        }
     };
 
     const onOpenEditMode = () => {
@@ -51,9 +62,9 @@ export const StaffInfoDialog = () => {
     };
 
     const onSubmit = (e) => {
+        e.preventDefault();
         if (isEditMode) {
-            e.preventDefault();
-            console.log(info);
+            dispatch(authAsyncActions.staffUpdateInfo(info));
         }
     };
 
@@ -238,6 +249,7 @@ export const StaffInfoDialog = () => {
                                 size="large"
                                 type="submit"
                                 sx={{ margin: "8px 0 0" }}
+                                disabled={isObjDeepEqual(staff, info)}
                             >
                                 {__("custom.update").toUpperCase()}
                             </Button>

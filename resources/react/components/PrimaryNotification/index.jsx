@@ -62,6 +62,7 @@ export const PrimaryNotificationComponent = () => {
                 right: 0,
                 width: 400,
                 maxWidth: "100vw",
+                zIndex: 9999999999,
             }}
             id={PRIMARY_NOTIFICATION_CONTAINER_ID}
         >
