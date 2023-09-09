@@ -5,7 +5,7 @@ import { __ } from "../plugins/i18n.plugin";
 
 const state = {
     name: "common",
-    isPrimaryLoading: false,
+    isOpenLinearLoading: false,
     primaryNotification: null,
 };
 
@@ -13,11 +13,11 @@ const slice = createSlice({
     name: state.name,
     initialState: state,
     reducers: {
-        openPrimaryLoading: (state) => {
-            state.isPrimaryLoading = true;
+        openLinearLoading: (state) => {
+            state.isOpenLinearLoading = true;
         },
-        closePrimaryLoading: (state) => {
-            state.isPrimaryLoading = false;
+        closeLinearLoading: (state) => {
+            state.isOpenLinearLoading = false;
         },
         appendPrimaryNotification: (state, action) => {
             state.primaryNotification = action.payload;
@@ -25,10 +25,10 @@ const slice = createSlice({
     },
     extraReducers: (builder) => {
         builder.addCase(authAsyncActions.staffLogin.pending, (state) => {
-            state.isPrimaryLoading = true;
+            state.isOpenLinearLoading = true;
         });
         builder.addCase(authAsyncActions.staffLogin.fulfilled, (state) => {
-            state.isPrimaryLoading = false;
+            state.isOpenLinearLoading = false;
         });
         builder.addCase(
             authAsyncActions.staffLogin.rejected,
@@ -48,9 +48,15 @@ const slice = createSlice({
                     state.primaryNotification = JSON.stringify(notifications);
                 }
 
-                state.isPrimaryLoading = false;
+                state.isOpenLinearLoading = false;
             }
         );
+        builder.addCase(authAsyncActions.staffLogout.pending, (state) => {
+            state.isOpenLinearLoading = true;
+        });
+        builder.addCase(authAsyncActions.staffLogout.fulfilled, (state) => {
+            state.isOpenLinearLoading = false;
+        });
     },
 });
 

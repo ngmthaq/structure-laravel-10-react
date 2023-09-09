@@ -2,15 +2,15 @@ import { camelizeKeys } from "humps";
 import { AuthStaffApi } from "../api/auth.staff.api";
 import { API_ENDPOINTS } from "../const/api.const";
 import { KEY_STAFF_ACCESS_TOKEN } from "../const/key.const";
-import { authRoutes } from "../const/path.const";
+import { authRoutes, staffRoutes } from "../const/path.const";
 import { StaffModel } from "../models/staff.model";
 import {
-    closePrimaryLoading,
-    openPrimaryLoading,
+    closeLinearLoading,
+    openLinearLoading,
 } from "../helpers/element.helper";
 
 export const adminLoader = async ({ params, request }) => {
-    openPrimaryLoading();
+    openLinearLoading();
 
     const token = localStorage.getItem(KEY_STAFF_ACCESS_TOKEN);
 
@@ -21,9 +21,7 @@ export const adminLoader = async ({ params, request }) => {
         if (response.status === 200) {
             const rawStaff = camelizeKeys(response.data.staff);
 
-            setTimeout(() => {
-                closePrimaryLoading();
-            }, 1000);
+            closeLinearLoading();
 
             const staff = StaffModel(
                 rawStaff.id,
@@ -38,7 +36,7 @@ export const adminLoader = async ({ params, request }) => {
             if (staff.isAdmin) {
                 return { staff };
             } else {
-                location.replace(authRoutes.staffLogin.path);
+                location.replace(staffRoutes.tableManagement.path);
 
                 return null;
             }

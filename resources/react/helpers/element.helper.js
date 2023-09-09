@@ -1,14 +1,14 @@
-import { PRIMARY_LOADING_ID } from "../components/PrimaryLoading";
+import { LINEAR_LOADING_ID } from "../components/LinearLoading";
 
-export const openPrimaryLoading = () => {
-    const element = document.getElementById(PRIMARY_LOADING_ID);
+export const openLinearLoading = () => {
+    const element = document.getElementById(LINEAR_LOADING_ID);
     if (element) {
-        element.style.display = "flex";
+        element.style.display = "block";
     }
 };
 
-export const closePrimaryLoading = () => {
-    const element = document.getElementById(PRIMARY_LOADING_ID);
+export const closeLinearLoading = () => {
+    const element = document.getElementById(LINEAR_LOADING_ID);
     if (element) {
         element.style.display = "none";
     }

@@ -7,7 +7,7 @@ import { router } from "./router/routes";
 import { theme } from "./plugins/material.plugin";
 import { store } from "./plugins/redux.plugin";
 import { PrimaryNotificationComponent } from "./components/PrimaryNotification";
-import { PrimaryLoadingComponent } from "./components/PrimaryLoading";
+import { LinearLoadingComponent } from "./components/LinearLoading";
 
 export const App = () => {
     return (
@@ -17,7 +17,7 @@ export const App = () => {
                     <CssBaseline />
                     <RouterProvider router={router} />
                     <PrimaryNotificationComponent />
-                    <PrimaryLoadingComponent />
+                    <LinearLoadingComponent />
                 </ReduxProvider>
             </StyledEngineProvider>
         </ThemeProvider>

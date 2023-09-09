@@ -1,4 +1,5 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useLoaderData } from "react-router-dom";
 import {
     Avatar,
@@ -15,12 +16,15 @@ import {
 import { Logout, Password, Person } from "@mui/icons-material";
 import { __ } from "../../plugins/i18n.plugin";
 import { theme } from "../../plugins/material.plugin";
+import { authAsyncActions } from "../../reducers/auth.reducer";
 
 export const HEIGHT = 40;
 
 export const MARGIN = 8;
 
 export const AdminHeader = () => {
+    const dispatch = useDispatch();
+
     const { staff } = useLoaderData();
 
     const [avatarElement, setAvatarElement] = useState(null);
@@ -31,6 +35,10 @@ export const AdminHeader = () => {
 
     const onClosePopup = () => {
         setAvatarElement(null);
+    };
+
+    const onClickLogout = () => {
+        dispatch(authAsyncActions.staffLogout());
     };
 
     return (
@@ -107,7 +115,7 @@ export const AdminHeader = () => {
                             </ListItemText>
                         </MenuItem>
                         <Divider />
-                        <MenuItem>
+                        <MenuItem onClick={onClickLogout}>
                             <ListItemIcon>
                                 <Logout fontSize="small" />
                             </ListItemIcon>

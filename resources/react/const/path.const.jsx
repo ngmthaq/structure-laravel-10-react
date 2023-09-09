@@ -37,13 +37,13 @@ export const staffRoutes = {
         loader: staffLoader,
     },
     order: {
-        path: "/staff/order",
+        path: "/staff/orders/create",
         element: <StaffOrder />,
         errorElement: <PageError />,
         loader: staffLoader,
     },
     orderHistory: {
-        path: "/staff/order/history",
+        path: "/staff/orders/history",
         element: <StaffOrderHistory />,
         errorElement: <PageError />,
         loader: staffLoader,

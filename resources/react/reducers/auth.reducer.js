@@ -7,7 +7,8 @@ import {
 import { GenericApi } from "../api/generic.api";
 import { API_ENDPOINTS } from "../const/api.const";
 import { __ } from "../plugins/i18n.plugin";
-import { adminRoutes } from "../const/path.const";
+import { adminRoutes, authRoutes } from "../const/path.const";
+import { AuthStaffApi } from "../api/auth.staff.api";
 
 const staffAccessToken = localStorage.getItem(KEY_STAFF_ACCESS_TOKEN) || "";
 const userAccessToken = localStorage.getItem(KEY_USER_ACCESS_TOKEN) || "";
@@ -19,16 +20,16 @@ const state = {
 };
 
 export const authAsyncActions = {
-    staffLogin: createAsyncThunk("auth/staffLogin", async (payload, store) => {
+    staffLogin: createAsyncThunk("auth/staffLogin", async (payload, thunk) => {
         try {
             const api = new GenericApi();
             const response = await api.post(API_ENDPOINTS.staffLogin, payload);
 
-            return store.fulfillWithValue(camelizeKeys(response.data));
+            return thunk.fulfillWithValue(camelizeKeys(response.data));
         } catch (error) {
             console.error(error);
 
-            return store.rejectWithValue(
+            return thunk.rejectWithValue(
                 camelizeKeys({
                     status: error.response.status,
                     data: error.response.data,
@@ -36,6 +37,19 @@ export const authAsyncActions = {
             );
         }
     }),
+    staffLogout: createAsyncThunk(
+        "auth/staffLogout",
+        async (payload, thunk) => {
+            try {
+                const api = new AuthStaffApi();
+                await api.post(API_ENDPOINTS.staffLogout);
+
+                return thunk.fulfillWithValue(true);
+            } catch (error) {
+                return thunk.fulfillWithValue(true);
+            }
+        }
+    ),
 };
 
 const slice = createSlice({
@@ -54,6 +68,10 @@ const slice = createSlice({
                 location.href = adminRoutes.dashboard.path;
             }
         );
+        builder.addCase(authAsyncActions.staffLogout.fulfilled, () => {
+            localStorage.clear();
+            location.href = authRoutes.staffLogin.path;
+        });
     },
 });
 

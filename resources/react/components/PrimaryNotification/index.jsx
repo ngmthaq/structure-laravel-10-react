@@ -5,6 +5,9 @@ import { isJsonString } from "../../helpers/primitive.helper";
 
 export const PRIMARY_NOTIFICATION_TIMEOUT = 10000;
 
+export const PRIMARY_NOTIFICATION_CONTAINER_ID =
+    "primary-notification-container-id";
+
 export const PrimaryNotificationComponent = () => {
     const primaryNotification = useSelector(
         (state) => state.common.primaryNotification
@@ -60,6 +63,7 @@ export const PrimaryNotificationComponent = () => {
                 width: 400,
                 maxWidth: "100vw",
             }}
+            id={PRIMARY_NOTIFICATION_CONTAINER_ID}
         >
             {notifications.map((notification) =>
                 notification.isOpen ? (

@@ -5,12 +5,12 @@ import { KEY_STAFF_ACCESS_TOKEN } from "../const/key.const";
 import { authRoutes } from "../const/path.const";
 import { StaffModel } from "../models/staff.model";
 import {
-    closePrimaryLoading,
-    openPrimaryLoading,
+    closeLinearLoading,
+    openLinearLoading,
 } from "../helpers/element.helper";
 
 export const staffLoader = async ({ params, request }) => {
-    openPrimaryLoading();
+    openLinearLoading();
 
     const token = localStorage.getItem(KEY_STAFF_ACCESS_TOKEN);
 
@@ -21,9 +21,7 @@ export const staffLoader = async ({ params, request }) => {
         if (response.status === 200) {
             const staff = camelizeKeys(response.data.staff);
 
-            setTimeout(() => {
-                closePrimaryLoading();
-            }, 1000);
+            closeLinearLoading();
 
             return {
                 staff: StaffModel(
