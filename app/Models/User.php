@@ -36,4 +36,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Bill::class, 'user_id', 'id');
     }
+
+    public function isBlocked()
+    {
+        return $this->attributes["deleted_at"] !== null;
+    }
 }
