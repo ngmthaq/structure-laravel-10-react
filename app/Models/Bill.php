@@ -46,4 +46,9 @@ class Bill extends Model
     {
         return $this->belongsToMany(Seat::class, 'bills_seats', 'bill_id', 'seat_id');
     }
+
+    public function billHistories()
+    {
+        return $this->hasMany(BillHistory::class, "bill_id", "id");
+    }
 }

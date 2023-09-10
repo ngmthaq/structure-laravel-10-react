@@ -29,6 +29,7 @@ class StaffChangePasswordRequest extends ApiRequest
         return [
             "password" => $password_rules,
             "new_password" => $password_rules,
+            "password_confirmation" => "required|same:new_password"
         ];
     }
 }

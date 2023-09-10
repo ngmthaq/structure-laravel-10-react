@@ -7,15 +7,21 @@ import {
     MARGIN as ADMIN_HEADER_MARGIN,
 } from "./AdminHeader";
 import { StaffInfoDialog } from "./StaffInfoDialog";
+import { StaffChangePasswordDialog } from "./StaffChangePasswordDialog";
 
 export const AdminLayoutContext = createContext();
 
 export const AdminLayout = ({ children }) => {
     const [isOpenStaffInfoDialog, setIsOpenStaffInfoDialog] = useState(false);
 
+    const [isOpenChangePasswordDialog, setIsOpenChangePasswordDialog] =
+        useState(false);
+
     const context = {
         isOpenStaffInfoDialog,
         setIsOpenStaffInfoDialog,
+        isOpenChangePasswordDialog,
+        setIsOpenChangePasswordDialog,
     };
 
     return (
@@ -55,6 +61,7 @@ export const AdminLayout = ({ children }) => {
                     </Box>
                 </Box>
                 <StaffInfoDialog />
+                <StaffChangePasswordDialog />
             </Box>
         </AdminLayoutContext.Provider>
     );

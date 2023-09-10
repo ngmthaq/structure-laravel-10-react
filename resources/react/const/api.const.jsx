@@ -3,4 +3,5 @@ export const API_ENDPOINTS = {
     staffLogout: "/v1/staff/logout",
     getStaffInfo: "/v1/staff/info",
     updateStaffInfo: "/v1/staff/info/update",
+    staffChangePassword: "/v1/staff/password/change",
 };

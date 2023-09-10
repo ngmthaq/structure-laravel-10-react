@@ -28,7 +28,8 @@ export const AdminHeader = () => {
 
     const { staff } = useLoaderData();
 
-    const { setIsOpenStaffInfoDialog } = useContext(AdminLayoutContext);
+    const { setIsOpenStaffInfoDialog, setIsOpenChangePasswordDialog } =
+        useContext(AdminLayoutContext);
 
     const [avatarElement, setAvatarElement] = useState(null);
 
@@ -46,6 +47,11 @@ export const AdminHeader = () => {
 
     const onClickStaffInfo = () => {
         setIsOpenStaffInfoDialog(true);
+        onClosePopup();
+    };
+
+    const onClickChangePassword = () => {
+        setIsOpenChangePasswordDialog(true);
         onClosePopup();
     };
 
@@ -114,7 +120,7 @@ export const AdminHeader = () => {
                                 {__("custom.profile")}
                             </ListItemText>
                         </MenuItem>
-                        <MenuItem>
+                        <MenuItem onClick={onClickChangePassword}>
                             <ListItemIcon>
                                 <Password fontSize="small" />
                             </ListItemIcon>
