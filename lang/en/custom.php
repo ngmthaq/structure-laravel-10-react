@@ -44,6 +44,10 @@ return [
     "something-wrong" => "An error occurred, please try again in a few minutes",
     "update-profile-success" => "Update your profile successfully",
     "login-expired" => "Your login session has expired",
+    "change-password-title" => "Change your password",
+    "new-password" => "New password",
+    "password-confirmation" => "Password confirmation",
+    "update-password-success" => "Update your password successfully",
     "admin" => [
         "title" => "admin",
         "manage" => [

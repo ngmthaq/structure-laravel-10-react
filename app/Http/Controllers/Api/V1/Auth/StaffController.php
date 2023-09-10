@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Helpers\FailedValidateResponse;
 use App\Helpers\Logger;
 use App\Helpers\Server;
 use App\Http\Controllers\Controller;
@@ -41,12 +42,14 @@ class StaffController extends Controller
             $is_authenticated = Hash::check($request->input("password"), $staff->password);
 
             if ($is_authenticated === false) {
-                return response()->json(["message" => __("custom.unauthorized")], 401);
+                return FailedValidateResponse::send([
+                    "authentication" => __("custom.wrong-email-password")
+                ]);
             }
 
             $token = $staff->createToken(Staff::AUTH_TOKEN_NAME)->accessToken;
 
-            Logger::write("passport", "IP address: " . Server::getUserIP(), Logger::STATUS_INFO, $staff->id, Logger::ROLE_STAFF, $request->getRequestUri());
+            Logger::write("passport", "Login IP address: " . Server::getUserIP(), Logger::STATUS_INFO, $staff->id, Logger::ROLE_STAFF, $request->getRequestUri());
 
             return response()->json([
                 "token" => $token,
@@ -64,8 +67,11 @@ class StaffController extends Controller
 
     public function logout(Request $request)
     {
-        $user = $request->user('staff');
-        $user->token()->revoke();
+        $staff = $request->user('staff');
+
+        Logger::write("passport", "Logout IP address: " . Server::getUserIP(), Logger::STATUS_INFO, $staff->id, Logger::ROLE_STAFF, $request->getRequestUri());
+
+        $staff->token()->revoke();
 
         return response()->json([
             "message" => __("custom.logout-success"),
@@ -113,9 +119,9 @@ class StaffController extends Controller
             return response()->json(compact("staff"));
         }
 
-        return response()->json([
-            "message" => __("custom.password-incorrect"),
-        ], 400);
+        return FailedValidateResponse::send([
+            "password" => __("custom.password-incorrect")
+        ]);
     }
 
     public function resetPassword(Staff $staff)

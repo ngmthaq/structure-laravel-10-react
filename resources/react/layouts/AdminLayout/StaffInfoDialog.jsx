@@ -85,7 +85,7 @@ export const StaffInfoDialog = () => {
                 <DialogTitle>
                     {capitalize(__("custom.hello"))} {staff.name}
                 </DialogTitle>
-                <IconButton onClick={onClose}>
+                <IconButton onClick={onClose} sx={{ marginRight: "8px" }}>
                     <Close />
                 </IconButton>
             </Box>

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { authAsyncActions } from "./auth.reducer";
-import { PrimaryNotificationModel } from "../models/primary.notification.model";
 import { __ } from "../plugins/i18n.plugin";
+import { handleRejectedExtraReducerFormNotification } from "../helpers/redux.helper";
 
 const state = {
     name: "common",
@@ -33,26 +33,7 @@ const slice = createSlice({
         builder.addCase(
             authAsyncActions.staffLogin.rejected,
             (state, action) => {
-                if (action.payload.status === 401) {
-                    state.primaryNotification = PrimaryNotificationModel(
-                        "error",
-                        __("custom.wrong-email-password")
-                    );
-                } else if (action.payload.status === 422) {
-                    const notifications = Object.values(
-                        action.payload.data.errors
-                    ).map((error) =>
-                        PrimaryNotificationModel("error", error[0])
-                    );
-
-                    state.primaryNotification = JSON.stringify(notifications);
-                } else {
-                    state.primaryNotification = PrimaryNotificationModel(
-                        "error",
-                        __("custom.something-wrong")
-                    );
-                }
-
+                handleRejectedExtraReducerFormNotification(state, action);
                 state.isOpenLinearLoading = false;
             }
         );
@@ -71,26 +52,26 @@ const slice = createSlice({
         builder.addCase(
             authAsyncActions.staffUpdateInfo.rejected,
             (state, action) => {
-                if (action.payload.status === 403) {
-                    state.primaryNotification = PrimaryNotificationModel(
-                        "error",
-                        __("custom.access-deny")
-                    );
-                } else if (action.payload.status === 422) {
-                    const notifications = Object.values(
-                        action.payload.data.errors
-                    ).map((error) =>
-                        PrimaryNotificationModel("error", error[0])
-                    );
-
-                    state.primaryNotification = JSON.stringify(notifications);
-                } else {
-                    state.primaryNotification = PrimaryNotificationModel(
-                        "error",
-                        __("custom.something-wrong")
-                    );
-                }
-
+                handleRejectedExtraReducerFormNotification(state, action);
+                state.isOpenLinearLoading = false;
+            }
+        );
+        builder.addCase(
+            authAsyncActions.staffChangePassword.pending,
+            (state) => {
+                state.isOpenLinearLoading = true;
+            }
+        );
+        builder.addCase(
+            authAsyncActions.staffChangePassword.fulfilled,
+            (state) => {
+                state.isOpenLinearLoading = false;
+            }
+        );
+        builder.addCase(
+            authAsyncActions.staffChangePassword.rejected,
+            (state, action) => {
+                handleRejectedExtraReducerFormNotification(state, action);
                 state.isOpenLinearLoading = false;
             }
         );

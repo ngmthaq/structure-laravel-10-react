@@ -7,7 +7,7 @@ import {
 import { GenericApi } from "../api/generic.api";
 import { API_ENDPOINTS } from "../const/api.const";
 import { __ } from "../plugins/i18n.plugin";
-import { adminRoutes, authRoutes } from "../const/path.const";
+import { authRoutes, staffRoutes } from "../const/path.const";
 import { AuthStaffApi } from "../api/auth.staff.api";
 
 const staffAccessToken = localStorage.getItem(KEY_STAFF_ACCESS_TOKEN) || "";
@@ -76,6 +76,29 @@ export const authAsyncActions = {
             }
         }
     ),
+    staffChangePassword: createAsyncThunk(
+        "auth/staffChangePassword",
+        async (payload, thunk) => {
+            try {
+                const api = new AuthStaffApi();
+                const response = await api.put(
+                    API_ENDPOINTS.staffChangePassword,
+                    decamelizeKeys(payload)
+                );
+
+                return thunk.fulfillWithValue(response.data);
+            } catch (error) {
+                console.error(error);
+
+                return thunk.rejectWithValue(
+                    camelizeKeys({
+                        status: error.response.status,
+                        data: error.response.data,
+                    })
+                );
+            }
+        }
+    ),
 };
 
 const slice = createSlice({
@@ -91,7 +114,7 @@ const slice = createSlice({
                     KEY_STAFF_ACCESS_TOKEN,
                     action.payload.token
                 );
-                location.href = adminRoutes.dashboard.path;
+                location.href = staffRoutes.tableManagement.path;
             }
         );
         builder.addCase(authAsyncActions.staffLogout.fulfilled, () => {
@@ -100,6 +123,10 @@ const slice = createSlice({
         });
         builder.addCase(authAsyncActions.staffUpdateInfo.fulfilled, () => {
             alert(__("custom.update-profile-success"));
+            location.reload();
+        });
+        builder.addCase(authAsyncActions.staffChangePassword.fulfilled, () => {
+            alert(__("custom.update-password-success"));
             location.reload();
         });
     },
