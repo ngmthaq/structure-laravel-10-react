@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { authAsyncActions } from "./auth.reducer";
 import { __ } from "../plugins/i18n.plugin";
 import { handleRejectedExtraReducerFormNotification } from "../helpers/redux.helper";
+import { userAsyncActions } from "./user.reducer";
 
 const state = {
     name: "common",
@@ -70,6 +71,19 @@ const slice = createSlice({
         );
         builder.addCase(
             authAsyncActions.staffChangePassword.rejected,
+            (state, action) => {
+                handleRejectedExtraReducerFormNotification(state, action);
+                state.isOpenLinearLoading = false;
+            }
+        );
+        builder.addCase(userAsyncActions.getAllUsers.pending, (state) => {
+            state.isOpenLinearLoading = true;
+        });
+        builder.addCase(userAsyncActions.getAllUsers.fulfilled, (state) => {
+            state.isOpenLinearLoading = false;
+        });
+        builder.addCase(
+            userAsyncActions.getAllUsers.rejected,
             (state, action) => {
                 handleRejectedExtraReducerFormNotification(state, action);
                 state.isOpenLinearLoading = false;

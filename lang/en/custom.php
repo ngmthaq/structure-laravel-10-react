@@ -48,6 +48,11 @@ return [
     "new-password" => "New password",
     "password-confirmation" => "Password confirmation",
     "update-password-success" => "Update your password successfully",
+    "actions" => "actions",
+    "created-at" => "created at",
+    "show" => "show",
+    "showing" => "showing :start to :end of :total entries",
+    "records" => "records",
     "admin" => [
         "title" => "admin",
         "manage" => [
