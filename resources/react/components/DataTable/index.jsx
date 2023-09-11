@@ -3,6 +3,8 @@ import {
     Box,
     FormControl,
     IconButton,
+    Input,
+    InputAdornment,
     MenuItem,
     Pagination,
     Select,
@@ -15,6 +17,7 @@ import {
     ArrowDownward,
     ArrowUpward,
     MoreVert,
+    Search,
     SwapVert,
 } from "@mui/icons-material";
 import { theme } from "../../plugins/material.plugin";
@@ -23,15 +26,22 @@ export const SORT_DIR_ASC = "asc";
 
 export const SORT_DIR_DESC = "desc";
 
-export const DataTable = ({ header, fullWidth, body, total, initPage }) => {
+export const DataTable = ({
+    header,
+    fullWidth,
+    body,
+    total,
+    initPage,
+    onFilter,
+    onChangePage,
+    onChangeLimit,
+    onChangeSortOrder,
+}) => {
+    const [filterTimeout, setFilterTimeout] = useState(null);
+
     const [headerColumns, setHeaderColumns] = useState([]);
 
     const [bodyRows, setBodyRows] = useState([]);
-
-    const [sortable, setSortable] = useState({
-        col: "",
-        dir: "",
-    });
 
     const [page, setPage] = useState(initPage ?? 1);
 
@@ -56,6 +66,12 @@ export const DataTable = ({ header, fullWidth, body, total, initPage }) => {
                 }
             })
         );
+        onChangeLimit(value);
+    };
+
+    const onChangePagination = (e, page) => {
+        setPage(page);
+        onChangePage(page);
     };
 
     const onClickSortable = (col) => {
@@ -63,13 +79,15 @@ export const DataTable = ({ header, fullWidth, body, total, initPage }) => {
             if (h.sortCol !== col) return { ...h, sortDir: "" };
             if (h.sortDir === "") {
                 h.sortDir = SORT_DIR_ASC;
-                setSortable({ col: col, dir: SORT_DIR_ASC });
+                if (onChangeSortOrder)
+                    onChangeSortOrder({ col: col, dir: SORT_DIR_ASC });
             } else if (h.sortDir === SORT_DIR_ASC) {
                 h.sortDir = SORT_DIR_DESC;
-                setSortable({ col: col, dir: SORT_DIR_DESC });
+                if (onChangeSortOrder)
+                    onChangeSortOrder({ col: col, dir: SORT_DIR_DESC });
             } else {
                 h.sortDir = "";
-                setSortable({ col: "", dir: "" });
+                if (onChangeSortOrder) onChangeSortOrder({ col: "", dir: "" });
             }
 
             return h;
@@ -80,6 +98,16 @@ export const DataTable = ({ header, fullWidth, body, total, initPage }) => {
 
     const getLimit = () => {
         return limitation.find((limit) => limit.selected).number;
+    };
+
+    const onChangeFilterInput = (e) => {
+        if (filterTimeout) clearTimeout(filterTimeout);
+
+        let id = setTimeout(() => {
+            if (onFilter) onFilter(e.target.value);
+        }, 500);
+
+        setFilterTimeout(id);
     };
 
     useEffect(() => {
@@ -101,7 +129,34 @@ export const DataTable = ({ header, fullWidth, body, total, initPage }) => {
 
     return (
         <Box>
-            <Box sx={{ padding: "16px 0" }}></Box>
+            <Box
+                sx={{
+                    padding: "16px 0",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                }}
+            >
+                <Typography>
+                    {capitalize(
+                        __("custom.showing", {
+                            start: getLimit() * (page - 1) + 1,
+                            end: getLimit() * (page - 1) + bodyRows.length,
+                            total: total,
+                        })
+                    )}
+                </Typography>
+                <FormControl variant="standard">
+                    <Input
+                        onChange={onChangeFilterInput}
+                        startAdornment={
+                            <InputAdornment position="start">
+                                <Search />
+                            </InputAdornment>
+                        }
+                    />
+                </FormControl>
+            </Box>
             <Box
                 component="table"
                 sx={{
@@ -229,16 +284,9 @@ export const DataTable = ({ header, fullWidth, body, total, initPage }) => {
                     </Select>
                     <Typography>{__("custom.records")}</Typography>
                 </FormControl>
-                <Typography>
-                    {capitalize(
-                        __("custom.showing", {
-                            start: getLimit() * (page - 1) + 1,
-                            end: getLimit() * (page - 1) + bodyRows.length,
-                            total: total,
-                        })
-                    )}
-                </Typography>
                 <Pagination
+                    page={page}
+                    onChange={onChangePagination}
                     count={
                         Number.isNaN(Math.ceil(total / getLimit()))
                             ? 1

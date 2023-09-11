@@ -56,11 +56,26 @@ export const UserManagement = () => {
 
     const users = useSelector((state) => state.user.users);
 
+    const onFilter = (data) => {
+        console.log(data);
+    };
+
+    const onChangeLimit = (data) => {
+        console.log(data);
+    };
+
+    const onChangePage = (data) => {
+        console.log(data);
+    };
+
+    const onChangeSortOrder = (data) => {
+        console.log(data);
+    };
+
     useEffect(() => {
         dispatch(userAsyncActions.getAllUsers());
     }, []);
 
-    console.log(users);
     return (
         <AdminLayout>
             <DataTable
@@ -68,6 +83,10 @@ export const UserManagement = () => {
                 header={header}
                 body={users.data}
                 total={users.total}
+                onFilter={onFilter}
+                onChangeLimit={onChangeLimit}
+                onChangePage={onChangePage}
+                onChangeSortOrder={onChangeSortOrder}
             />
         </AdminLayout>
     );

@@ -53,6 +53,7 @@ return [
     "show" => "show",
     "showing" => "showing :start to :end of :total entries",
     "records" => "records",
+    "filters" => "filters",
     "admin" => [
         "title" => "admin",
         "manage" => [
