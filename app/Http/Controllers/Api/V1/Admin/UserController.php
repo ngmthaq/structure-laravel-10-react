@@ -18,29 +18,21 @@ class UserController extends Controller
     {
         $query_builder = $this->user->withTrashed();
 
-        $name = $request->query("name");
-        if (isset($name)) {
-            $query_builder->where("name", "LIKE", "%" . $name . "%");
+        $filter = $request->query("filter");
+
+        if (isset($filter)) {
+            $query_builder = $query_builder->where("name", "LIKE", "%" . $filter . "%")
+                ->orWhere("email", "LIKE", "%" . $filter . "%")
+                ->orWhere("phone", "LIKE", "%" . $filter . "%")
+                ->orWhere("address", "LIKE", "%" . $filter . "%")
+                ->orWhere("date_of_birth", "LIKE", "%" . $filter . "%");
         }
 
-        $email = $request->query("email");
-        if (isset($email)) {
-            $query_builder->where("email", "LIKE", "%" . $email . "%");
-        }
+        $sort_col = $request->query('sort_col');
+        $sort_dir = $request->query('sort_dir');
 
-        $phone = $request->query("phone");
-        if (isset($phone)) {
-            $query_builder->where("phone", "LIKE", "%" . $phone . "%");
-        }
-
-        $address = $request->query("address");
-        if (isset($address)) {
-            $query_builder->where("address", "LIKE", "%" . $address . "%");
-        }
-
-        $date_of_birth = $request->query("date_of_birth");
-        if (isset($date_of_birth)) {
-            $query_builder->where("date_of_birth", "LIKE", "%" . $date_of_birth . "%");
+        if (isset($sort_col) && isset($sort_dir)) {
+            $query_builder = $query_builder->orderBy($sort_col, $sort_dir);
         }
 
         $page = $request->query("page", 1);

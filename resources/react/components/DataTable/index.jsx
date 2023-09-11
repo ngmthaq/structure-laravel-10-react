@@ -32,10 +32,7 @@ export const DataTable = ({
     body,
     total,
     initPage,
-    onFilter,
-    onChangePage,
-    onChangeLimit,
-    onChangeSortOrder,
+    onChange,
 }) => {
     const [filterTimeout, setFilterTimeout] = useState(null);
 
@@ -44,6 +41,8 @@ export const DataTable = ({
     const [bodyRows, setBodyRows] = useState([]);
 
     const [page, setPage] = useState(initPage ?? 1);
+
+    const [input, setInput] = useState("");
 
     const [limitation, setLimitation] = useState([
         { number: 25, selected: true },
@@ -66,12 +65,10 @@ export const DataTable = ({
                 }
             })
         );
-        onChangeLimit(value);
     };
 
     const onChangePagination = (e, page) => {
         setPage(page);
-        onChangePage(page);
     };
 
     const onClickSortable = (col) => {
@@ -79,15 +76,10 @@ export const DataTable = ({
             if (h.sortCol !== col) return { ...h, sortDir: "" };
             if (h.sortDir === "") {
                 h.sortDir = SORT_DIR_ASC;
-                if (onChangeSortOrder)
-                    onChangeSortOrder({ col: col, dir: SORT_DIR_ASC });
             } else if (h.sortDir === SORT_DIR_ASC) {
                 h.sortDir = SORT_DIR_DESC;
-                if (onChangeSortOrder)
-                    onChangeSortOrder({ col: col, dir: SORT_DIR_DESC });
             } else {
                 h.sortDir = "";
-                if (onChangeSortOrder) onChangeSortOrder({ col: "", dir: "" });
             }
 
             return h;
@@ -104,7 +96,7 @@ export const DataTable = ({
         if (filterTimeout) clearTimeout(filterTimeout);
 
         let id = setTimeout(() => {
-            if (onFilter) onFilter(e.target.value);
+            setInput(e.target.value);
         }, 500);
 
         setFilterTimeout(id);
@@ -126,6 +118,20 @@ export const DataTable = ({
             setBodyRows(body);
         }
     }, [body]);
+
+    useEffect(() => {
+        const limit = getLimit();
+        const head = headerColumns.find((header) => header.sortDir !== "");
+        const sortCol = head ? head.sortCol : null;
+        const sortDir = head ? head.sortDir : null;
+        onChange({
+            limit: limit,
+            sortCol: sortCol,
+            sortDir: sortDir,
+            filter: input,
+            page: page,
+        });
+    }, [headerColumns, page, limitation, input]);
 
     return (
         <Box>

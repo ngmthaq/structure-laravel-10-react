@@ -26,6 +26,10 @@ export const PageError = () => {
                     setStatus(403);
                     setStatusText(__("custom.forbidden"));
                     setData(__("custom.access-deny"));
+                } else {
+                    setStatus(500);
+                    setStatusText("");
+                    setData(__("custom.something-wrong"));
                 }
             } else {
                 setStatus(error.status);
