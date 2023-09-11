@@ -1,6 +1,9 @@
 import React from "react";
 import { AdminLayout } from "../../../layouts/AdminLayout";
+import {TableManagerComponent} from "../../../components/TableManager/index.jsx";
 
 export const StaffManagement = () => {
-    return <AdminLayout>StaffManagement</AdminLayout>;
+    return <AdminLayout>
+        <TableManagerComponent/>
+    </AdminLayout>;
 };
