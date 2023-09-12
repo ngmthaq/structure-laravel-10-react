@@ -6,6 +6,7 @@ import { ThemeProvider, StyledEngineProvider } from "@mui/material/styles";
 import { router } from "./router/routes";
 import { theme } from "./plugins/material.plugin";
 import { store } from "./plugins/redux.plugin";
+import { EvenBusContext, eventBus } from "./plugins/bus.plugin";
 import { PrimaryNotificationComponent } from "./components/PrimaryNotification";
 import { LinearLoadingComponent } from "./components/LinearLoading";
 
@@ -14,10 +15,12 @@ export const App = () => {
     <ThemeProvider theme={theme}>
       <StyledEngineProvider injectFirst>
         <ReduxProvider store={store}>
-          <CssBaseline />
-          <RouterProvider router={router} />
-          <PrimaryNotificationComponent />
-          <LinearLoadingComponent />
+          <EvenBusContext.Provider value={eventBus}>
+            <CssBaseline />
+            <RouterProvider router={router} />
+            <PrimaryNotificationComponent />
+            <LinearLoadingComponent />
+          </EvenBusContext.Provider>
         </ReduxProvider>
       </StyledEngineProvider>
     </ThemeProvider>
