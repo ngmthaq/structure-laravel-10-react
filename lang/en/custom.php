@@ -54,6 +54,8 @@ return [
     "showing" => "showing :start to :end of :total entries",
     "records" => "records",
     "filters" => "filters",
+    "block" => "block",
+    "active" => "active",
     "admin" => [
         "title" => "admin",
         "manage" => [

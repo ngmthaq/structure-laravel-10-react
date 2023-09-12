@@ -42,6 +42,56 @@ export const userAsyncActions = {
             }
         }
     ),
+    adminBlockUser: createAsyncThunk(
+        "user/adminBlockUser",
+        async (payload, thunk) => {
+            try {
+                const api = new AuthStaffApi();
+                const response = await api.put(
+                    API_ENDPOINTS.adminBlockUser.replace(
+                        ":userId",
+                        payload.userId
+                    )
+                );
+
+                return thunk.fulfillWithValue(response.data);
+            } catch (error) {
+                console.error(error);
+
+                return thunk.rejectWithValue(
+                    camelizeKeys({
+                        status: error.response.status,
+                        data: error.response.data,
+                    })
+                );
+            }
+        }
+    ),
+    adminUnBlockUser: createAsyncThunk(
+        "user/adminUnBlockUser",
+        async (payload, thunk) => {
+            try {
+                const api = new AuthStaffApi();
+                const response = await api.put(
+                    API_ENDPOINTS.adminUnBlockUser.replace(
+                        ":userId",
+                        payload.userId
+                    )
+                );
+
+                return thunk.fulfillWithValue(response.data);
+            } catch (error) {
+                console.error(error);
+
+                return thunk.rejectWithValue(
+                    camelizeKeys({
+                        status: error.response.status,
+                        data: error.response.data,
+                    })
+                );
+            }
+        }
+    ),
 };
 
 const slice = createSlice({

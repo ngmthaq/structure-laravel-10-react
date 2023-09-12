@@ -32,6 +32,7 @@ export const DataTable = ({
     body,
     total,
     initPage,
+    actions,
     onChange,
 }) => {
     const [filterTimeout, setFilterTimeout] = useState(null);
@@ -71,21 +72,23 @@ export const DataTable = ({
         setPage(page);
     };
 
-    const onClickSortable = (col) => {
-        const newHeaderColumns = headerColumns.map((h) => {
-            if (h.sortCol !== col) return { ...h, sortDir: "" };
-            if (h.sortDir === "") {
-                h.sortDir = SORT_DIR_ASC;
-            } else if (h.sortDir === SORT_DIR_ASC) {
-                h.sortDir = SORT_DIR_DESC;
-            } else {
-                h.sortDir = "";
-            }
+    const onClickSortable = (col, sortable) => {
+        if (sortable) {
+            const newHeaderColumns = headerColumns.map((h) => {
+                if (h.sortCol !== col) return { ...h, sortDir: "" };
+                if (h.sortDir === "") {
+                    h.sortDir = SORT_DIR_ASC;
+                } else if (h.sortDir === SORT_DIR_ASC) {
+                    h.sortDir = SORT_DIR_DESC;
+                } else {
+                    h.sortDir = "";
+                }
 
-            return h;
-        });
+                return h;
+            });
 
-        setHeaderColumns(newHeaderColumns);
+            setHeaderColumns(newHeaderColumns);
+        }
     };
 
     const getLimit = () => {
@@ -203,7 +206,10 @@ export const DataTable = ({
                                         }}
                                         component="span"
                                         onClick={() =>
-                                            onClickSortable(col.sortCol)
+                                            onClickSortable(
+                                                col.sortCol,
+                                                col.sortable
+                                            )
                                         }
                                     >
                                         <Box component="span">{col.title}</Box>
@@ -242,7 +248,11 @@ export const DataTable = ({
                                     </Box>
                                 </Box>
                             ))}
-                            <Box component="th" sx={{ width: "2%" }} />
+                            {isArray(actions) && actions.length > 0 ? (
+                                <Box component="th" sx={{ width: "2%" }} />
+                            ) : (
+                                <Fragment />
+                            )}
                         </Box>
                     </Box>
                 ) : (
@@ -260,14 +270,21 @@ export const DataTable = ({
                                     {row[col.sortCol]}
                                 </Box>
                             ))}
-                            <Box
-                                component="td"
-                                sx={{ textAlign: "center", fontSize: "14px" }}
-                            >
-                                <IconButton size="small">
-                                    <MoreVert />
-                                </IconButton>
-                            </Box>
+                            {isArray(actions) && actions.length > 0 ? (
+                                <Box
+                                    component="td"
+                                    sx={{
+                                        textAlign: "center",
+                                        fontSize: "14px",
+                                    }}
+                                >
+                                    <IconButton size="small">
+                                        <MoreVert />
+                                    </IconButton>
+                                </Box>
+                            ) : (
+                                <Fragment />
+                            )}
                         </Box>
                     ))}
                 </Box>

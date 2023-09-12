@@ -5,4 +5,6 @@ export const API_ENDPOINTS = {
     updateStaffInfo: "/v1/staff/info/update",
     staffChangePassword: "/v1/staff/password/change",
     adminGetAllUsers: "/v1/admin/users",
+    adminBlockUser: "/v1/admin/users/:userId/block",
+    adminUnBlockUser: "/v1/admin/users/:userId/unblock",
 };
