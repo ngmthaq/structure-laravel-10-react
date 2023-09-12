@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Switch, capitalize } from "@mui/material";
+import { Box, Switch, Typography, capitalize } from "@mui/material";
 import { camelizeKeys } from "humps";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { DataTable } from "../../../components/DataTable";
@@ -81,22 +81,28 @@ export const UserManagement = () => {
       dispatch(commonActions.openLinearLoading());
       let response;
       if (isActive) {
-        response = await dispatch(userAsyncActions.adminUnBlockUser({ userId })).unwrap();
+        if (confirm(__("custom.active-confirm-message"))) {
+          response = await dispatch(userAsyncActions.adminUnBlockUser({ userId })).unwrap();
+        }
       } else {
-        response = await dispatch(userAsyncActions.adminBlockUser({ userId })).unwrap();
+        if (confirm(__("custom.block-confirm-message"))) {
+          response = await dispatch(userAsyncActions.adminBlockUser({ userId })).unwrap();
+        }
       }
-      response = camelizeKeys(response);
-      setProcessedUsers((state) =>
-        state.map((user) => {
-          if (user.id !== response.id) return user;
-          const isDeleted = response.deletedAt;
+      if (response) {
+        response = camelizeKeys(response);
+        setProcessedUsers((state) =>
+          state.map((user) => {
+            if (user.id !== response.id) return user;
+            const isDeleted = response.deletedAt;
 
-          return {
-            ...user,
-            active: <Switch checked={!isDeleted} onChange={(e) => onChangeSwitch(user.id, e.target.checked)} />,
-          };
-        }),
-      );
+            return {
+              ...user,
+              active: <Switch checked={!isDeleted} onChange={(e) => onChangeSwitch(user.id, e.target.checked)} />,
+            };
+          }),
+        );
+      }
       dispatch(commonActions.closeLinearLoading());
     } catch (error) {
       dispatch(commonActions.closeLinearLoading());
@@ -123,14 +129,19 @@ export const UserManagement = () => {
 
   return (
     <AdminLayout>
-      <DataTable
-        fullWidth
-        header={header}
-        body={processedUsers}
-        total={users.total}
-        actions={actions}
-        onChange={onChange}
-      />
+      <Box sx={{ padding: "16px" }}>
+        <Typography variant="h5" sx={{ textTransform: "capitalize" }}>
+          {__("custom.admin.manage.users.title")}
+        </Typography>
+        <DataTable
+          fullWidth
+          header={header}
+          body={processedUsers}
+          total={users.total}
+          actions={actions}
+          onChange={onChange}
+        />
+      </Box>
     </AdminLayout>
   );
 };

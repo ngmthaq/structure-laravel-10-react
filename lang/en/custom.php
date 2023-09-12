@@ -56,6 +56,8 @@ return [
     "filters" => "filters",
     "block" => "block",
     "active" => "active",
+    "block-confirm-message" => "Do you want to block this person?",
+    "active-confirm-message" => "Do you want to active this person?",
     "admin" => [
         "title" => "admin",
         "manage" => [
