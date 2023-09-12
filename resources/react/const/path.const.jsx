@@ -16,84 +16,84 @@ import { staffLoader } from "../router/staff.loader";
 import { adminLoader } from "../router/admin.loader";
 
 export const userRoutes = {
-    home: {
-        path: "/",
-        element: <PageUserHome />,
-        errorElement: <PageError />,
-    },
+  home: {
+    path: "/",
+    element: <PageUserHome />,
+    errorElement: <PageError />,
+  },
 };
 
 export const staffRoutes = {
-    tableManagement: {
-        path: "/staff/manage/tables",
-        element: <TableManagement />,
-        errorElement: <PageError />,
-        loader: staffLoader,
-    },
-    billManagement: {
-        path: "/staff/manage/bills",
-        element: <BillManagement />,
-        errorElement: <PageError />,
-        loader: staffLoader,
-    },
-    order: {
-        path: "/staff/orders/create",
-        element: <StaffOrder />,
-        errorElement: <PageError />,
-        loader: staffLoader,
-    },
-    orderHistory: {
-        path: "/staff/orders/history",
-        element: <StaffOrderHistory />,
-        errorElement: <PageError />,
-        loader: staffLoader,
-    },
+  tableManagement: {
+    path: "/staff/manage/tables",
+    element: <TableManagement />,
+    errorElement: <PageError />,
+    loader: staffLoader,
+  },
+  billManagement: {
+    path: "/staff/manage/bills",
+    element: <BillManagement />,
+    errorElement: <PageError />,
+    loader: staffLoader,
+  },
+  order: {
+    path: "/staff/orders/create",
+    element: <StaffOrder />,
+    errorElement: <PageError />,
+    loader: staffLoader,
+  },
+  orderHistory: {
+    path: "/staff/orders/history",
+    element: <StaffOrderHistory />,
+    errorElement: <PageError />,
+    loader: staffLoader,
+  },
 };
 
 export const adminRoutes = {
-    userManagement: {
-        path: "/admin/manage/users",
-        element: <UserManagement />,
-        errorElement: <PageError />,
-        loader: adminLoader,
-    },
-    staffManagement: {
-        path: "/admin/manage/staffs",
-        element: <StaffManagement />,
-        errorElement: <PageError />,
-        loader: adminLoader,
-    },
-    dashboard: {
-        path: "/admin/dashboard",
-        element: <Dashboard />,
-        errorElement: <PageError />,
-        loader: adminLoader,
-    },
-    editTableMap: {
-        path: "/admin/tables/edit",
-        element: <EditTableMap />,
-        errorElement: <PageError />,
-        loader: adminLoader,
-    },
-    createNewTable: {
-        path: "/admin/tables/create",
-        element: <CreateNewTable />,
-        errorElement: <PageError />,
-        loader: adminLoader,
-    },
-    configurations: {
-        path: "/admin/configurations",
-        element: <Configurations />,
-        errorElement: <PageError />,
-        loader: adminLoader,
-    },
+  userManagement: {
+    path: "/admin/manage/users",
+    element: <UserManagement />,
+    errorElement: <PageError />,
+    loader: adminLoader,
+  },
+  staffManagement: {
+    path: "/admin/manage/staffs",
+    element: <StaffManagement />,
+    errorElement: <PageError />,
+    loader: adminLoader,
+  },
+  dashboard: {
+    path: "/admin/dashboard",
+    element: <Dashboard />,
+    errorElement: <PageError />,
+    loader: adminLoader,
+  },
+  editTableMap: {
+    path: "/admin/tables/edit",
+    element: <EditTableMap />,
+    errorElement: <PageError />,
+    loader: adminLoader,
+  },
+  createNewTable: {
+    path: "/admin/tables/create",
+    element: <CreateNewTable />,
+    errorElement: <PageError />,
+    loader: adminLoader,
+  },
+  configurations: {
+    path: "/admin/configurations",
+    element: <Configurations />,
+    errorElement: <PageError />,
+    loader: adminLoader,
+  },
 };
 
 export const authRoutes = {
-    staffLogin: {
-        path: "/staff/login",
-        element: <PageStaffLogin />,
-        errorElement: <PageError />,
-        loader: notStaffLoader,
-    },
+  staffLogin: {
+    path: "/staff/login",
+    element: <PageStaffLogin />,
+    errorElement: <PageError />,
+    loader: notStaffLoader,
+  },
 };

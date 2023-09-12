@@ -10,16 +10,16 @@ import { PrimaryNotificationComponent } from "./components/PrimaryNotification";
 import { LinearLoadingComponent } from "./components/LinearLoading";
 
 export const App = () => {
-    return (
-        <ThemeProvider theme={theme}>
-            <StyledEngineProvider injectFirst>
-                <ReduxProvider store={store}>
-                    <CssBaseline />
-                    <RouterProvider router={router} />
-                    <PrimaryNotificationComponent />
-                    <LinearLoadingComponent />
-                </ReduxProvider>
-            </StyledEngineProvider>
-        </ThemeProvider>
-    );
+  return (
+    <ThemeProvider theme={theme}>
+      <StyledEngineProvider injectFirst>
+        <ReduxProvider store={store}>
+          <CssBaseline />
+          <RouterProvider router={router} />
+          <PrimaryNotificationComponent />
+          <LinearLoadingComponent />
+        </ReduxProvider>
+      </StyledEngineProvider>
+    </ThemeProvider>
+  );
 };

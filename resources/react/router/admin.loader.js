@@ -4,41 +4,38 @@ import { API_ENDPOINTS } from "../const/api.const";
 import { KEY_STAFF_ACCESS_TOKEN } from "../const/key.const";
 import { authRoutes, staffRoutes } from "../const/path.const";
 import { StaffModel } from "../models/staff.model";
-import {
-    closeLinearLoading,
-    openLinearLoading,
-} from "../helpers/element.helper";
+import { closeLinearLoading, openLinearLoading } from "../helpers/element.helper";
 
 export const adminLoader = async ({ params, request }) => {
-    openLinearLoading();
-    const token = localStorage.getItem(KEY_STAFF_ACCESS_TOKEN);
+  openLinearLoading();
+  const token = localStorage.getItem(KEY_STAFF_ACCESS_TOKEN);
 
-    if (token) {
-        const api = new AuthStaffApi();
-        const response = await api.get(API_ENDPOINTS.getStaffInfo);
-        const rawStaff = camelizeKeys(response.data.staff);
-        const staff = StaffModel(
-            rawStaff.id,
-            rawStaff.name,
-            rawStaff.email,
-            rawStaff.phone,
-            rawStaff.address,
-            rawStaff.dateOfBirth,
-            rawStaff.role
-        );
+  if (token) {
+    const api = new AuthStaffApi();
+    const response = await api.get(API_ENDPOINTS.getStaffInfo);
+    const rawStaff = camelizeKeys(response.data.staff);
+    const staff = StaffModel(
+      rawStaff.id,
+      rawStaff.name,
+      rawStaff.email,
+      rawStaff.phone,
+      rawStaff.address,
+      rawStaff.dateOfBirth,
+      rawStaff.role,
+    );
 
-        closeLinearLoading();
+    closeLinearLoading();
 
-        if (staff.isAdmin) {
-            return { staff };
-        } else {
-            location.replace(staffRoutes.tableManagement.path);
-
-            return null;
-        }
+    if (staff.isAdmin) {
+      return { staff };
     } else {
-        location.replace(authRoutes.staffLogin.path);
+      location.replace(staffRoutes.tableManagement.path);
 
-        return null;
+      return null;
     }
+  } else {
+    location.replace(authRoutes.staffLogin.path);
+
+    return null;
+  }
 };

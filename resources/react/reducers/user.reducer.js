@@ -6,106 +6,79 @@ import { API_ENDPOINTS } from "../const/api.const";
 import { convertDateTime } from "../helpers/datetime.helper";
 
 const state = {
-    name: "user",
-    users: {},
+  name: "user",
+  users: {},
 };
 
 export const userAsyncActions = {
-    getAllUsers: createAsyncThunk(
-        "user/getAllUsers",
-        async (payload, thunk) => {
-            try {
-                const api = new AuthStaffApi();
+  getAllUsers: createAsyncThunk("user/getAllUsers", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
 
-                const processedPayload = {
-                    ...payload,
-                    sortCol: payload.sortCol
-                        ? decamelize(payload.sortCol)
-                        : null,
-                };
+      const processedPayload = {
+        ...payload,
+        sortCol: payload.sortCol ? decamelize(payload.sortCol) : null,
+      };
 
-                const response = await api.get(
-                    API_ENDPOINTS.adminGetAllUsers,
-                    decamelizeKeys(processedPayload)
-                );
+      const response = await api.get(API_ENDPOINTS.adminGetAllUsers, decamelizeKeys(processedPayload));
 
-                return thunk.fulfillWithValue(camelizeKeys(response.data));
-            } catch (error) {
-                console.error(error);
+      return thunk.fulfillWithValue(camelizeKeys(response.data));
+    } catch (error) {
+      console.error(error);
 
-                return thunk.rejectWithValue(
-                    camelizeKeys({
-                        status: error.response.status,
-                        data: error.response.data,
-                    })
-                );
-            }
-        }
-    ),
-    adminBlockUser: createAsyncThunk(
-        "user/adminBlockUser",
-        async (payload, thunk) => {
-            try {
-                const api = new AuthStaffApi();
-                const response = await api.put(
-                    API_ENDPOINTS.adminBlockUser.replace(
-                        ":userId",
-                        payload.userId
-                    )
-                );
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
+  adminBlockUser: createAsyncThunk("user/adminBlockUser", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.put(API_ENDPOINTS.adminBlockUser.replace(":userId", payload.userId));
 
-                return thunk.fulfillWithValue(response.data);
-            } catch (error) {
-                console.error(error);
+      return thunk.fulfillWithValue(response.data);
+    } catch (error) {
+      console.error(error);
 
-                return thunk.rejectWithValue(
-                    camelizeKeys({
-                        status: error.response.status,
-                        data: error.response.data,
-                    })
-                );
-            }
-        }
-    ),
-    adminUnBlockUser: createAsyncThunk(
-        "user/adminUnBlockUser",
-        async (payload, thunk) => {
-            try {
-                const api = new AuthStaffApi();
-                const response = await api.put(
-                    API_ENDPOINTS.adminUnBlockUser.replace(
-                        ":userId",
-                        payload.userId
-                    )
-                );
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
+  adminUnBlockUser: createAsyncThunk("user/adminUnBlockUser", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.put(API_ENDPOINTS.adminUnBlockUser.replace(":userId", payload.userId));
 
-                return thunk.fulfillWithValue(response.data);
-            } catch (error) {
-                console.error(error);
+      return thunk.fulfillWithValue(response.data);
+    } catch (error) {
+      console.error(error);
 
-                return thunk.rejectWithValue(
-                    camelizeKeys({
-                        status: error.response.status,
-                        data: error.response.data,
-                    })
-                );
-            }
-        }
-    ),
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
 };
 
 const slice = createSlice({
-    name: state.name,
-    initialState: state,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder.addCase(
-            userAsyncActions.getAllUsers.fulfilled,
-            (state, action) => {
-                state.users = action.payload;
-            }
-        );
-    },
+  name: state.name,
+  initialState: state,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(userAsyncActions.getAllUsers.fulfilled, (state, action) => {
+      state.users = action.payload;
+    });
+  },
 });
 
 export const userActions = slice.actions;

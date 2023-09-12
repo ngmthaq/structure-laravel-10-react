@@ -8,156 +8,129 @@ import { __ } from "../../../plugins/i18n.plugin";
 import { userAsyncActions } from "../../../reducers/user.reducer";
 import { commonActions } from "../../../reducers/common.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
-import {
-    closeLinearLoading,
-    openLinearLoading,
-} from "../../../helpers/element.helper";
 
 export const UserManagement = () => {
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    const header = useMemo(
-        () => [
-            {
-                title: "ID",
-                sortable: true,
-                sortCol: "id",
-                widthPercent: 5,
-            },
-            {
-                title: capitalize(__("custom.name")),
-                sortable: true,
-                sortCol: "name",
-                widthPercent: 15,
-            },
-            {
-                title: "Email",
-                sortable: true,
-                sortCol: "email",
-                widthPercent: 15,
-            },
-            {
-                title: capitalize(__("custom.phone-number")),
-                sortable: true,
-                sortCol: "phone",
-                widthPercent: 10,
-            },
-            {
-                title: capitalize(__("custom.address")),
-                sortable: true,
-                sortCol: "address",
-                widthPercent: 23,
-            },
-            {
-                title: capitalize(__("custom.date-of-birth")),
-                sortable: true,
-                sortCol: "dateOfBirth",
-                widthPercent: 10,
-            },
-            {
-                title: capitalize(__("custom.created-at")),
-                sortable: true,
-                sortCol: "createdAt",
-                widthPercent: 10,
-            },
-            {
-                title: capitalize(__("custom.active")),
-                sortable: false,
-                sortCol: "active",
-                widthPercent: 2,
-            },
-        ],
-        []
-    );
+  const header = useMemo(
+    () => [
+      {
+        title: "ID",
+        sortable: true,
+        sortCol: "id",
+        widthPercent: 5,
+      },
+      {
+        title: capitalize(__("custom.name")),
+        sortable: true,
+        sortCol: "name",
+        widthPercent: 15,
+      },
+      {
+        title: "Email",
+        sortable: true,
+        sortCol: "email",
+        widthPercent: 15,
+      },
+      {
+        title: capitalize(__("custom.phone-number")),
+        sortable: true,
+        sortCol: "phone",
+        widthPercent: 10,
+      },
+      {
+        title: capitalize(__("custom.address")),
+        sortable: true,
+        sortCol: "address",
+        widthPercent: 23,
+      },
+      {
+        title: capitalize(__("custom.date-of-birth")),
+        sortable: true,
+        sortCol: "dateOfBirth",
+        widthPercent: 10,
+      },
+      {
+        title: capitalize(__("custom.created-at")),
+        sortable: true,
+        sortCol: "createdAt",
+        widthPercent: 10,
+      },
+      {
+        title: capitalize(__("custom.active")),
+        sortable: false,
+        sortCol: "active",
+        widthPercent: 2,
+      },
+    ],
+    [],
+  );
 
-    const actions = useMemo(() => [], []);
+  const actions = useMemo(() => [], []);
 
-    const users = useSelector((state) => state.user.users);
+  const users = useSelector((state) => state.user.users);
 
-    const [processedUsers, setProcessedUsers] = useState([]);
+  const [processedUsers, setProcessedUsers] = useState([]);
 
-    const onChange = (data) => {
-        dispatch(userAsyncActions.getAllUsers(data));
-    };
+  const onChange = (data) => {
+    dispatch(userAsyncActions.getAllUsers(data));
+  };
 
-    const onChangeSwitch = async (userId, isActive) => {
-        try {
-            openLinearLoading();
-            let response;
-            if (isActive) {
-                response = await dispatch(
-                    userAsyncActions.adminUnBlockUser({ userId })
-                ).unwrap();
-            } else {
-                response = await dispatch(
-                    userAsyncActions.adminBlockUser({ userId })
-                ).unwrap();
-            }
-            response = camelizeKeys(response);
-            setProcessedUsers((state) =>
-                state.map((user) => {
-                    if (user.id !== response.id) return user;
-                    const isDeleted = response.deletedAt;
+  const onChangeSwitch = async (userId, isActive) => {
+    try {
+      dispatch(commonActions.openLinearLoading());
+      let response;
+      if (isActive) {
+        response = await dispatch(userAsyncActions.adminUnBlockUser({ userId })).unwrap();
+      } else {
+        response = await dispatch(userAsyncActions.adminBlockUser({ userId })).unwrap();
+      }
+      response = camelizeKeys(response);
+      setProcessedUsers((state) =>
+        state.map((user) => {
+          if (user.id !== response.id) return user;
+          const isDeleted = response.deletedAt;
 
-                    return {
-                        ...user,
-                        active: (
-                            <Switch
-                                checked={!isDeleted}
-                                onChange={(e) =>
-                                    onChangeSwitch(user.id, e.target.checked)
-                                }
-                            />
-                        ),
-                    };
-                })
-            );
-            closeLinearLoading();
-        } catch (error) {
-            closeLinearLoading();
-            dispatch(
-                commonActions.appendPrimaryNotification(
-                    PrimaryNotificationModel(
-                        "error",
-                        __("custom.something-wrong")
-                    )
-                )
-            );
-        }
-    };
+          return {
+            ...user,
+            active: <Switch checked={!isDeleted} onChange={(e) => onChangeSwitch(user.id, e.target.checked)} />,
+          };
+        }),
+      );
+      dispatch(commonActions.closeLinearLoading());
+    } catch (error) {
+      dispatch(commonActions.closeLinearLoading());
+      dispatch(
+        commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+      );
+    }
+  };
 
-    useEffect(() => {
-        if (users && users.data) {
-            const userData = users.data.map((user) => {
-                const isDeleted = user.deletedAt;
+  useEffect(() => {
+    if (users && users.data) {
+      const userData = users.data.map((user) => {
+        const isDeleted = user.deletedAt;
 
-                return {
-                    ...user,
-                    active: (
-                        <Switch
-                            checked={!isDeleted}
-                            onChange={(e) =>
-                                onChangeSwitch(user.id, e.target.checked)
-                            }
-                        />
-                    ),
-                };
-            });
+        return {
+          ...user,
+          active: <Switch checked={!isDeleted} onChange={(e) => onChangeSwitch(user.id, e.target.checked)} />,
+        };
+      });
 
-            setProcessedUsers(userData);
-        }
-    }, [users]);
+      setProcessedUsers(userData);
+    }
+  }, [users]);
 
-    return (
-        <AdminLayout>
-            <DataTable
-                fullWidth
-                header={header}
-                body={processedUsers}
-                total={users.total}
-                actions={actions}
-                onChange={onChange}
-            />
-        </AdminLayout>
-    );
+  return (
+    <AdminLayout>
+      <DataTable
+        fullWidth
+        header={header}
+        body={processedUsers}
+        total={users.total}
+        actions={actions}
+        onChange={onChange}
+      />
+    </AdminLayout>
+  );
 };
