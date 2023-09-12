@@ -167,10 +167,11 @@ export const DataTable = ({
                 component="table"
                 sx={{
                     width: fullWidth ? "100%" : "auto",
-                    border: "1px solid black",
+                    border: "1px solid grey",
                     borderCollapse: "collapse",
                     "& td, th": {
-                        border: "1px solid black",
+                        borderTop: "1px solid grey",
+                        borderBottom: "1px solid grey",
                         padding: "4px 8px",
                     },
                 }}
@@ -218,9 +219,21 @@ export const DataTable = ({
                                                     />
                                                 ) : col.sortDir ===
                                                   SORT_DIR_ASC ? (
-                                                    <ArrowDownward fontSize="small" />
+                                                    <ArrowDownward
+                                                        fontSize="small"
+                                                        htmlColor={
+                                                            theme.palette
+                                                                .primary.main
+                                                        }
+                                                    />
                                                 ) : (
-                                                    <ArrowUpward fontSize="small" />
+                                                    <ArrowUpward
+                                                        fontSize="small"
+                                                        htmlColor={
+                                                            theme.palette
+                                                                .primary.main
+                                                        }
+                                                    />
                                                 )
                                             ) : (
                                                 <Fragment />

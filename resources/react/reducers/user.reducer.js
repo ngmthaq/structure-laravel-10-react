@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { camelizeKeys, decamelizeKeys } from "humps";
+import { camelizeKeys, decamelize, decamelizeKeys } from "humps";
 import { DateTime } from "luxon";
 import { AuthStaffApi } from "../api/auth.staff.api";
 import { API_ENDPOINTS } from "../const/api.const";
@@ -16,9 +16,17 @@ export const userAsyncActions = {
         async (payload, thunk) => {
             try {
                 const api = new AuthStaffApi();
+
+                const processedPayload = {
+                    ...payload,
+                    sortCol: payload.sortCol
+                        ? decamelize(payload.sortCol)
+                        : null,
+                };
+
                 const response = await api.get(
                     API_ENDPOINTS.adminGetAllUsers,
-                    decamelizeKeys(payload)
+                    decamelizeKeys(processedPayload)
                 );
 
                 return thunk.fulfillWithValue(camelizeKeys(response.data));
