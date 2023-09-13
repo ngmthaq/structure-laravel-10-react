@@ -9,10 +9,16 @@ use Illuminate\Support\Facades\File;
 
 class ReactController extends Controller
 {
+    protected Configuration $configuration;
+
+    public function __construct()
+    {
+        $this->configuration = new Configuration();
+    }
+
     public function index()
     {
-        $configuration_model = new Configuration();
-        $configurations = $configuration_model->all();
+        $configurations = $this->configuration->all();
         $translations = json_encode($this->getI18n());
         $title = $configurations->firstWhere("key", Configuration::SPA_DOCUMENT_TITLE_KEY)->value;
         $favicon = $configurations->firstWhere("key", Configuration::SPA_DOCUMENT_FAVICON_KEY)->value;
