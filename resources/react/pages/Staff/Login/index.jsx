@@ -29,6 +29,7 @@ export const PageStaffLogin = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
+    console.log(credentials);
     dispatch(authAsyncActions.staffLogin(credentials));
   };
 

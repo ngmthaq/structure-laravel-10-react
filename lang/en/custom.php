@@ -58,6 +58,7 @@ return [
     "active" => "active",
     "block-confirm-message" => "Do you want to block this person?",
     "active-confirm-message" => "Do you want to active this person?",
+    "cannot-block-admin" => "Cannot block administrator",
     "admin" => [
         "title" => "admin",
         "manage" => [
