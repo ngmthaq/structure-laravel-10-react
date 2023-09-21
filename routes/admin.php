@@ -31,6 +31,7 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
             Route::get("/{staff}/strict", [StaffController::class, "getStaffInfo"])->name("staffs.staff.strict");
             Route::put("/{staff}/block", [StaffController::class, "blockStaff"])->name("staffs.staff.block");
             Route::put("/{staff}/unblock", [StaffController::class, "unblockStaff"])->withTrashed()->name("staffs.staff.unblock");
+            Route::put("/{staff}/update", [StaffController::class, "updateStaffInfo"])->withTrashed()->name("staffs.staff.update");
         });
     });
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Helpers\FailedValidateResponse;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\Admin\UpdateStaffRequest;
 use App\Models\Staff;
 use Illuminate\Http\Request;
 
@@ -29,8 +30,8 @@ class StaffController extends Controller
                 ->orWhere("date_of_birth", "LIKE", "%" . $filter . "%");
         }
 
-        $sort_col = $request->query('sort_col');
-        $sort_dir = $request->query('sort_dir');
+        $sort_col = $request->query("sort_col");
+        $sort_dir = $request->query("sort_dir");
 
         if (isset($sort_col) && isset($sort_dir)) {
             $query_builder = $query_builder->orderBy($sort_col, $sort_dir);
@@ -38,7 +39,7 @@ class StaffController extends Controller
 
         $page = $request->query("page", 1);
         $limit = $request->query("limit", 25);
-        $data = $query_builder->paginate($limit, ["*"], 'page', $page);
+        $data = $query_builder->paginate($limit, ["*"], "page", $page);
 
         return response()->json($data);
     }
@@ -69,6 +70,19 @@ class StaffController extends Controller
     public function unblockStaff(Staff $staff)
     {
         $staff->restore();
+
+        return response()->json($staff);
+    }
+
+    public function updateStaffInfo(UpdateStaffRequest $request, Staff $staff)
+    {
+        $staff->name = $request->input("name");
+        $staff->phone = $request->input("phone");
+        $staff->address = $request->input("address");
+        $staff->date_of_birth = $request->input("date_of_birth");
+        $staff->role = $request->input("role");
+        $staff->save();
+        $staff->refresh();
 
         return response()->json($staff);
     }
