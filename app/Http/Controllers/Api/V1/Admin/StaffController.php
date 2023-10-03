@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Admin\UpdateStaffRequest;
 use App\Models\Staff;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class StaffController extends Controller
 {
@@ -76,6 +77,7 @@ class StaffController extends Controller
 
     public function updateStaffInfo(UpdateStaffRequest $request, Staff $staff)
     {
+        DB::beginTransaction();
         $staff->name = $request->input("name");
         $staff->phone = $request->input("phone");
         $staff->address = $request->input("address");
@@ -84,6 +86,15 @@ class StaffController extends Controller
         $staff->save();
         $staff->refresh();
 
-        return response()->json($staff);
+        $admins = $this->staff->where('role', Staff::ROLE_ADMIN)->get();
+        if ($admins->count() > 0) {
+            DB::commit();
+            return response()->json($staff);
+        }
+
+        DB::rollBack();
+        return FailedValidateResponse::send([
+            "error" => __("custom.cannot-remove-all-admins")
+        ]);
     }
 }

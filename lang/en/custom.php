@@ -59,6 +59,16 @@ return [
     "block-confirm-message" => "Do you want to block this person?",
     "active-confirm-message" => "Do you want to active this person?",
     "cannot-block-admin" => "Cannot block administrator",
+    "show-staff-info" => "Show Staff Info",
+    "edit-staff-info" => "Edit Staff Info",
+    "reset-staff-password" => "Reset Password",
+    "admin-role" => "Admin",
+    "staff-role" => "Staff",
+    "role" => "Role",
+    "close" => "Close",
+    "admin-reset-password-msg" => "Are you sure to reset this staff's password?",
+    "admin-update-staff-success-msg" => "Update this staff information successfully!",
+    "cannot-remove-all-admins" => "The system needs at least 1 administrator",
     "admin" => [
         "title" => "admin",
         "manage" => [

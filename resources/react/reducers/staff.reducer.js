@@ -66,6 +66,27 @@ export const staffAsyncActions = {
       );
     }
   }),
+  adminUpdateStaff: createAsyncThunk("staff/adminUpdateStaff", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const processedPayload = decamelizeKeys({ ...payload, _method: "PUT" });
+      const response = await api.post(
+        API_ENDPOINTS.adminUpdateStaffInfo.replace(":staffId", payload.id),
+        processedPayload,
+      );
+
+      return thunk.fulfillWithValue(response.data);
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
 };
 
 const slice = createSlice({

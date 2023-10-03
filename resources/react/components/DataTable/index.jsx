@@ -5,8 +5,12 @@ import {
   IconButton,
   Input,
   InputAdornment,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
+  MenuList,
   Pagination,
+  Popover,
   Select,
   Typography,
   capitalize,
@@ -30,6 +34,8 @@ export const DataTable = ({ header, fullWidth, body, total, initPage, actions, o
   const [page, setPage] = useState(initPage ?? 1);
 
   const [input, setInput] = useState("");
+
+  const [iconButton, setIconButton] = useState({ element: null, data: null });
 
   const [limitation, setLimitation] = useState([
     { number: 25, selected: true },
@@ -89,6 +95,19 @@ export const DataTable = ({ header, fullWidth, body, total, initPage, actions, o
     }, 500);
 
     setFilterTimeout(id);
+  };
+
+  const onClickIconButton = (e, data) => {
+    setIconButton({ element: e.currentTarget, data: data });
+  };
+
+  const onCloseActionPopover = () => {
+    setIconButton({ element: null, data: null });
+  };
+
+  const onClickAction = (callback) => {
+    callback(iconButton.data);
+    onCloseActionPopover();
   };
 
   useEffect(() => {
@@ -167,7 +186,7 @@ export const DataTable = ({ header, fullWidth, body, total, initPage, actions, o
       >
         {headerColumns.length > 0 ? (
           <Box component="thead">
-            <Box component="tr">
+            <Box component="tr" sx={{ background: "#212529", color: "whitesmoke" }}>
               {headerColumns.map((col, index) => (
                 <Box
                   component="th"
@@ -227,7 +246,7 @@ export const DataTable = ({ header, fullWidth, body, total, initPage, actions, o
                     fontSize: "14px",
                   }}
                 >
-                  <IconButton size="small">
+                  <IconButton size="small" onClick={(e) => onClickIconButton(e, row)}>
                     <MoreVert />
                   </IconButton>
                 </Box>
@@ -271,6 +290,32 @@ export const DataTable = ({ header, fullWidth, body, total, initPage, actions, o
           count={Number.isNaN(Math.ceil(total / getLimit())) ? 1 : Math.ceil(total / getLimit())}
           color="primary"
         />
+        <Popover
+          open={Boolean(iconButton.element)}
+          anchorEl={iconButton.element}
+          onClose={onCloseActionPopover}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <MenuList>
+            {actions ? (
+              actions.map((action, index) => (
+                <MenuItem key={index} onClick={() => onClickAction(action.handler)}>
+                  <ListItemIcon>{action.icon}</ListItemIcon>
+                  <ListItemText>{__(action.title)}</ListItemText>
+                </MenuItem>
+              ))
+            ) : (
+              <Fragment />
+            )}
+          </MenuList>
+        </Popover>
       </Box>
     </Box>
   );
