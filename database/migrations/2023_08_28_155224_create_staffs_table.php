@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('address');
             $table->date('date_of_birth');
-            $table->tinyInteger('role')->default(Staff::ROLE_STAFF)->comment('0: admin | 1: staff');
+            $table->tinyInteger('role')->default(Staff::ROLE_STAFF);
             $table->softDeletes();
             $table->timestamps();
         });

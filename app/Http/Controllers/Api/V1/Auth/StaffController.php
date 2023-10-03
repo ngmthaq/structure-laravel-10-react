@@ -61,6 +61,7 @@ class StaffController extends Controller
             return response()->json([
                 "message" => __("custom.login-failed"),
                 "data" => $th->getMessage(),
+                "trace" => $th->getTrace(),
             ], 500);
         }
     }

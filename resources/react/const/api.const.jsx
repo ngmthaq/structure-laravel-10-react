@@ -7,4 +7,8 @@ export const API_ENDPOINTS = {
   adminGetAllUsers: "/v1/admin/users",
   adminBlockUser: "/v1/admin/users/:userId/block",
   adminUnBlockUser: "/v1/admin/users/:userId/unblock",
+  adminGetAllStaffs: "/v1/admin/staffs",
+  adminBlockStaff: "/v1/admin/staffs/:staffId/block",
+  adminUnBlockStaff: "/v1/admin/staffs/:staffId/unblock",
+  adminUpdateStaffInfo: "/v1/admin/staffs/:staffId/update",
 };
