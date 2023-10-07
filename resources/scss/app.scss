@@ -5,3 +5,30 @@
     display: none;
   }
 }
+
+.custom-scrollbar {
+  /* width */
+  &::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: #f2f2f2;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #bebebe;
+    border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    -ms-border-radius: 8px;
+    -o-border-radius: 8px;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #acacac;
+  }
+}

@@ -44,13 +44,15 @@ export const AdminLayout = ({ children }) => {
             id="admin-layout-content"
             sx={{
               height: `calc(100vh - ${ADMIN_HEADER_HEIGHT}px - (${ADMIN_HEADER_MARGIN}px * 2))`,
-              margin: "0 8px",
+              margin: "0 16px",
+              marginRight: "0px",
               padding: "8px",
               background: "white",
               borderRadius: "4px 4px 0 0",
               border: `1px solid rgba(0, 0, 0, 0.1)`,
               overflowY: "scroll",
             }}
+            className="custom-scrollbar"
           >
             {children}
           </Box>

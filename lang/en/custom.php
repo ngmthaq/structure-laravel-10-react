@@ -69,6 +69,14 @@ return [
     "admin-reset-password-msg" => "Are you sure to reset this staff's password?",
     "admin-update-staff-success-msg" => "Update this staff information successfully!",
     "cannot-remove-all-admins" => "The system needs at least 1 administrator",
+    "view-by" => "View by",
+    "day" => "Day",
+    "month" => "Month",
+    "quarter" => "Quarter",
+    "choose-time" => "Choose time",
+    "year" => "Year",
+    "create-new-user" => "Create New User",
+    "create-new-staff" => "Create New Staff",
     "admin" => [
         "title" => "admin",
         "manage" => [

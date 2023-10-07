@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Storage;
 
 final class FailedValidateResponse
 {
-    public static function send(array $message_bag)
+    public static function send(array $message_bag, int $status = 422)
     {
         $errors = [];
 
@@ -17,6 +17,6 @@ final class FailedValidateResponse
         return response()->json([
             "message" => __('custom.api-failed-validation'),
             "errors" => $errors,
-        ], 422);
+        ], $status);
     }
 }

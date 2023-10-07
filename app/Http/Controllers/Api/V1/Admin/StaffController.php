@@ -77,24 +77,19 @@ class StaffController extends Controller
 
     public function updateStaffInfo(UpdateStaffRequest $request, Staff $staff)
     {
-        DB::beginTransaction();
         $staff->name = $request->input("name");
         $staff->phone = $request->input("phone");
         $staff->address = $request->input("address");
         $staff->date_of_birth = $request->input("date_of_birth");
         $staff->role = $request->input("role");
+
+        if ($staff->id === Staff::SUPER_ADMIN_ID) {
+            $staff->role = Staff::ROLE_ADMIN;
+        }
+
         $staff->save();
         $staff->refresh();
 
-        $admins = $this->staff->where('role', Staff::ROLE_ADMIN)->get();
-        if ($admins->count() > 0) {
-            DB::commit();
-            return response()->json($staff);
-        }
-
-        DB::rollBack();
-        return FailedValidateResponse::send([
-            "error" => __("custom.cannot-remove-all-admins")
-        ]);
+        return response()->json($staff);
     }
 }

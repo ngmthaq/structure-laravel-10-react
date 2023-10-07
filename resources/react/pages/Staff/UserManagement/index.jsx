@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Switch, Typography, capitalize } from "@mui/material";
+import { Box, Button, Switch, Typography, capitalize } from "@mui/material";
+import { AdminPanelSettings, KeyboardArrowRight } from "@mui/icons-material";
 import { camelizeKeys } from "humps";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { DataTable } from "../../../components/DataTable";
@@ -8,6 +9,7 @@ import { __ } from "../../../plugins/i18n.plugin";
 import { userAsyncActions } from "../../../reducers/user.reducer";
 import { commonActions } from "../../../reducers/common.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
+import { theme } from "../../../plugins/material.plugin";
 
 export const UserManagement = () => {
   const dispatch = useDispatch();
@@ -130,9 +132,33 @@ export const UserManagement = () => {
   return (
     <AdminLayout>
       <Box sx={{ padding: "16px" }}>
-        <Typography variant="h5" sx={{ textTransform: "capitalize" }}>
-          {__("custom.admin.manage.users.title")}
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Box>
+            <Typography variant="h5" sx={{ textTransform: "capitalize", marginBottom: "4px" }}>
+              {__("custom.admin.manage.users.title")}
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                textTransform: "capitalize",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                color: theme.palette.grey[600],
+                "& span:last-child": {
+                  color: theme.palette.grey[400],
+                },
+              }}
+            >
+              <AdminPanelSettings fontSize="small" />
+              <KeyboardArrowRight fontSize="small" />
+              <Box component="span">{__("custom.admin-role")}</Box>
+              <KeyboardArrowRight fontSize="small" />
+              <Box component="span">{__("custom.admin.manage.users.title")}</Box>
+            </Typography>
+          </Box>
+          <Button variant="contained">{__("custom.create-new-user")}</Button>
+        </Box>
         <DataTable
           fullWidth
           header={header}

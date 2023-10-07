@@ -17,6 +17,8 @@ class Staff extends Authenticatable
     public const ROLE_STAFF = 1;
     public const AUTH_TOKEN_NAME = "STAFF_AUTH_ACCESS_TOKEN";
 
+    public const SUPER_ADMIN_ID = 1;
+
     protected $fillable = [
         'name',
         'email',

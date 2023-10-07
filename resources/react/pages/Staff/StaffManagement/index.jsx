@@ -16,7 +16,7 @@ import {
   Typography,
   capitalize,
 } from "@mui/material";
-import { Edit, LockReset, Visibility } from "@mui/icons-material";
+import { AdminPanelSettings, Edit, KeyboardArrowRight, LockReset, Visibility } from "@mui/icons-material";
 import { camelizeKeys } from "humps";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { DataTable } from "../../../components/DataTable";
@@ -27,6 +27,7 @@ import { staffAsyncActions } from "../../../reducers/staff.reducer";
 import { ROLES } from "../../../const/app.const";
 import { StaffModel } from "../../../models/staff.model";
 import { isObjDeepEqual } from "../../../helpers/reference.helper";
+import { theme } from "../../../plugins/material.plugin";
 
 export const StaffManagement = () => {
   const dispatch = useDispatch();
@@ -236,9 +237,33 @@ export const StaffManagement = () => {
   return (
     <AdminLayout>
       <Box sx={{ padding: "16px" }}>
-        <Typography variant="h5" sx={{ textTransform: "capitalize" }}>
-          {__("custom.admin.manage.staffs.title")}
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <Box>
+            <Typography variant="h5" sx={{ textTransform: "capitalize", marginBottom: "4px" }}>
+              {__("custom.admin.manage.staffs.title")}
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                textTransform: "capitalize",
+                display: "flex",
+                alignItems: "center",
+                gap: "4px",
+                color: theme.palette.grey[600],
+                "& span:last-child": {
+                  color: theme.palette.grey[400],
+                },
+              }}
+            >
+              <AdminPanelSettings fontSize="small" />
+              <KeyboardArrowRight fontSize="small" />
+              <Box component="span">{__("custom.admin-role")}</Box>
+              <KeyboardArrowRight fontSize="small" />
+              <Box component="span">{__("custom.admin.manage.staffs.title")}</Box>
+            </Typography>
+          </Box>
+          <Button variant="contained">{__("custom.create-new-staff")}</Button>
+        </Box>
         <DataTable
           fullWidth
           header={header}

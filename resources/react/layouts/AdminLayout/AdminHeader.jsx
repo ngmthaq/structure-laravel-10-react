@@ -19,9 +19,9 @@ import { theme } from "../../plugins/material.plugin";
 import { authAsyncActions } from "../../reducers/auth.reducer";
 import { AdminLayoutContext } from ".";
 
-export const HEIGHT = 40;
+export const HEIGHT = 48;
 
-export const MARGIN = 8;
+export const MARGIN = 16;
 
 export const AdminHeader = () => {
   const dispatch = useDispatch();
@@ -60,6 +60,7 @@ export const AdminHeader = () => {
       sx={{
         height: HEIGHT,
         margin: MARGIN + "px",
+        marginRight: "14px",
         padding: "8px",
         background: "white",
         borderRadius: "4px",
