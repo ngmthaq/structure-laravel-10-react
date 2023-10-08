@@ -1,13 +1,53 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { authAsyncActions } from "./auth.reducer";
 import { __ } from "../plugins/i18n.plugin";
 import { handleRejectedExtraReducerFormNotification } from "../helpers/redux.helper";
 import { userAsyncActions } from "./user.reducer";
+import { AuthStaffApi } from "../api/auth.staff.api";
+import { API_ENDPOINTS } from "../const/api.const";
+import { camelizeKeys, decamelizeKeys } from "humps";
 
 const state = {
   name: "common",
   isOpenLinearLoading: false,
   primaryNotification: null,
+};
+
+export const commonAsyncActions = {
+  getConfigurations: createAsyncThunk("common/getConfigurations", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.get(API_ENDPOINTS.adminGetConfigurations);
+
+      return thunk.fulfillWithValue(camelizeKeys(response.data));
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
+  setConfigurations: createAsyncThunk("common/setConfigurations", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.post(API_ENDPOINTS.adminSetConfigurations, payload);
+
+      return thunk.fulfillWithValue(camelizeKeys(response.data));
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
 };
 
 const slice = createSlice({

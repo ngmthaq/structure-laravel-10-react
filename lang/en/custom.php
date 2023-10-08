@@ -89,5 +89,10 @@ return [
     "staff-manage-bills-title" => "bill management",
     "staff-order-title" => "order",
     "staff-order-history-title" => "order history",
-    "choose-correct-input-value" => "Please choose the correct input value"
+    "choose-correct-input-value" => "Please choose the correct input value",
+    "default-password-label" => "Staff default password",
+    "document-title" => "Document title",
+    "document-favicon" => "Document icon",
+    "upload" => "Upload",
+    "submit" => "Submit"
 ];

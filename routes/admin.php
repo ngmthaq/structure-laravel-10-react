@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\ConfigurationController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController;
 use App\Http\Controllers\Api\V1\Admin\StaffController;
 use App\Http\Controllers\Api\V1\Admin\UserController;
@@ -36,6 +37,10 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
         });
         Route::prefix("dashboard")->group(function () {
             Route::get("/", [DashboardController::class, "index"])->name("dashboard.index");
+        });
+        Route::prefix("configurations")->group(function () {
+            Route::get("/get", [ConfigurationController::class, "get"])->name("configurations.get");
+            Route::put("/set", [ConfigurationController::class, "set"])->name("configurations.set");
         });
     });
 });
