@@ -77,46 +77,17 @@ return [
     "year" => "Year",
     "create-new-user" => "Create New User",
     "create-new-staff" => "Create New Staff",
-    "admin" => [
-        "title" => "admin",
-        "manage" => [
-            "users" => [
-                "title" => "user management"
-            ],
-            "staffs" => [
-                "title" => "staff management"
-            ]
-        ],
-        "dashboard" => [
-            "title" => "dashboard"
-        ],
-        "tables" => [
-            "edit" => [
-                "title" => "edit table map"
-            ],
-            "create" => [
-                "title" => "create new table"
-            ]
-        ],
-        "configurations" => [
-            "title" => "configurations"
-        ]
-    ],
-    "staff" => [
-        "title" => "staff",
-        "manage" => [
-            "tables" => [
-                "title" => "table management"
-            ],
-            "bills" => [
-                "title" => "bill management"
-            ],
-        ],
-        "order" => [
-            "title" => "order",
-            "history" => [
-                "title" => "order history"
-            ]
-        ]
-    ],
+    "admin-title" => "admin",
+    "admin-manage-users-title" => "user management",
+    "admin-manage-staffs-title" => "user management",
+    "admin-tables-edit-title" => "edit table map",
+    "admin-tables-create-title" => "create new table",
+    "admin-dashboard-title" => "dashboard",
+    "admin-configurations-title" => "configurations",
+    "staff-title" => "staff",
+    "staff-manage-tables-title" => "table management",
+    "staff-manage-bills-title" => "bill management",
+    "staff-order-title" => "order",
+    "staff-order-history-title" => "order history",
+    "choose-correct-input-value" => "Please choose the correct input value"
 ];

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -40,5 +41,12 @@ class User extends Authenticatable
     public function isBlocked()
     {
         return $this->attributes["deleted_at"] !== null;
+    }
+
+    public function separateCreatedAtDate()
+    {
+        $this->attributes['created_at_year'] = date('Y', strtotime($this->attributes['created_at']));
+        $this->attributes['created_at_month'] = date('m', strtotime($this->attributes['created_at']));
+        $this->attributes['created_at_day'] = date('d', strtotime($this->attributes['created_at']));
     }
 }

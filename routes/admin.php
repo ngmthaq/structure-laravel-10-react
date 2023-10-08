@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\DashboardController;
 use App\Http\Controllers\Api\V1\Admin\StaffController;
 use App\Http\Controllers\Api\V1\Admin\UserController;
 use Illuminate\Http\Request;
@@ -32,6 +33,9 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
             Route::put("/{staff}/block", [StaffController::class, "blockStaff"])->name("staffs.staff.block");
             Route::put("/{staff}/unblock", [StaffController::class, "unblockStaff"])->withTrashed()->name("staffs.staff.unblock");
             Route::put("/{staff}/update", [StaffController::class, "updateStaffInfo"])->withTrashed()->name("staffs.staff.update");
+        });
+        Route::prefix("dashboard")->group(function () {
+            Route::get("/", [DashboardController::class, "index"])->name("dashboard.index");
         });
     });
 });

@@ -135,7 +135,7 @@ export const UserManagement = () => {
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Box>
             <Typography variant="h5" sx={{ textTransform: "capitalize", marginBottom: "4px" }}>
-              {__("custom.admin.manage.users.title")}
+              {__("custom.admin-manage-users-title")}
             </Typography>
             <Typography
               variant="caption"
@@ -154,7 +154,7 @@ export const UserManagement = () => {
               <KeyboardArrowRight fontSize="small" />
               <Box component="span">{__("custom.admin-role")}</Box>
               <KeyboardArrowRight fontSize="small" />
-              <Box component="span">{__("custom.admin.manage.users.title")}</Box>
+              <Box component="span">{__("custom.admin-manage-users-title")}</Box>
             </Typography>
           </Box>
           <Button variant="contained">{__("custom.create-new-user")}</Button>

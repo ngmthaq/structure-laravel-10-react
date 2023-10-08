@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Mock user records
-        User::factory(1000)->create();
+        User::factory(20)->create();
 
         // Mock admin record
         $this->createAdmin();

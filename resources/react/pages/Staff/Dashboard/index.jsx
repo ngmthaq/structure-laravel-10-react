@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { Chart, registerables } from "chart.js";
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, Typography } from "@mui/material";
@@ -10,32 +10,7 @@ import { theme } from "../../../plugins/material.plugin";
 
 Chart.register(...registerables);
 
-const DashboardConditionInput = ({ type, onChange }) => {
-  const [dateTime, setDateTime] = useState(dayjs());
-  const onChangeDateTime = (value) => {
-    setDateTime(value);
-    onChange(value);
-  };
-
-  let views = ["day", "month", "year"];
-  if (type === "year") {
-    views = ["year"];
-  } else if (type === "month") {
-    views = ["month", "year"];
-  }
-
-  return (
-    <DatePicker
-      views={views}
-      openTo={type}
-      value={dateTime}
-      onChange={onChangeDateTime}
-      label={__("custom.choose-time")}
-    />
-  );
-};
-
-export const Dashboard = () => {
+const DashboardConditionInput = () => {
   const viewByValues = useMemo(
     () => ({
       day: { title: __("custom.day"), value: "day" },
@@ -45,18 +20,64 @@ export const Dashboard = () => {
     [],
   );
 
+  const [dateTime, setDateTime] = useState(dayjs());
   const [viewBy, setViewBy] = useState(viewByValues.year.value);
 
+  const onChangeViewBy = (e) => {
+    setViewBy(e.target.value);
+  };
+
+  const onChangeDateTime = (value) => {
+    setDateTime(value);
+  };
+
+  useEffect(() => {
+    console.log(dateTime.format("YYYY-MM-DD"));
+  }, [dateTime, viewBy]);
+
+  let views = ["day", "month", "year"];
+  if (viewBy === "year") {
+    views = ["year"];
+  } else if (viewBy === "month") {
+    views = ["month", "year"];
+  }
+
+  return (
+    <Box>
+      <FormControl sx={{ width: 240, marginRight: "16px" }}>
+        <InputLabel id="view-by-label">{__("custom.view-by")}</InputLabel>
+        <Select
+          value={viewBy}
+          id="view-by-select"
+          labelId="view-by-label"
+          onChange={onChangeViewBy}
+          label={__("custom.view-by")}
+        >
+          {Object.values(viewByValues).map((viewByValue, index) => (
+            <MenuItem value={viewByValue.value} key={index}>
+              {viewByValue.title}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <DatePicker
+        views={views}
+        openTo={viewBy}
+        value={dateTime}
+        onChange={onChangeDateTime}
+        label={__("custom.choose-time")}
+      />
+    </Box>
+  );
+};
+
+export const Dashboard = () => {
   const chart1 = useRef(null);
   const chart2 = useRef(null);
   const chart3 = useRef(null);
   const chart4 = useRef(null);
   const chart5 = useRef(null);
   const chart6 = useRef(null);
-
-  const onChangeViewBy = (e) => {
-    setViewBy(e.target.value);
-  };
 
   const initChart1 = (ref) => {
     if (ref) {
@@ -295,7 +316,7 @@ export const Dashboard = () => {
       >
         <Box>
           <Typography variant="h5" sx={{ textTransform: "capitalize", marginBottom: "4px" }}>
-            {__("custom.admin.dashboard.title")}
+            {__("custom.admin-dashboard-title")}
           </Typography>
           <Typography
             variant="caption"
@@ -314,28 +335,10 @@ export const Dashboard = () => {
             <KeyboardArrowRight fontSize="small" />
             <Box component="span">{__("custom.admin-role")}</Box>
             <KeyboardArrowRight fontSize="small" />
-            <Box component="span">{__("custom.admin.dashboard.title")}</Box>
+            <Box component="span">{__("custom.admin-dashboard-title")}</Box>
           </Typography>
         </Box>
-        <Box>
-          <FormControl sx={{ width: 240, marginRight: "16px" }}>
-            <InputLabel id="view-by-label">{__("custom.view-by")}</InputLabel>
-            <Select
-              value={viewBy}
-              id="view-by-select"
-              labelId="view-by-label"
-              onChange={onChangeViewBy}
-              label={__("custom.view-by")}
-            >
-              {Object.values(viewByValues).map((viewByValue, index) => (
-                <MenuItem value={viewByValue.value} key={index}>
-                  {viewByValue.title}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <DashboardConditionInput type={viewBy} onChange={() => {}} />
-        </Box>
+        <DashboardConditionInput />
       </Box>
       <Box sx={{ padding: "16px" }}>
         <Grid container spacing={6}>
