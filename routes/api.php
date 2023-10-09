@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\ConfigurationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix("v1")->name("api.v1.")->group(function () {
+    Route::prefix("configurations")->middleware(['auth.staff'])->group(function () {
+        Route::get("/get", [ConfigurationController::class, "get"])->name("configurations.get");
+        Route::put("/set", [ConfigurationController::class, "set"])->name("configurations.set")->middleware('auth.admin');
+    });
 });

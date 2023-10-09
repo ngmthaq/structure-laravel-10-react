@@ -66,5 +66,25 @@ class DatabaseSeeder extends Seeder
         $conf->key = Configuration::SPA_DOCUMENT_FAVICON_KEY;
         $conf->value = '/favicon.ico';
         $conf->save();
+
+        $conf = new Configuration();
+        $conf->key = Configuration::SPA_LOGO_KEY;
+        $conf->value = '/apple-touch-icon.png';
+        $conf->save();
+
+        $conf = new Configuration();
+        $conf->key = Configuration::SPA_NAME_KEY;
+        $conf->value = 'SEAT MANAGEMENT';
+        $conf->save();
+
+        $conf = new Configuration();
+        $conf->key = Configuration::ROOM_WIDTH_KEY;
+        $conf->value = 20;
+        $conf->save();
+
+        $conf = new Configuration();
+        $conf->key = Configuration::ROOM_HEIGHT_KEY;
+        $conf->value = 20;
+        $conf->save();
     }
 }

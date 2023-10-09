@@ -94,5 +94,11 @@ return [
     "document-title" => "Document title",
     "document-favicon" => "Document icon",
     "upload" => "Upload",
-    "submit" => "Submit"
+    "submit" => "Submit",
+    "upload-favicon" => "Upload Favicon",
+    "upload-logo" => "Upload Logo",
+    "reset" => "Reset",
+    "app-name" => "Application name",
+    "room-width" => "Room width (meters)",
+    "room-height" => "Room height (meters)"
 ];

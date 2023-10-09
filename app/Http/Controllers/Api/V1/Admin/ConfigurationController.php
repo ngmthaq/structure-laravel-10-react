@@ -30,6 +30,7 @@ class ConfigurationController extends Controller
     {
         try {
             DB::beginTransaction();
+
             $this->configuration
                 ->where("key", Configuration::DEFAULT_STAFF_PASSWORD_KEY)
                 ->update(['value' => $request->input("default_password")]);
@@ -37,6 +38,18 @@ class ConfigurationController extends Controller
             $this->configuration
                 ->where("key", Configuration::SPA_DOCUMENT_TITLE_KEY)
                 ->update(['value' => $request->input("app_title")]);
+
+            $this->configuration
+                ->where("key", Configuration::SPA_NAME_KEY)
+                ->update(['value' => $request->input("app_name")]);
+
+            $this->configuration
+                ->where("key", Configuration::ROOM_WIDTH_KEY)
+                ->update(['value' => $request->input("room_width")]);
+
+            $this->configuration
+                ->where("key", Configuration::ROOM_HEIGHT_KEY)
+                ->update(['value' => $request->input("room_height")]);
 
             $favicon = $request->file("app_favicon");
             if (isset($favicon)) {
@@ -48,6 +61,18 @@ class ConfigurationController extends Controller
                     ->where("key", Configuration::SPA_DOCUMENT_FAVICON_KEY)
                     ->update(['value' => "/storage/" . $full_path]);
             }
+
+            $logo = $request->file("app_logo");
+            if (isset($logo)) {
+                $hash = Str::random(16);
+                $name = "logo-$hash.ico";
+                $path = "system/logos";
+                $full_path = Storage::disk("public")->putFileAs($path, $logo, $name);
+                $this->configuration
+                    ->where("key", Configuration::SPA_LOGO_KEY)
+                    ->update(['value' => "/storage/" . $full_path]);
+            }
+
             DB::commit();
 
             return response()->json([]);

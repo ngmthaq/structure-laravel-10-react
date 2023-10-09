@@ -23,9 +23,13 @@ class ConfigurationRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            "app_title" => "required|string",
-            "app_favicon" => "nullable|file",
             "default_password" => "required|string|min:8|max:32",
+            "app_title" => "required|string",
+            "app_name" => "required|string",
+            "room_width" => "required|numeric",
+            "room_height" => "required|numeric",
+            "app_favicon" => "nullable|file",
+            "app_logo" => "nullable|file",
         ];
     }
 }

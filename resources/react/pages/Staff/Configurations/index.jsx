@@ -6,12 +6,21 @@ import { AdminLayout } from "../../../layouts/AdminLayout";
 import { theme } from "../../../plugins/material.plugin";
 import { __ } from "../../../plugins/i18n.plugin";
 import { commonActions, commonAsyncActions } from "../../../reducers/common.reducer";
+import { decamelize } from "humps";
 
 export const Configurations = () => {
   const dispatch = useDispatch();
 
-  const [configurations, setConfigurations] = useState({ title: "", password: "", favicon: "" });
-  const [files, setFiles] = useState({ favicon: null });
+  const [configurations, setConfigurations] = useState({
+    title: "",
+    password: "",
+    favicon: "",
+    name: "",
+    logo: "",
+    roomWidth: "",
+    roomHeight: "",
+  });
+  const [files, setFiles] = useState({ favicon: null, logo: null });
 
   const fetchConfigurations = async () => {
     try {
@@ -30,6 +39,22 @@ export const Configurations = () => {
 
         if (conf.key === "SPA_DOCUMENT_FAVICON_KEY") {
           cur.favicon = conf.value;
+        }
+
+        if (conf.key === "SPA_LOGO_KEY") {
+          cur.logo = conf.value;
+        }
+
+        if (conf.key === "SPA_NAME_KEY") {
+          cur.name = conf.value;
+        }
+
+        if (conf.key === "ROOM_WIDTH_KEY") {
+          cur.roomWidth = conf.value;
+        }
+
+        if (conf.key === "ROOM_HEIGHT_KEY") {
+          cur.roomHeight = conf.value;
         }
 
         return cur;
@@ -56,15 +81,27 @@ export const Configurations = () => {
     }
   };
 
+  const onChangeLogo = (e) => {
+    if (e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setFiles((state) => ({ ...state, logo: file }));
+      setConfigurations((state) => ({ ...state, logo: URL.createObjectURL(file) }));
+    }
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     try {
       dispatch(commonActions.openLinearLoading());
       const formData = new FormData();
-      formData.append("app_title", configurations.title);
-      formData.append("default_password", configurations.password);
+      formData.append(decamelize("defaultPassword"), configurations.password);
+      formData.append(decamelize("appTitle"), configurations.title);
+      formData.append(decamelize("appName"), configurations.name);
+      formData.append(decamelize("roomWidth"), configurations.roomWidth);
+      formData.append(decamelize("roomHeight"), configurations.roomHeight);
       formData.append("_method", "PUT");
-      if (files.favicon) formData.append("app_favicon", files.favicon);
+      if (files.favicon) formData.append(decamelize("appFavicon"), files.favicon);
+      if (files.logo) formData.append(decamelize("appLogo"), files.logo);
       await dispatch(commonAsyncActions.setConfigurations(formData)).unwrap();
       location.reload();
     } catch (error) {
@@ -110,40 +147,15 @@ export const Configurations = () => {
           <Box component="span">{__("custom.admin-configurations-title")}</Box>
         </Typography>
       </Box>
-      <Box sx={{ padding: "16px" }}>
-        <Box component="form" sx={{ width: "500px", maxWidth: "100vw" }} onSubmit={onSubmit}>
-          <Box sx={{ display: "flex", alignItems: "flex-start", justifyContent: "center" }}>
-            <Box sx={{ marginRight: "16px" }}>
-              <Box
-                sx={{
-                  width: "100px",
-                  height: "100px",
-                  border: "1px solid grey",
-                }}
-              >
-                <Box
-                  component="img"
-                  src={configurations.favicon}
-                  sx={{ width: "100%", height: "100%", objectFit: "contain" }}
-                />
-              </Box>
-              <Box
-                component="label"
-                sx={{
-                  display: "block",
-                  textAlign: "center",
-                  color: theme.palette.primary.main,
-                  fontSize: "14px",
-                  marginTop: "8px",
-                  cursor: "pointer",
-                }}
-                htmlFor="favicon"
-              >
-                {__("custom.upload")}
-              </Box>
-              <Box component="input" type="file" display="none" id="favicon" onChange={onChangeFavicon} />
-            </Box>
-            <Box sx={{ width: "100%" }}>
+      <Box sx={{ padding: "16px", width: "480px" }}>
+        <Box component="form" onSubmit={onSubmit}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Box>
               <TextField
                 fullWidth
                 value={configurations.password}
@@ -160,11 +172,114 @@ export const Configurations = () => {
                 name="title"
                 onChange={onChangeTextField}
               />
+              <TextField
+                fullWidth
+                value={configurations.name}
+                label={__("custom.app-name")}
+                sx={{ marginBottom: "16px" }}
+                name="name"
+                onChange={onChangeTextField}
+              />
+              <TextField
+                fullWidth
+                value={configurations.roomWidth}
+                label={__("custom.room-width")}
+                sx={{ marginBottom: "16px" }}
+                name="roomWidth"
+                onChange={onChangeTextField}
+              />
+              <TextField
+                fullWidth
+                value={configurations.roomHeight}
+                label={__("custom.room-height")}
+                sx={{ marginBottom: "16px" }}
+                name="roomHeight"
+                onChange={onChangeTextField}
+              />
+            </Box>
+            <Box sx={{ display: "flex", marginBottom: "16px" }}>
+              <Box
+                sx={{
+                  width: "56px",
+                  height: "56px",
+                  padding: "8px",
+                  border: "1px solid " + theme.palette.primary.main,
+                  borderRadius: "4px 0 0 4px",
+                }}
+              >
+                <Box
+                  component="img"
+                  src={configurations.favicon}
+                  sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+                />
+              </Box>
+              <Box
+                component="label"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: theme.palette.primary.main,
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  width: "100%",
+                  paddingLeft: "16px",
+                  border: "1px solid " + theme.palette.primary.main,
+                  borderLeft: "none",
+                  borderRadius: "0 4px 4px 0",
+                  fontWeight: "500",
+                }}
+                htmlFor="favicon"
+              >
+                {__("custom.upload-favicon")}
+              </Box>
+              <Box component="input" type="file" display="none" id="favicon" onChange={onChangeFavicon} />
+            </Box>
+            <Box sx={{ display: "flex", marginBottom: "16px" }}>
+              <Box
+                sx={{
+                  width: "56px",
+                  height: "56px",
+                  padding: "8px",
+                  border: "1px solid " + theme.palette.primary.main,
+                  borderRadius: "4px 0 0 4px",
+                }}
+              >
+                <Box
+                  component="img"
+                  src={configurations.logo}
+                  sx={{ width: "100%", height: "100%", objectFit: "contain" }}
+                />
+              </Box>
+              <Box
+                component="label"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  color: theme.palette.primary.main,
+                  fontSize: "14px",
+                  cursor: "pointer",
+                  width: "100%",
+                  paddingLeft: "16px",
+                  border: "1px solid " + theme.palette.primary.main,
+                  borderLeft: "none",
+                  borderRadius: "0 4px 4px 0",
+                  fontWeight: "500",
+                }}
+                htmlFor="logo"
+              >
+                {__("custom.upload-logo")}
+              </Box>
+              <Box component="input" type="file" display="none" id="logo" onChange={onChangeLogo} />
             </Box>
           </Box>
-          <Button fullWidth variant="contained" size="large" type="submit">
-            {__("custom.submit")}
-          </Button>
+          <Box display="flex" justifyContent="flex-end" gap="16px">
+            <Button variant="text" size="large" type="button" onClick={() => location.reload()}>
+              {__("custom.reset")}
+            </Button>
+            <Button variant="contained" size="large" type="submit">
+              {__("custom.submit")}
+            </Button>
+          </Box>
         </Box>
       </Box>
     </AdminLayout>

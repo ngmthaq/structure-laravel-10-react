@@ -13,12 +13,15 @@ export const staffLoader = async ({ params, request }) => {
 
   if (token) {
     const api = new AuthStaffApi();
-    const response = await api.get(API_ENDPOINTS.getStaffInfo);
-    const staff = camelizeKeys(response.data.staff);
+    const staffResponse = await api.get(API_ENDPOINTS.getStaffInfo);
+    const staff = camelizeKeys(staffResponse.data.staff);
+    const confResponse = await api.get(API_ENDPOINTS.adminGetConfigurations);
+    const conf = camelizeKeys(confResponse.data);
     closeLinearLoading();
 
     return {
       staff: StaffModel(staff.id, staff.name, staff.email, staff.phone, staff.address, staff.dateOfBirth, staff.role),
+      conf: conf,
     };
   } else {
     location.replace(authRoutes.staffLogin.path);

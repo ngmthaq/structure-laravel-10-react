@@ -30,6 +30,7 @@ export const AdminLayout = ({ children }) => {
           alignItems: "center",
           justifyContent: "center",
           background: `rgba(0, 0, 0, 0.05)`,
+          overflow: "hidden",
         }}
       >
         <AdminSidebar />

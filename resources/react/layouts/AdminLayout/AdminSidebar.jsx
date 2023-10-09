@@ -1,12 +1,27 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Box, Typography } from "@mui/material";
 import { AdminAside } from "./AdminAside";
+import { useLoaderData } from "react-router-dom";
 
 export const WIDTH = 320;
 
 export const LOGO_HEIGHT = 60;
 
 export const AdminSidebar = () => {
+  const { conf } = useLoaderData();
+
+  const logo = useMemo(() => {
+    const data = conf.find((config) => config.key === "SPA_LOGO_KEY");
+    if (data) return data.value;
+    return "";
+  }, [conf]);
+
+  const name = useMemo(() => {
+    const data = conf.find((config) => config.key === "SPA_NAME_KEY");
+    if (data) return data.value;
+    return "";
+  }, [conf]);
+
   return (
     <Box
       id="admin-sidebar"
@@ -29,7 +44,7 @@ export const AdminSidebar = () => {
       >
         <Box
           component="img"
-          src="/apple-touch-icon.png"
+          src={logo}
           sx={{
             width: "auto",
             height: 30,
@@ -44,7 +59,7 @@ export const AdminSidebar = () => {
             lineHeight: "30px",
           }}
         >
-          SEAT MANAGEMENT
+          {name}
         </Typography>
       </Box>
       <AdminAside />

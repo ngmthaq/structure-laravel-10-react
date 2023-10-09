@@ -12,8 +12,8 @@ export const adminLoader = async ({ params, request }) => {
 
   if (token) {
     const api = new AuthStaffApi();
-    const response = await api.get(API_ENDPOINTS.getStaffInfo);
-    const rawStaff = camelizeKeys(response.data.staff);
+    const staffResponse = await api.get(API_ENDPOINTS.getStaffInfo);
+    const rawStaff = camelizeKeys(staffResponse.data.staff);
     const staff = StaffModel(
       rawStaff.id,
       rawStaff.name,
@@ -24,10 +24,13 @@ export const adminLoader = async ({ params, request }) => {
       rawStaff.role,
     );
 
+    const confResponse = await api.get(API_ENDPOINTS.adminGetConfigurations);
+    const conf = camelizeKeys(confResponse.data);
+
     closeLinearLoading();
 
     if (staff.isAdmin) {
-      return { staff };
+      return { staff, conf };
     } else {
       location.replace(staffRoutes.tableManagement.path);
 
