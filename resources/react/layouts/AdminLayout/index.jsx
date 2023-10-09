@@ -52,6 +52,7 @@ export const AdminLayout = ({ children }) => {
               borderRadius: "4px 4px 0 0",
               border: `1px solid rgba(0, 0, 0, 0.1)`,
               overflowY: "scroll",
+              position: "relative",
             }}
             className="custom-scrollbar"
           >
