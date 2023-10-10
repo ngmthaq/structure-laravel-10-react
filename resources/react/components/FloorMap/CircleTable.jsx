@@ -26,6 +26,9 @@ export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
   };
 
   const onDeActive = () => {
+    setActiveTable(id);
+    const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
+    element.onmousedown = null;
     setActiveTable(null);
   };
 

@@ -24,6 +24,7 @@ export const dragElement = (elm) => {
 
   function dragMouseDown(e) {
     e.preventDefault();
+    e.stopPropagation();
     pos3 = e.clientX;
     pos4 = e.clientY;
     document.onmouseup = closeDragElement;
