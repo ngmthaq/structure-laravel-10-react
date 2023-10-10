@@ -3,6 +3,8 @@ import { Box, IconButton } from "@mui/material";
 import { BLOCKED_TABLE_STATES, FloorMapContext, STATE_EDITING, getTableColor } from "./index";
 import { createArrayFromNumber } from "../../helpers/reference.helper";
 import { Cancel } from "@mui/icons-material";
+import { theme } from "../../plugins/material.plugin";
+import { dragElement } from "../../helpers/element.helper";
 
 const minSize = 50;
 
@@ -16,8 +18,10 @@ export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
   const onDbClick = () => {
     if (state === STATE_EDITING.value) {
       setActiveTable(id);
+      const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
+      dragElement(element);
     } else {
-      //
+      // TODO: Handle db click in another mode
     }
   };
 
@@ -36,11 +40,12 @@ export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
     <Box
       onDoubleClick={onDbClick}
       className="floor-circle-table"
+      data-id={id}
       width={size}
       height={size}
       position="absolute"
-      top={position[0]}
-      left={position[1]}
+      top={position[0] * floorMapPosition.current.scale}
+      left={position[1] * floorMapPosition.current.scale}
       zIndex={1}
       sx={{
         userSelect: "none",
@@ -63,7 +68,7 @@ export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
         sx={{
           position: "absolute",
           zIndex: 2,
-          color: "#869AB8",
+          color: activeTable === id ? theme.palette.primary.main : "#869AB8",
           fontSize: floorMapPosition.current.scale * 24 + "px",
           width: "100%",
           height: "100%",
@@ -85,7 +90,7 @@ export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
           filter: `drop-shadow(0px 1px 3px rgba(0, 0, 0, 0.20)) 
                     drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.12)) 
                     drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.14))`,
-          boxShadow: activeTable === id ? "0px 0px 8px 2px red" : "unset",
+          boxShadow: activeTable === id ? "0px 0px 8px 2px " + theme.palette.primary.main : "unset",
         }}
       >
         <Box
