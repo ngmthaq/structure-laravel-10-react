@@ -1,34 +1,48 @@
-import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
+import React, { createContext, useEffect, useRef, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { Box, Button, ButtonGroup } from "@mui/material";
-import { theme } from "../../plugins/material.plugin";
 import { Add, Remove } from "@mui/icons-material";
+import { theme } from "../../plugins/material.plugin";
+import { shadeColor } from "../../helpers/primitive.helper";
+import { useEventBus } from "../../plugins/bus.plugin";
+import { EVENT_BUS } from "../../const/event.const";
 
-const square = 400;
+const square = 50;
+
+export const FloorMapContext = createContext();
 
 export const FloorMap = ({ children }) => {
   const { conf } = useLoaderData();
+
+  const eventBus = useEventBus();
 
   const floor = useRef();
 
   const floorContainer = useRef();
 
-  const position = useRef({ top: 0, left: 0, x: 0, y: 0, scale: 1, scaleStep: 0.05, minScale: 0.5, maxScale: 2 });
+  const position = useRef({ top: 0, left: 0, x: 0, y: 0, scale: 1, scaleStep: 0.1, minScale: 0.5, maxScale: 1.5 });
 
-  const width = useMemo(() => {
+  const getInitWidth = () => {
     const data = conf.find((config) => config.key === "ROOM_WIDTH_KEY");
-    if (data) return data.value * 1000;
-    return 1000;
-  }, [conf]);
+    if (data) return data.value * 100;
+    return 100;
+  };
 
-  const height = useMemo(() => {
+  const getInitHeight = () => {
     const data = conf.find((config) => config.key === "ROOM_HEIGHT_KEY");
-    if (data) return data.value * 1000;
-    return 1000;
-  }, [conf]);
+    if (data) return data.value * 100;
+    return 100;
+  };
+
+  const [width, setWidth] = useState(getInitWidth());
+
+  const [height, setHeight] = useState(getInitHeight());
 
   const [lats, setLats] = useState([]);
+
   const [longs, setLongs] = useState([]);
+
+  const [activeTable, setActiveTable] = useState(null);
 
   const mouseMoveHandler = (e) => {
     const dx = e.clientX - position.current.x;
@@ -60,7 +74,7 @@ export const FloorMap = ({ children }) => {
       position.current.scale += position.current.scaleStep;
       position.current.scale =
         position.current.scale > position.current.maxScale ? position.current.maxScale : position.current.scale;
-      floor.current.style.transform = `scale(${position.current.scale})`;
+      resizeFloor();
     }
   };
 
@@ -69,31 +83,40 @@ export const FloorMap = ({ children }) => {
       position.current.scale -= position.current.scaleStep;
       position.current.scale =
         position.current.scale < position.current.minScale ? position.current.minScale : position.current.scale;
-      floor.current.style.transform = `scale(${position.current.scale})`;
+      resizeFloor();
     }
   };
 
+  const resizeFloor = () => {
+    const newWidth = position.current.scale * getInitWidth();
+    setWidth(newWidth);
+    floor.current.style.width = newWidth + "px";
+
+    const newHeight = position.current.scale * getInitHeight();
+    setHeight(newHeight);
+    floor.current.style.height = newHeight + "px";
+  };
+
   useEffect(() => {
-    if (floorContainer.current) {
-      floorContainer.current.addEventListener("mousedown", mouseDownHandler);
-    }
-  }, [floorContainer]);
+    floorContainer.current.addEventListener("mousedown", mouseDownHandler);
+  }, []);
 
   useEffect(() => {
     if (width > 0 && height > 0) {
-      let currentLatPosition = square;
-      let currentLongPosition = square;
+      const currentSquare = square * position.current.scale;
+      let currentLatPosition = currentSquare;
+      let currentLongPosition = currentSquare;
       let newLats = [];
       let newLongs = [];
 
       while (currentLatPosition < width) {
         newLats.push({ top: 0, left: currentLatPosition });
-        currentLatPosition += square;
+        currentLatPosition += currentSquare;
       }
 
       while (currentLongPosition < height) {
         newLongs.push({ top: currentLongPosition, left: 0 });
-        currentLongPosition += square;
+        currentLongPosition += currentSquare;
       }
 
       setLats(newLats);
@@ -101,18 +124,28 @@ export const FloorMap = ({ children }) => {
     }
   }, [width, height]);
 
+  useEffect(() => {
+    eventBus.emit(EVENT_BUS.activeTable, activeTable);
+  }, [activeTable]);
+
+  const contextValue = {
+    position,
+    activeTable,
+    setActiveTable,
+  };
+
   return (
-    <Fragment>
-      <ButtonGroup orientation="vertical" sx={{ position: "absolute", top: "16px", left: "16px", zIndex: 1 }}>
+    <FloorMapContext.Provider value={contextValue}>
+      <ButtonGroup orientation="vertical" sx={{ position: "absolute", top: "16px", left: "16px", zIndex: 2 }}>
         <Button
-          sx={{ width: "40px", height: "40px", background: "#fff", color: theme.palette.primary.main }}
+          sx={{ width: "40px", height: "40px", background: "#fff !important", color: theme.palette.primary.main }}
           variant="outlined"
           onClick={zoomIn}
         >
           <Add fontSize="small" />
         </Button>
         <Button
-          sx={{ width: "40px", height: "40px", background: "#fff", color: theme.palette.primary.main }}
+          sx={{ width: "40px", height: "40px", background: "#fff !important", color: theme.palette.primary.main }}
           variant="outlined"
           onClick={zoomOut}
         >
@@ -126,20 +159,21 @@ export const FloorMap = ({ children }) => {
             position: "relative",
             width: width + "px",
             height: height + "px",
-            border: "1px solid " + theme.palette.primary.main,
+            border: "1px solid " + theme.palette.primary.lightest,
             transformOrigin: "top left",
           }}
         >
+          {children}
           {lats.map((lat, index) => (
             <Box
               key={index}
               sx={{
-                position: "absolute",
+                height: "100%",
                 top: lat.top,
                 left: lat.left,
-                height: "100%",
-                borderRight: "1px solid " + theme.palette.primary.light,
+                position: "absolute",
                 pointerEvents: "none",
+                borderRight: "1px solid " + theme.palette.primary.lightest,
               }}
             />
           ))}
@@ -147,18 +181,61 @@ export const FloorMap = ({ children }) => {
             <Box
               key={index}
               sx={{
-                position: "absolute",
+                width: "100%",
                 top: long.top,
                 left: long.left,
-                width: "100%",
-                borderBottom: "1px solid " + theme.palette.primary.light,
+                position: "absolute",
                 pointerEvents: "none",
+                borderBottom: "1px solid " + theme.palette.primary.lightest,
               }}
             />
           ))}
-          {children}
         </Box>
       </Box>
-    </Fragment>
+    </FloorMapContext.Provider>
   );
+};
+
+export const STATE_EDITING = { value: "Editing", color: "#FFF" };
+export const STATE_IN_USE = { value: "In Use", color: "#A9EAFF" };
+export const STATE_AVAILABLE = { value: "Available", color: "#FFF" };
+export const STATE_OVERSTAY = { value: "Overstay", color: "#FFA4A4" };
+export const STATE_BLOCKED = { value: "Blocked", color: "#DFDFDF" };
+export const STATE_RESERVED = { value: "Reserved", color: "#A260DD" };
+export const BLOCKED_TABLE_STATES = [STATE_EDITING.value, STATE_BLOCKED.value];
+
+export const getTableColor = (state) => {
+  let color = { main: "", light: "" };
+  switch (state) {
+    case STATE_EDITING.value:
+      color.main = STATE_EDITING.color;
+      color.light = STATE_EDITING.color;
+      break;
+    case STATE_IN_USE.value:
+      color.main = STATE_IN_USE.color;
+      color.light = shadeColor(STATE_IN_USE.color, 20);
+      break;
+    case STATE_AVAILABLE.value:
+      color.main = STATE_AVAILABLE.color;
+      color.light = STATE_AVAILABLE.color;
+      break;
+    case STATE_OVERSTAY.value:
+      color.main = STATE_OVERSTAY.color;
+      color.light = STATE_OVERSTAY.color;
+      break;
+    case STATE_BLOCKED.value:
+      color.main = STATE_BLOCKED.color;
+      color.light = STATE_BLOCKED.color;
+      break;
+    case STATE_RESERVED.value:
+      color.main = STATE_RESERVED.color;
+      color.light = STATE_RESERVED.color;
+      break;
+    default:
+      color.main = STATE_EDITING.color;
+      color.light = STATE_EDITING.color;
+      break;
+  }
+
+  return color;
 };

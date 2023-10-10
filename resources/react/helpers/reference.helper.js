@@ -23,3 +23,5 @@ export const isObjDeepEqual = (obj1, obj2) => {
 
   return true;
 };
+
+export const createArrayFromNumber = (number) => Array.from(Array(number).keys());

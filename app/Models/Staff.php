@@ -13,8 +13,8 @@ class Staff extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    public const ROLE_ADMIN = 2;
     public const ROLE_STAFF = 1;
+    public const ROLE_ADMIN = 2;
     public const AUTH_TOKEN_NAME = "STAFF_AUTH_ACCESS_TOKEN";
 
     public const SUPER_ADMIN_ID = 1;

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Box, Button, TextField, Typography } from "@mui/material";
 import { AdminPanelSettings, KeyboardArrowRight } from "@mui/icons-material";
+import { decamelize } from "humps";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { theme } from "../../../plugins/material.plugin";
 import { __ } from "../../../plugins/i18n.plugin";
 import { commonActions, commonAsyncActions } from "../../../reducers/common.reducer";
-import { decamelize } from "humps";
+import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
 
 export const Configurations = () => {
   const dispatch = useDispatch();

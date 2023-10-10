@@ -100,5 +100,9 @@ return [
     "reset" => "Reset",
     "app-name" => "Application name",
     "room-width" => "Room width (meters)",
-    "room-height" => "Room height (meters)"
+    "room-height" => "Room height (meters)",
+    "selecting-table" => "Editing table :table",
+    "no-table-selected" => "No table has been selected",
+    "delete-table" => "Delete this table",
+    "delete-table-confirm" => "Are you sure to delete this table (:table)?"
 ];

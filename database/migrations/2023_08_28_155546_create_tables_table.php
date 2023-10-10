@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->double('position_x');
             $table->double('position_y');
-            $table->tinyInteger('is_block')->comment('0: not blocked | 1: blocked');
-            $table->tinyInteger('type')->comment('0: square | 1: circle');
-            $table->tinyInteger('direction')->comment('0: horizontal | 1: vertical');
+            $table->tinyInteger('is_block');
+            $table->tinyInteger('type');
+            $table->tinyInteger('direction');
             $table->softDeletes();
             $table->timestamps();
         });
