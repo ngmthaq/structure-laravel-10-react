@@ -2,7 +2,7 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/material";
 import { BLOCKED_TABLE_STATES, FloorMapContext, STATE_EDITING, getTableColor } from "./index";
 import { createArrayFromNumber } from "../../helpers/reference.helper";
-import { Cancel } from "@mui/icons-material";
+import { CheckCircle } from "@mui/icons-material";
 import { theme } from "../../plugins/material.plugin";
 import { dragElement } from "../../helpers/element.helper";
 
@@ -25,10 +25,11 @@ export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
     }
   };
 
-  const onDeActive = () => {
+  const onStopDrag = () => {
     setActiveTable(id);
     const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
     element.onmousedown = null;
+    console.log(element.style.top, element.style.left);
     setActiveTable(null);
   };
 
@@ -58,11 +59,11 @@ export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
       {activeTable === id ? (
         <IconButton
           sx={{ position: "absolute", top: "-20px", right: "-20px", zIndex: 3 }}
-          onClick={onDeActive}
+          onClick={onStopDrag}
           size="small"
           variant="filled"
         >
-          <Cancel fontSize="small" />
+          <CheckCircle fontSize="small" color="primary" />
         </IconButton>
       ) : (
         <Fragment />
