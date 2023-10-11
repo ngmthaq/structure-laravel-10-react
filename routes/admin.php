@@ -26,6 +26,7 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
             Route::get("/{user}/strict", [UserController::class, "getUserInfo"])->name("users.user.strict");
             Route::put("/{user}/block", [UserController::class, "blockUser"])->name("users.user.block");
             Route::put("/{user}/unblock", [UserController::class, "unblockUser"])->withTrashed()->name("users.user.unblock");
+            Route::post("/create", [UserController::class, "create"])->name("users.create");
         });
         Route::prefix("staffs")->group(function () {
             Route::get("/", [StaffController::class, "getAllStaffs"])->name("staffs");

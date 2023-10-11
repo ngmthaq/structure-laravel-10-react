@@ -79,7 +79,7 @@ return [
     "create-new-staff" => "Create New Staff",
     "admin-title" => "admin",
     "admin-manage-users-title" => "user management",
-    "admin-manage-staffs-title" => "user management",
+    "admin-manage-staffs-title" => "staff management",
     "admin-tables-edit-title" => "edit table map",
     "admin-tables-create-title" => "create new table",
     "admin-dashboard-title" => "dashboard",
@@ -104,5 +104,14 @@ return [
     "selecting-table" => "Editing table :table",
     "no-table-selected" => "No table has been selected",
     "delete-table" => "Delete this table",
-    "delete-table-confirm" => "Are you sure to delete this table (:table)?"
+    "delete-table-confirm" => "Are you sure to delete this table (:table)?",
+    "create-new-user-subtitle" => "To create new user, please fill out all fields in the form below.",
+    "create" => "Create",
+    "admin-create-user-success-msg" => "Create new user successfully",
+    "admin-create-user-email-1" => "Congratulation, you have successfully registered an account at ABC system. Visit our website now!",
+    "admin-create-user-email-2" => "Thank you for using our system.",
+    "visit-our-website" => "Visit our website",
+    "your-email" => "Your email is: :email",
+    "your-password" => "Your password is: :password",
+    "remember-to-change-password" => "Don't forget to change your password"
 ];

@@ -10,6 +10,7 @@ import { userAsyncActions } from "../../../reducers/user.reducer";
 import { commonActions } from "../../../reducers/common.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
 import { theme } from "../../../plugins/material.plugin";
+import { CreateUserDialog } from "./CreateUserDialog";
 
 export const UserManagement = () => {
   const dispatch = useDispatch();
@@ -73,6 +74,36 @@ export const UserManagement = () => {
   const users = useSelector((state) => state.user.users);
 
   const [processedUsers, setProcessedUsers] = useState([]);
+
+  const [isOpenCreateUserDialog, setIsOpenCreateUserDialog] = useState(false);
+
+  const onCreateNewUser = async (payload) => {
+    try {
+      dispatch(commonActions.openLinearLoading());
+      await dispatch(userAsyncActions.adminCreateUser(payload)).unwrap();
+      dispatch(commonActions.closeLinearLoading());
+      alert(__("custom.admin-create-user-success-msg"));
+      location.reload();
+    } catch (error) {
+      dispatch(commonActions.closeLinearLoading());
+      if (error.status && error.status === 422) {
+        const notifications = Object.values(error.data.errors).map((e) => PrimaryNotificationModel("error", e[0]));
+        dispatch(commonActions.appendPrimaryNotification(JSON.stringify(notifications)));
+      } else {
+        dispatch(
+          commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+        );
+      }
+    }
+  };
+
+  const onCloseCreateUserDialog = () => {
+    setIsOpenCreateUserDialog(false);
+  };
+
+  const onOpenCreateUserDialog = () => {
+    setIsOpenCreateUserDialog(true);
+  };
 
   const onChange = (data) => {
     dispatch(userAsyncActions.getAllUsers(data));
@@ -157,7 +188,9 @@ export const UserManagement = () => {
               <Box component="span">{__("custom.admin-manage-users-title")}</Box>
             </Typography>
           </Box>
-          <Button variant="contained">{__("custom.create-new-user")}</Button>
+          <Button variant="contained" onClick={onOpenCreateUserDialog}>
+            {__("custom.create-new-user")}
+          </Button>
         </Box>
         <DataTable
           fullWidth
@@ -167,6 +200,7 @@ export const UserManagement = () => {
           actions={actions}
           onChange={onChange}
         />
+        <CreateUserDialog open={isOpenCreateUserDialog} onClose={onCloseCreateUserDialog} onSubmit={onCreateNewUser} />
       </Box>
     </AdminLayout>
   );

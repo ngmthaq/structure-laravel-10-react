@@ -20,7 +20,7 @@ export const LinearLoadingComponent = () => {
           bottom: 0,
           display: "none",
           background: "rgba(0, 0, 0, 0.1)",
-          zIndex: 11,
+          zIndex: 1301,
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -37,7 +37,7 @@ export const LinearLoadingComponent = () => {
           bottom: 0,
           display: isOpenLinearLoading ? "block" : "none",
           background: "rgba(0, 0, 0, 0.001)",
-          zIndex: 10,
+          zIndex: 1301,
         }}
         id={LINEAR_LOADING_ID}
       >
