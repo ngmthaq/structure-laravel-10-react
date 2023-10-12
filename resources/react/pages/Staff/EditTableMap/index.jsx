@@ -6,6 +6,8 @@ import { FloorMap, STATE_EDITING } from "../../../components/FloorMap";
 import { CircleTable } from "../../../components/FloorMap/CircleTable";
 import { __ } from "../../../plugins/i18n.plugin";
 import { CreateTableDialog } from "./CreateTableDialog";
+import { SquareTable } from "../../../components/FloorMap/SquareTable";
+import { TABLE_DIR } from "../../../const/app.const";
 
 export const EditTableMap = () => {
   const [isOpenCreateTableDialog, setIsOpenCreateTableDialog] = useState(false);
@@ -33,8 +35,16 @@ export const EditTableMap = () => {
         </Button>
       </ButtonGroup>
       <FloorMap>
-        <CircleTable id={1} position={[150, 150]} state={STATE_EDITING.value} usage={80} seats={6} seated={1} />
-        <CircleTable id={2} position={[300, 150]} state={STATE_EDITING.value} usage={80} seats={6} seated={1} />
+        <SquareTable
+          id={1}
+          position={[150, 150]}
+          state={STATE_EDITING.value}
+          usage={0}
+          seats={8}
+          seated={0}
+          dir={TABLE_DIR.horizontal}
+        />
+        <CircleTable id={2} position={[150, 300]} state={STATE_EDITING.value} usage={0} seats={6} seated={0} />
       </FloorMap>
       <CreateTableDialog
         open={isOpenCreateTableDialog}
