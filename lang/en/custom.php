@@ -123,5 +123,7 @@ return [
     "square" => "Square",
     "circle" => "Circle",
     "seat-number" => "Seat number",
-    "db-click-table-tooltips" => "Double click to change this table position"
+    "db-click-table-tooltips" => "Double click to change this table position",
+    "create-new-staff-subtitle" => "To create new staff, please fill out all fields in the form below.",
+    "admin-create-staff-success-msg" => "Create new staff successfully"
 ];

@@ -28,6 +28,8 @@ import { ROLES } from "../../../const/app.const";
 import { StaffModel } from "../../../models/staff.model";
 import { isObjDeepEqual } from "../../../helpers/reference.helper";
 import { theme } from "../../../plugins/material.plugin";
+import { CreateStaffDialog } from "./CreateStaffDialog";
+import { EditStaffDialog } from "./EditStaffDialog";
 
 export const StaffManagement = () => {
   const dispatch = useDispatch();
@@ -127,6 +129,8 @@ export const StaffManagement = () => {
 
   const [staffEditDialog, setStaffEditDialog] = useState({ isEdit: false, data: null, originalData: null });
 
+  const [isOpenCreateStaffDialog, setIsOpenCreateStaffDialog] = useState(false);
+
   const onCloseStaffEditDialog = () => {
     if (isObjDeepEqual(staffEditDialog.data, staffEditDialog.originalData)) {
       setStaffEditDialog({ isEdit: false, data: null, originalData: null });
@@ -207,6 +211,34 @@ export const StaffManagement = () => {
     }
   };
 
+  const onOpenCreateStaffDialog = () => {
+    setIsOpenCreateStaffDialog(true);
+  };
+
+  const onCloseCreateStaffDialog = () => {
+    setIsOpenCreateStaffDialog(false);
+  };
+
+  const onCreateNewStaff = async (payload) => {
+    try {
+      dispatch(commonActions.openLinearLoading());
+      await dispatch(staffAsyncActions.adminCreateStaff(payload)).unwrap();
+      dispatch(commonActions.closeLinearLoading());
+      alert(__("custom.admin-create-staff-success-msg"));
+      location.reload();
+    } catch (error) {
+      dispatch(commonActions.closeLinearLoading());
+      if (error.status && error.status === 422) {
+        const notifications = Object.values(error.data.errors).map((e) => PrimaryNotificationModel("error", e[0]));
+        dispatch(commonActions.appendPrimaryNotification(JSON.stringify(notifications)));
+      } else {
+        dispatch(
+          commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+        );
+      }
+    }
+  };
+
   useEffect(() => {
     if (staffs && staffs.data) {
       const staffData = staffs.data.map((staff) => {
@@ -262,7 +294,9 @@ export const StaffManagement = () => {
               <Box component="span">{__("custom.admin-manage-staffs-title")}</Box>
             </Typography>
           </Box>
-          <Button variant="contained">{__("custom.create-new-staff")}</Button>
+          <Button variant="contained" onClick={onOpenCreateStaffDialog}>
+            {__("custom.create-new-staff")}
+          </Button>
         </Box>
         <DataTable
           fullWidth
@@ -272,120 +306,17 @@ export const StaffManagement = () => {
           actions={actions}
           onChange={onChange}
         />
-        <Dialog open={Boolean(staffEditDialog.data)} onClose={onCloseStaffEditDialog}>
-          <DialogTitle>{__("custom.show-staff-info")}</DialogTitle>
-          <DialogContent sx={{ paddingTop: "16px !important" }}>
-            <Box component="form" onSubmit={onUpdateStaffProfile}>
-              <TextField
-                fullWidth
-                disabled
-                label="ID"
-                value={staffEditDialog?.data?.id || ""}
-                sx={{
-                  marginBottom: "16px",
-                  textTransform: "capitalize",
-                }}
-              />
-              <TextField
-                fullWidth
-                disabled
-                label={__("custom.email")}
-                value={staffEditDialog?.data?.email || ""}
-                sx={{
-                  marginBottom: "16px",
-                  textTransform: "capitalize",
-                }}
-              />
-              <TextField
-                fullWidth
-                label={__("custom.name")}
-                disabled={!staffEditDialog.isEdit}
-                value={staffEditDialog?.data?.name || ""}
-                name="name"
-                onChange={onChangeStaffProfile}
-                autoComplete="off"
-                sx={{
-                  marginBottom: "16px",
-                  textTransform: "capitalize",
-                }}
-              />
-              <FormControl fullWidth>
-                <InputLabel id="role-select-label">{__("custom.role")}</InputLabel>
-                <Select
-                  fullWidth
-                  labelId="role-select-label"
-                  disabled={!staffEditDialog.isEdit}
-                  value={staffEditDialog?.data?.role || ""}
-                  label={__("custom.role")}
-                  name="role"
-                  onChange={onChangeStaffProfile}
-                  sx={{
-                    marginBottom: "16px",
-                    textTransform: "capitalize",
-                  }}
-                >
-                  <MenuItem value={ROLES.admin}>{__("custom.admin-role")}</MenuItem>
-                  <MenuItem value={ROLES.staff}>{__("custom.staff-role")}</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                fullWidth
-                disabled={!staffEditDialog.isEdit}
-                type="tel"
-                name="phone"
-                onChange={onChangeStaffProfile}
-                label={__("custom.phone-number")}
-                value={staffEditDialog?.data?.phone || ""}
-                sx={{
-                  marginBottom: "16px",
-                  textTransform: "capitalize",
-                }}
-              />
-              <TextField
-                fullWidth
-                disabled={!staffEditDialog.isEdit}
-                label={__("custom.date-of-birth")}
-                value={staffEditDialog?.data?.dateOfBirth || ""}
-                name="dateOfBirth"
-                onChange={onChangeStaffProfile}
-                sx={{
-                  marginBottom: "16px",
-                  textTransform: "capitalize",
-                }}
-                type="date"
-              />
-              <TextField
-                fullWidth
-                disabled={!staffEditDialog.isEdit}
-                label={__("custom.address")}
-                value={staffEditDialog?.data?.address || ""}
-                name="address"
-                onChange={onChangeStaffProfile}
-                sx={{
-                  marginBottom: "16px",
-                  textTransform: "capitalize",
-                }}
-              />
-            </Box>
-          </DialogContent>
-          <DialogActions sx={{ padding: "16px" }}>
-            {staffEditDialog.isEdit ? (
-              <Button
-                fullWidth
-                variant="contained"
-                onClick={onUpdateStaffProfile}
-                disabled={isObjDeepEqual(staffEditDialog.data, staffEditDialog.originalData)}
-              >
-                {__("custom.update")}
-              </Button>
-            ) : (
-              <Fragment />
-            )}
-            <Button onClick={onCloseStaffEditDialog} variant="text" fullWidth>
-              {__("custom.close")}
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <EditStaffDialog
+          data={staffEditDialog}
+          onChange={onChangeStaffProfile}
+          onClose={onCloseStaffEditDialog}
+          onSubmit={onUpdateStaffProfile}
+        />
+        <CreateStaffDialog
+          open={isOpenCreateStaffDialog}
+          onClose={onCloseCreateStaffDialog}
+          onSubmit={onCreateNewStaff}
+        />
       </Box>
     </AdminLayout>
   );

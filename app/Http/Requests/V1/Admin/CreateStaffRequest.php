@@ -5,7 +5,7 @@ namespace App\Http\Requests\V1\Admin;
 use App\Http\Requests\ApiRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateUserRequest extends ApiRequest
+class CreateStaffRequest extends ApiRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,6 +28,7 @@ class CreateUserRequest extends ApiRequest
             "phone" => "required|unique:users,phone",
             "date_of_birth" => "required|date",
             "address" => "required",
+            "role" => "required"
         ];
     }
 }

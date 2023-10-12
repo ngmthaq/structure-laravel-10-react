@@ -35,6 +35,8 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
             Route::put("/{staff}/block", [StaffController::class, "blockStaff"])->name("staffs.staff.block");
             Route::put("/{staff}/unblock", [StaffController::class, "unblockStaff"])->withTrashed()->name("staffs.staff.unblock");
             Route::put("/{staff}/update", [StaffController::class, "updateStaffInfo"])->withTrashed()->name("staffs.staff.update");
+            Route::put("/{staff}/password/reset", [StaffController::class, "resetPassword"])->name("staffs.staff.password.reset");
+            Route::post("/create", [StaffController::class, "create"])->name("staffs.create");
         });
         Route::prefix("dashboard")->group(function () {
             Route::get("/", [DashboardController::class, "index"])->name("dashboard.index");

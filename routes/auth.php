@@ -23,13 +23,4 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
         Route::put("password/change", [StaffController::class, "changePassword"])->middleware("auth.staff")->name("password.change");
         Route::put("info/update", [StaffController::class, "updateInfo"])->middleware("auth.staff")->name("info.update");
     });
-
-    Route::prefix("admin")->name("admin.")->group(function () {
-        Route::post("staffs/create", [StaffController::class, "register"])->middleware("auth.admin")->name("staffs.create");
-        Route::put("staffs/{staff}/password/reset", [StaffController::class, "resetPassword"])->middleware("auth.admin")->name("password.change");
-    });
-
-    Route::prefix("user")->name("user.")->group(function () {
-        //
-    });
 });
