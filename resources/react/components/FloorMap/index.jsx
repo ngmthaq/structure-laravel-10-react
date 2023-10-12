@@ -6,10 +6,13 @@ import { theme } from "../../plugins/material.plugin";
 import { shadeColor } from "../../helpers/primitive.helper";
 import { useEventBus } from "../../plugins/bus.plugin";
 import { EVENT_BUS } from "../../const/event.const";
+import { __ } from "../../plugins/i18n.plugin";
 
 const square = 50;
 
 export const FloorMapContext = createContext();
+
+export const floorMapZoomEvent = "floorMapZoomEvent";
 
 export const FloorMap = ({ children }) => {
   const { conf } = useLoaderData();
@@ -104,6 +107,7 @@ export const FloorMap = ({ children }) => {
   useEffect(() => {
     if (width > 0 && height > 0) {
       const currentSquare = square * position.current.scale;
+
       let currentLatPosition = currentSquare;
       let currentLongPosition = currentSquare;
       let newLats = [];
@@ -139,6 +143,7 @@ export const FloorMap = ({ children }) => {
       <ButtonGroup orientation="vertical" sx={{ position: "absolute", top: "16px", left: "16px", zIndex: 2 }}>
         <Button
           sx={{ width: "40px", height: "40px", background: "#fff !important", color: theme.palette.primary.main }}
+          title={__("custom.zoom-in")}
           variant="outlined"
           onClick={zoomIn}
         >
@@ -146,6 +151,7 @@ export const FloorMap = ({ children }) => {
         </Button>
         <Button
           sx={{ width: "40px", height: "40px", background: "#fff !important", color: theme.palette.primary.main }}
+          title={__("custom.zoom-out")}
           variant="outlined"
           onClick={zoomOut}
         >

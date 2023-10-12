@@ -4,15 +4,14 @@ import { useLoaderData } from "react-router-dom";
 import { Box, Divider, Typography } from "@mui/material";
 import {
   AccountCircle,
-  AddBox,
   Bookmark,
-  Construction,
   ContentPaste,
   Dashboard,
   History,
   Settings,
   SupervisedUserCircle,
   TableBarRounded,
+  TableRestaurant,
 } from "@mui/icons-material";
 import { LOGO_HEIGHT } from "./AdminSidebar";
 import { adminRoutes, staffRoutes } from "../../const/path.const";
@@ -56,16 +55,9 @@ export const AdminAside = () => {
     },
     {
       type: "route",
-      path: adminRoutes.createNewTable.path,
-      title: __("custom.admin-tables-create-title"),
-      Icon: AddBox,
-      role: ROLES.admin,
-    },
-    {
-      type: "route",
       path: adminRoutes.editTableMap.path,
-      title: __("custom.admin-tables-edit-title"),
-      Icon: Construction,
+      title: __("custom.staff-manage-tables-title"),
+      Icon: TableRestaurant,
       role: ROLES.admin,
     },
     {

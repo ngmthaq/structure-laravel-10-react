@@ -8,7 +8,6 @@ import { Dashboard } from "../pages/Staff/Dashboard";
 import { StaffOrder } from "../pages/Staff/StaffOrder";
 import { StaffOrderHistory } from "../pages/Staff/StaffOrderHistory";
 import { EditTableMap } from "../pages/Staff/EditTableMap";
-import { CreateNewTable } from "../pages/Staff/CreateNewTable";
 import { PageError } from "../pages/Error";
 import { Configurations } from "../pages/Staff/Configurations";
 import { notStaffLoader } from "../router/not.staff.loader";
@@ -72,12 +71,6 @@ export const adminRoutes = {
   editTableMap: {
     path: "/admin/tables/edit",
     element: <EditTableMap />,
-    errorElement: <PageError />,
-    loader: adminLoader,
-  },
-  createNewTable: {
-    path: "/admin/tables/create",
-    element: <CreateNewTable />,
     errorElement: <PageError />,
     loader: adminLoader,
   },

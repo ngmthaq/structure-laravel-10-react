@@ -1,19 +1,22 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/material";
-import { BLOCKED_TABLE_STATES, FloorMapContext, STATE_EDITING, getTableColor } from "./index";
-import { createArrayFromNumber } from "../../helpers/reference.helper";
+import { BLOCKED_TABLE_STATES, FloorMapContext, STATE_EDITING, floorMapZoomEvent, getTableColor } from "./index";
 import { CheckCircle } from "@mui/icons-material";
+import { createArrayFromNumber } from "../../helpers/reference.helper";
 import { theme } from "../../plugins/material.plugin";
 import { dragElement } from "../../helpers/element.helper";
+import { __ } from "../../plugins/i18n.plugin";
 
 const minSize = 50;
 
-export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
+export const CircleTable = ({ id, position, state, usage, seats, seated, onChangePosition }) => {
   const { position: floorMapPosition, activeTable, setActiveTable } = useContext(FloorMapContext);
 
   const initSize = minSize;
 
   const [size, setSize] = useState(initSize);
+
+  const [currentPosition, setCurrentPosition] = useState([...position]);
 
   const onDbClick = () => {
     if (state === STATE_EDITING.value) {
@@ -26,11 +29,18 @@ export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
   };
 
   const onStopDrag = () => {
-    setActiveTable(id);
-    const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
-    element.onmousedown = null;
-    console.log(element.style.top, element.style.left);
     setActiveTable(null);
+    const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
+    if (element.style.top && element.style.left) {
+      setCurrentPosition([
+        element.style.top.replace("px", "") / floorMapPosition.current.scale,
+        element.style.left.replace("px", "") / floorMapPosition.current.scale,
+      ]);
+      element.onmousedown = null;
+      element.style.removeProperty("top");
+      element.style.removeProperty("left");
+    }
+    if (onChangePosition) onChangePosition(currentPosition);
   };
 
   useEffect(() => {
@@ -42,15 +52,16 @@ export const CircleTable = ({ id, position, state, usage, seats, seated }) => {
 
   return (
     <Box
-      onDoubleClick={onDbClick}
-      className="floor-circle-table"
+      zIndex={1}
       data-id={id}
       width={size}
       height={size}
       position="absolute"
-      top={position[0] * floorMapPosition.current.scale}
-      left={position[1] * floorMapPosition.current.scale}
-      zIndex={1}
+      onDoubleClick={onDbClick}
+      className="floor-circle-table"
+      title={__("custom.db-click-table-tooltips")}
+      top={currentPosition[0] * floorMapPosition.current.scale}
+      left={currentPosition[1] * floorMapPosition.current.scale}
       sx={{
         userSelect: "none",
         cursor: activeTable === id ? "move" : "pointer",

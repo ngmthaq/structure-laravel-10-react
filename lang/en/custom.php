@@ -81,7 +81,7 @@ return [
     "admin-manage-users-title" => "user management",
     "admin-manage-staffs-title" => "staff management",
     "admin-tables-edit-title" => "edit table map",
-    "admin-tables-create-title" => "create new table",
+    "admin-tables-create-title" => "Create New Table",
     "admin-dashboard-title" => "dashboard",
     "admin-configurations-title" => "configurations",
     "staff-title" => "staff",
@@ -113,5 +113,15 @@ return [
     "visit-our-website" => "Visit our website",
     "your-email" => "Your email is: :email",
     "your-password" => "Your password is: :password",
-    "remember-to-change-password" => "Don't forget to change your password"
+    "remember-to-change-password" => "Don't forget to change your password",
+    "zoom-in" => "Zoom in",
+    "zoom-out" => "Zoom out",
+    "table-type" => "Table type",
+    "table-dir" => "Table direction",
+    "horizontal" => "Horizontal",
+    "vertical" => "Vertical",
+    "square" => "Square",
+    "circle" => "Circle",
+    "seat-number" => "Seat number",
+    "db-click-table-tooltips" => "Double click to change this table position"
 ];

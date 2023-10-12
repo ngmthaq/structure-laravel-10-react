@@ -10,20 +10,33 @@ import {
   TextField,
 } from "@mui/material";
 import { __ } from "../../../plugins/i18n.plugin";
+import { isObjDeepEqual } from "../../../helpers/reference.helper";
+
+const initPayload = {
+  name: "",
+  email: "",
+  phone: "",
+  dateOfBirth: "",
+  address: "",
+};
 
 export const CreateUserDialog = ({ open, onClose, onSubmit }) => {
   const [isFocusDob, setIsFocusDob] = useState(false);
 
-  const [payload, setPayload] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    dateOfBirth: "",
-    address: "",
-  });
+  const [payload, setPayload] = useState({ ...initPayload });
 
   const onChange = (e) => {
     setPayload((state) => ({ ...state, [e.target.name]: e.target.value }));
+  };
+
+  const onCloseDialog = () => {
+    if (isObjDeepEqual(payload, initPayload)) {
+      onClose();
+      setPayload(initPayload);
+    } else if (confirm(__("custom.confirm-lost-changed"))) {
+      onClose();
+      setPayload(initPayload);
+    }
   };
 
   const onSubmitForm = (e) => {
@@ -32,7 +45,7 @@ export const CreateUserDialog = ({ open, onClose, onSubmit }) => {
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onCloseDialog}>
       <Box component="form" onSubmit={onSubmitForm}>
         <DialogTitle>{__("custom.create-new-user")}</DialogTitle>
         <DialogContent>
@@ -92,10 +105,17 @@ export const CreateUserDialog = ({ open, onClose, onSubmit }) => {
           />
         </DialogContent>
         <DialogActions sx={{ margin: "0 16px", flexDirection: "column" }}>
-          <Button fullWidth size="large" variant="contained" type="submit" sx={{ marginBottom: "8px" }}>
+          <Button
+            fullWidth
+            size="large"
+            variant="contained"
+            type="submit"
+            sx={{ marginBottom: "8px" }}
+            disabled={isObjDeepEqual(payload, initPayload)}
+          >
             {__("custom.create")}
           </Button>
-          <Button fullWidth size="large" onClick={onClose} sx={{ marginLeft: "0px !important" }}>
+          <Button fullWidth size="large" onClick={onCloseDialog} sx={{ marginLeft: "0px !important" }}>
             {__("custom.close")}
           </Button>
         </DialogActions>
