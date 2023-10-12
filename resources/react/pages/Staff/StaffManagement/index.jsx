@@ -113,9 +113,22 @@ export const StaffManagement = () => {
       {
         title: __("custom.reset-staff-password"),
         icon: <LockReset fontSize="small" />,
-        handler: (data) => {
+        handler: async (data) => {
           if (confirm(__("custom.admin-reset-password-msg"))) {
-            //
+            try {
+              dispatch(commonActions.openLinearLoading());
+              await dispatch(staffAsyncActions.adminResetStaffPassword(data)).unwrap();
+              dispatch(commonActions.closeLinearLoading());
+              alert(__("custom.admin-reset-staff-password-success-msg"));
+            } catch (error) {
+              console.error(error);
+              dispatch(commonActions.closeLinearLoading());
+              dispatch(
+                commonActions.appendPrimaryNotification(
+                  PrimaryNotificationModel("error", __("custom.something-wrong")),
+                ),
+              );
+            }
           }
         },
       },

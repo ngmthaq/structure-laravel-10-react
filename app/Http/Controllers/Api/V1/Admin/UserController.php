@@ -81,6 +81,8 @@ class UserController extends Controller
         $user->address = $request->input("address");
         $user->date_of_birth = $request->input("date_of_birth");
         $user->password = Hash::make($password);
+        $user->remember_token = Str::random(10);
+        $user->email_verified_at = now();
         $user->save();
         $user->refresh();
 

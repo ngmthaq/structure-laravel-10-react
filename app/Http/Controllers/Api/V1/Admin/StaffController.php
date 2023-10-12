@@ -10,6 +10,7 @@ use App\Models\Configuration;
 use App\Models\Staff;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class StaffController extends Controller
 {
@@ -109,6 +110,8 @@ class StaffController extends Controller
         $staff->date_of_birth = $request->input("date_of_birth");
         $staff->role = $request->input("role");
         $staff->password = Hash::make($password->value);
+        $staff->remember_token = Str::random(10);
+        $staff->email_verified_at = now();
         $staff->save();
         $staff->refresh();
 

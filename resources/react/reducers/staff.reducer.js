@@ -104,6 +104,27 @@ export const staffAsyncActions = {
       );
     }
   }),
+  adminResetStaffPassword: createAsyncThunk("user/adminResetStaffPassword", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const processedPayload = decamelizeKeys({ ...payload, _method: "PUT" });
+      const response = await api.post(
+        API_ENDPOINTS.adminResetStaffPassword.replace(":staffId", payload.id),
+        processedPayload,
+      );
+
+      return thunk.fulfillWithValue(response.data);
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
 };
 
 const slice = createSlice({

@@ -13,6 +13,7 @@ export const API_ENDPOINTS = {
   adminUnBlockStaff: "/v1/admin/staffs/:staffId/unblock",
   adminUpdateStaffInfo: "/v1/admin/staffs/:staffId/update",
   adminCreateStaff: "/v1/admin/staffs/create",
+  adminResetStaffPassword: "/v1/admin/staffs/:staffId/password/reset",
   adminGetConfigurations: "/v1/configurations/get",
   adminSetConfigurations: "/v1/configurations/set",
 };

@@ -108,7 +108,7 @@ return [
     "create-new-user-subtitle" => "To create new user, please fill out all fields in the form below.",
     "create" => "Create",
     "admin-create-user-success-msg" => "Create new user successfully",
-    "admin-create-user-email-1" => "Congratulation, you have successfully registered an account at ABC system. Visit our website now!",
+    "admin-create-user-email-1" => "Congratulation, you have successfully registered an account in our system. Visit our website now!",
     "admin-create-user-email-2" => "Thank you for using our system.",
     "visit-our-website" => "Visit our website",
     "your-email" => "Your email is: :email",
@@ -125,5 +125,6 @@ return [
     "seat-number" => "Seat number",
     "db-click-table-tooltips" => "Double click to change this table position",
     "create-new-staff-subtitle" => "To create new staff, please fill out all fields in the form below.",
-    "admin-create-staff-success-msg" => "Create new staff successfully"
+    "admin-create-staff-success-msg" => "Create new staff successfully",
+    "admin-reset-staff-password-success-msg" => "Reset this staff's password successfully"
 ];
