@@ -126,5 +126,6 @@ return [
     "db-click-table-tooltips" => "Double click to change this table position",
     "create-new-staff-subtitle" => "To create new staff, please fill out all fields in the form below.",
     "admin-create-staff-success-msg" => "Create new staff successfully",
-    "admin-reset-staff-password-success-msg" => "Reset this staff's password successfully"
+    "admin-reset-staff-password-success-msg" => "Reset this staff's password successfully",
+    "show-data-table" => "Show data-table"
 ];

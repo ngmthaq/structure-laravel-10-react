@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, ButtonGroup } from "@mui/material";
-import { AddCircleOutline } from "@mui/icons-material";
+import { AddCircleOutline, TableChart } from "@mui/icons-material";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { FloorMap, STATE_EDITING } from "../../../components/FloorMap";
 import { CircleTable } from "../../../components/FloorMap/CircleTable";
@@ -8,9 +8,12 @@ import { __ } from "../../../plugins/i18n.plugin";
 import { CreateTableDialog } from "./CreateTableDialog";
 import { SquareTable } from "../../../components/FloorMap/SquareTable";
 import { TABLE_DIR } from "../../../const/app.const";
+import { DataTableDialog } from "./DatatableDialog";
 
 export const EditTableMap = () => {
   const [isOpenCreateTableDialog, setIsOpenCreateTableDialog] = useState(false);
+
+  const [isOpenDataTableDialog, setIsOpenDataTableDialog] = useState(false);
 
   const onOpenCreateTableDialog = () => {
     setIsOpenCreateTableDialog(true);
@@ -18,6 +21,14 @@ export const EditTableMap = () => {
 
   const onCloseCreateTableDialog = () => {
     setIsOpenCreateTableDialog(false);
+  };
+
+  const onOpenDataTableDialog = () => {
+    setIsOpenDataTableDialog(true);
+  };
+
+  const onCloseDataTableDialog = () => {
+    setIsOpenDataTableDialog(false);
   };
 
   const onCreateNewTable = (payload) => {};
@@ -32,6 +43,14 @@ export const EditTableMap = () => {
           onClick={onOpenCreateTableDialog}
         >
           <AddCircleOutline fontSize="small" />
+        </Button>
+        <Button
+          sx={{ width: "40px", height: "40px" }}
+          variant="contained"
+          title={__("custom.show-data-table")}
+          onClick={onOpenDataTableDialog}
+        >
+          <TableChart fontSize="small" />
         </Button>
       </ButtonGroup>
       <FloorMap>
@@ -51,6 +70,7 @@ export const EditTableMap = () => {
         onClose={onCloseCreateTableDialog}
         onSubmit={onCreateNewTable}
       />
+      <DataTableDialog open={isOpenDataTableDialog} onClose={onCloseDataTableDialog} />
     </AdminLayout>
   );
 };
