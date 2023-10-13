@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\V1\Admin\ConfigurationController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController;
 use App\Http\Controllers\Api\V1\Admin\StaffController;
+use App\Http\Controllers\Api\V1\Admin\TableController;
 use App\Http\Controllers\Api\V1\Admin\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +28,7 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
             Route::put("/{user}/unblock", [UserController::class, "unblockUser"])->withTrashed()->name("users.user.unblock");
             Route::post("/create", [UserController::class, "create"])->name("users.create");
         });
+
         Route::prefix("staffs")->group(function () {
             Route::get("/", [StaffController::class, "getAllStaffs"])->name("staffs");
             Route::get("/{staff}", [StaffController::class, "getStaffInfoWithTrash"])->withTrashed()->name("staffs.staff");
@@ -38,8 +39,15 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
             Route::put("/{staff}/password/reset", [StaffController::class, "resetPassword"])->name("staffs.staff.password.reset");
             Route::post("/create", [StaffController::class, "create"])->name("staffs.create");
         });
+
         Route::prefix("dashboard")->group(function () {
             Route::get("/", [DashboardController::class, "index"])->name("dashboard.index");
+        });
+
+        Route::prefix("tables")->group(function () {
+            Route::get("/", [TableController::class, "getAllTables"])->name("tables.getAllTables");
+            Route::put("/{table}/position/update", [TableController::class, "changeTablePosition"])->name("tables.changeTablePosition");
+            Route::post("/create", [TableController::class, "createTable"])->name("tables.create");
         });
     });
 });

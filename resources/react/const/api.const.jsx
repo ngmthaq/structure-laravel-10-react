@@ -16,4 +16,7 @@ export const API_ENDPOINTS = {
   adminResetStaffPassword: "/v1/admin/staffs/:staffId/password/reset",
   adminGetConfigurations: "/v1/configurations/get",
   adminSetConfigurations: "/v1/configurations/set",
+  adminCreateTable: "/v1/admin/tables/create",
+  adminChangeTablePosition: "/v1/admin/tables/:tableId/position/update",
+  adminGetTables: "/v1/admin/tables",
 };

@@ -1,21 +1,6 @@
-import React, { Fragment, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Switch,
-  TextField,
-  Typography,
-  capitalize,
-} from "@mui/material";
+import { Box, Button, Switch, Typography, capitalize } from "@mui/material";
 import { AdminPanelSettings, Edit, KeyboardArrowRight, LockReset, Visibility } from "@mui/icons-material";
 import { camelizeKeys } from "humps";
 import { AdminLayout } from "../../../layouts/AdminLayout";
@@ -24,7 +9,6 @@ import { __ } from "../../../plugins/i18n.plugin";
 import { commonActions } from "../../../reducers/common.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
 import { staffAsyncActions } from "../../../reducers/staff.reducer";
-import { ROLES } from "../../../const/app.const";
 import { StaffModel } from "../../../models/staff.model";
 import { isObjDeepEqual } from "../../../helpers/reference.helper";
 import { theme } from "../../../plugins/material.plugin";

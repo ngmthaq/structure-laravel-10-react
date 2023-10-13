@@ -26,8 +26,8 @@ class ConfigurationRequest extends ApiRequest
             "default_password" => "required|string|min:8|max:32",
             "app_title" => "required|string",
             "app_name" => "required|string",
-            "room_width" => "required|numeric",
-            "room_height" => "required|numeric",
+            "room_width" => "required|numeric|min:10",
+            "room_height" => "required|numeric|min:10",
             "app_favicon" => "nullable|file",
             "app_logo" => "nullable|file",
         ];

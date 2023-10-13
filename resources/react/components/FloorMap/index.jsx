@@ -203,12 +203,13 @@ export const FloorMap = ({ children }) => {
 };
 
 export const STATE_EDITING = { value: "Editing", color: "#FFF" };
+export const STATE_EDITED = { value: "Edited", color: "#FFF" };
 export const STATE_IN_USE = { value: "In Use", color: "#A9EAFF" };
 export const STATE_AVAILABLE = { value: "Available", color: "#FFF" };
 export const STATE_OVERSTAY = { value: "Overstay", color: "#FFA4A4" };
 export const STATE_BLOCKED = { value: "Blocked", color: "#DFDFDF" };
 export const STATE_RESERVED = { value: "Reserved", color: "#A260DD" };
-export const BLOCKED_TABLE_STATES = [STATE_EDITING.value, STATE_BLOCKED.value];
+export const BLOCKED_TABLE_STATES = [STATE_EDITING.value, STATE_EDITED.value, STATE_BLOCKED.value];
 
 export const getTableColor = (state) => {
   let color = { main: "", light: "" };
@@ -216,6 +217,10 @@ export const getTableColor = (state) => {
     case STATE_EDITING.value:
       color.main = STATE_EDITING.color;
       color.light = STATE_EDITING.color;
+      break;
+    case STATE_EDITED.value:
+      color.main = STATE_EDITED.color;
+      color.light = STATE_EDITED.color;
       break;
     case STATE_IN_USE.value:
       color.main = STATE_IN_USE.color;

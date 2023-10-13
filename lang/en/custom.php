@@ -127,5 +127,6 @@ return [
     "create-new-staff-subtitle" => "To create new staff, please fill out all fields in the form below.",
     "admin-create-staff-success-msg" => "Create new staff successfully",
     "admin-reset-staff-password-success-msg" => "Reset this staff's password successfully",
-    "show-data-table" => "Show data-table"
+    "show-data-table" => "Show data-table",
+    "create-table-success" => "Create table successfully",
 ];

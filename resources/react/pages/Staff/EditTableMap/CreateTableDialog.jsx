@@ -19,7 +19,7 @@ import { TABLE_DIR, TABLE_TYPE } from "../../../const/app.const";
 const initPayload = {
   dir: TABLE_DIR.horizontal,
   type: TABLE_TYPE.square,
-  number: 1,
+  seats: 1,
 };
 
 export const CreateTableDialog = ({ open, onClose, onSubmit }) => {
@@ -41,7 +41,7 @@ export const CreateTableDialog = ({ open, onClose, onSubmit }) => {
   };
 
   const onChange = (e) => {
-    setPayload((state) => ({ ...state, [e.target.name]: e.target.value }));
+    setPayload((state) => ({ ...state, [e.target.name]: Number(e.target.value) || null }));
   };
 
   return (
@@ -92,7 +92,7 @@ export const CreateTableDialog = ({ open, onClose, onSubmit }) => {
                 variant="outlined"
                 defaultValue={1}
                 type="number"
-                name="number"
+                name="seats"
                 onChange={onChange}
               />
             </FormControl>

@@ -1,8 +1,15 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/material";
-import { BLOCKED_TABLE_STATES, FloorMapContext, STATE_EDITING, floorMapZoomEvent, getTableColor } from "./index";
+import {
+  BLOCKED_TABLE_STATES,
+  FloorMapContext,
+  STATE_EDITED,
+  STATE_EDITING,
+  floorMapZoomEvent,
+  getTableColor,
+} from "./index";
 import { CheckCircle } from "@mui/icons-material";
-import { createArrayFromNumber } from "../../helpers/reference.helper";
+import { createArrayFromNumber, isObjDeepEqual } from "../../helpers/reference.helper";
 import { theme } from "../../plugins/material.plugin";
 import { dragElement } from "../../helpers/element.helper";
 import { __ } from "../../plugins/i18n.plugin";
@@ -19,7 +26,7 @@ export const CircleTable = ({ id, position, state, usage, seats, seated, onChang
   const [currentPosition, setCurrentPosition] = useState([...position]);
 
   const onDbClick = () => {
-    if (state === STATE_EDITING.value) {
+    if ((state === STATE_EDITING.value || state === STATE_EDITED.value) && activeTable === null) {
       setActiveTable(id);
       const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
       dragElement(element);
@@ -29,7 +36,6 @@ export const CircleTable = ({ id, position, state, usage, seats, seated, onChang
   };
 
   const onStopDrag = () => {
-    setActiveTable(null);
     const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
     if (element.style.top && element.style.left) {
       setCurrentPosition([
@@ -40,13 +46,25 @@ export const CircleTable = ({ id, position, state, usage, seats, seated, onChang
       element.style.removeProperty("top");
       element.style.removeProperty("left");
     }
-    if (onChangePosition) onChangePosition(currentPosition);
+    setActiveTable(null);
   };
+
+  useEffect(() => {
+    if (onChangePosition && !isObjDeepEqual(position, currentPosition)) {
+      onChangePosition(id, currentPosition);
+    }
+  }, [currentPosition]);
 
   useEffect(() => {
     const scale = seats < 6 ? 1 : seats * 0.2;
     setSize(initSize * floorMapPosition.current.scale * scale);
   }, [floorMapPosition.current.scale, seats]);
+
+  useEffect(() => {
+    if (state === STATE_EDITING.value) {
+      onDbClick();
+    }
+  }, [state]);
 
   const color = getTableColor(state);
 
@@ -64,7 +82,7 @@ export const CircleTable = ({ id, position, state, usage, seats, seated, onChang
       left={currentPosition[1] * floorMapPosition.current.scale}
       sx={{
         userSelect: "none",
-        cursor: activeTable === id ? "move" : "pointer",
+        cursor: activeTable === id ? "move" : activeTable ? "not-allowed" : "pointer",
       }}
     >
       {activeTable === id ? (
