@@ -47,7 +47,9 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
         Route::prefix("tables")->group(function () {
             Route::get("/", [TableController::class, "getAllTables"])->name("tables.getAllTables");
             Route::put("/{table}/position/update", [TableController::class, "changeTablePosition"])->name("tables.changeTablePosition");
+            Route::put("/{table}/restore", [TableController::class, "restoreTable"])->withTrashed()->name("tables.restore");
             Route::post("/create", [TableController::class, "createTable"])->name("tables.create");
+            Route::delete("/{table}/delete", [TableController::class, "deleteTable"])->name("tables.delete");
         });
     });
 });

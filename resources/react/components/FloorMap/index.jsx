@@ -132,6 +132,18 @@ export const FloorMap = ({ children }) => {
     eventBus.emit(EVENT_BUS.activeTable, activeTable);
   }, [activeTable]);
 
+  useEffect(() => {
+    const onTableDeleted = ({ id }) => {
+      setActiveTable(null);
+    };
+
+    eventBus.on(EVENT_BUS.deleteTable, onTableDeleted);
+
+    return () => {
+      eventBus.off(EVENT_BUS.deleteTable, onTableDeleted);
+    };
+  }, []);
+
   const contextValue = {
     position,
     activeTable,

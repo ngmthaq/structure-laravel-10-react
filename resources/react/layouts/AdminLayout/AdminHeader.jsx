@@ -6,7 +6,6 @@ import {
   Box,
   Button,
   Divider,
-  IconButton,
   ListItemIcon,
   ListItemText,
   MenuItem,
@@ -15,14 +14,11 @@ import {
   Popover,
   Typography,
 } from "@mui/material";
-import { Delete, Logout, Password, Person } from "@mui/icons-material";
+import { Logout, Password, Person } from "@mui/icons-material";
 import { __ } from "../../plugins/i18n.plugin";
 import { theme } from "../../plugins/material.plugin";
 import { authAsyncActions } from "../../reducers/auth.reducer";
-import { useEventBus } from "../../plugins/bus.plugin";
 import { AdminLayoutContext } from "./index";
-import { EVENT_BUS } from "../../const/event.const";
-import { adminRoutes } from "../../const/path.const";
 
 export const HEIGHT = 48;
 
@@ -31,8 +27,6 @@ export const MARGIN = 16;
 export const AdminHeader = () => {
   const dispatch = useDispatch();
 
-  const eventBus = useEventBus();
-
   const location = useLocation();
 
   const { staff } = useLoaderData();
@@ -40,8 +34,6 @@ export const AdminHeader = () => {
   const { setIsOpenStaffInfoDialog, setIsOpenChangePasswordDialog } = useContext(AdminLayoutContext);
 
   const [avatarElement, setAvatarElement] = useState(null);
-
-  const [editTableMode, setEditTableMode] = useState({ open: false, activeTable: null });
 
   const onClickAvatar = (e) => {
     setAvatarElement(e.currentTarget);
@@ -65,31 +57,6 @@ export const AdminHeader = () => {
     onClosePopup();
   };
 
-  const onDeleteTable = () => {
-    if (
-      editTableMode.open &&
-      editTableMode.activeTable &&
-      confirm(__("custom.delete-table-confirm", { table: editTableMode.activeTable }))
-    ) {
-      // TODO: Delete table
-    }
-  };
-
-  useEffect(() => {
-    const handler = (activeTable) => {
-      setEditTableMode((state) => ({ ...state, activeTable: activeTable }));
-    };
-
-    if (location.pathname === adminRoutes.editTableMap.path) {
-      setEditTableMode((state) => ({ ...state, open: true }));
-      eventBus.on(EVENT_BUS.activeTable, handler);
-    }
-
-    return () => {
-      eventBus.off(EVENT_BUS.activeTable, handler);
-    };
-  }, [location]);
-
   return (
     <Box
       id="admin-header"
@@ -106,22 +73,7 @@ export const AdminHeader = () => {
         justifyContent: "center",
       }}
     >
-      <Box sx={{ flex: 8 }}>
-        {editTableMode.open && (
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "flex-start" }}>
-            {editTableMode.activeTable ? (
-              <Button variant="contained" size="small" color="error" onClick={onDeleteTable}>
-                <Delete fontSize="small" />
-                <Typography marginLeft="8px" variant="p">
-                  {__("custom.delete-table")}
-                </Typography>
-              </Button>
-            ) : (
-              <Typography sx={{ padding: "0 8px" }}>{__("custom.no-table-selected")}</Typography>
-            )}
-          </Box>
-        )}
-      </Box>
+      <Box sx={{ flex: 8 }}></Box>
       <Box
         sx={{
           flex: 2,

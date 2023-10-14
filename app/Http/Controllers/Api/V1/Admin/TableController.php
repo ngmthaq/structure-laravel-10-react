@@ -68,4 +68,18 @@ class TableController extends Controller
 
         return response()->json($table);
     }
+
+    public function deleteTable(Table $table)
+    {
+        $table->delete();
+
+        return response()->json(["deleted" => true]);
+    }
+
+    public function restoreTable(Table $table)
+    {
+        $table->restore();
+
+        return response()->json(["restored" => true]);
+    }
 }

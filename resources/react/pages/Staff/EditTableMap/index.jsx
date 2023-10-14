@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Button, ButtonGroup } from "@mui/material";
 import { AddCircleOutline, TableChart } from "@mui/icons-material";
@@ -7,15 +7,19 @@ import { FloorMap, STATE_EDITED, STATE_EDITING } from "../../../components/Floor
 import { CircleTable } from "../../../components/FloorMap/CircleTable";
 import { __ } from "../../../plugins/i18n.plugin";
 import { SquareTable } from "../../../components/FloorMap/SquareTable";
-import { TABLE_DIR, TABLE_TYPE } from "../../../const/app.const";
+import { TABLE_TYPE } from "../../../const/app.const";
 import { CreateTableDialog } from "./CreateTableDialog";
-import { DataTableDialog } from "./DataTableDialog";
 import { tableAsyncActions } from "../../../reducers/table.reducer";
 import { commonActions } from "../../../reducers/common.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
+import { DataTableDialog } from "./DataTableDialog";
+import { useEventBus } from "../../../plugins/bus.plugin";
+import { EVENT_BUS } from "../../../const/event.const";
 
 export const EditTableMap = () => {
   const dispatch = useDispatch();
+
+  const eventBus = useEventBus();
 
   const [isOpenCreateTableDialog, setIsOpenCreateTableDialog] = useState(false);
 
@@ -72,16 +76,53 @@ export const EditTableMap = () => {
     }
   };
 
+  const onClickAction = async (table) => {
+    try {
+      dispatch(commonActions.openLinearLoading());
+      if (table.deletedAt === null) {
+        if (confirm(__("custom.delete-table-confirm", { table: table.id }))) {
+          await dispatch(tableAsyncActions.adminDeleteTable(table)).unwrap();
+          eventBus.emit(EVENT_BUS.deleteTable, { id: table.id });
+          setTables((state) =>
+            state.map((currentTable) =>
+              currentTable.id === table.id ? { ...currentTable, deletedAt: Date.now() } : currentTable,
+            ),
+          );
+        }
+      } else {
+        if (confirm(__("custom.restore-table-confirm", { table: table.id }))) {
+          await dispatch(tableAsyncActions.adminRestoreTable(table)).unwrap();
+          setTables((state) =>
+            state.map((currentTable) =>
+              currentTable.id === table.id ? { ...currentTable, deletedAt: null } : currentTable,
+            ),
+          );
+        }
+      }
+      dispatch(commonActions.closeLinearLoading());
+    } catch (error) {
+      dispatch(commonActions.closeLinearLoading());
+      if (error.status && error.status === 422) {
+        const notifications = Object.values(error.data.errors).map((e) => PrimaryNotificationModel("error", e[0]));
+        dispatch(commonActions.appendPrimaryNotification(JSON.stringify(notifications)));
+      } else {
+        dispatch(
+          commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+        );
+      }
+    }
+  };
+
   useEffect(() => {
     const getTables = async () => {
+      dispatch(commonActions.openLinearLoading());
       const data = await dispatch(tableAsyncActions.getTables()).unwrap();
       setTables(data.map((table) => ({ ...table, state: STATE_EDITED.value })));
+      dispatch(commonActions.closeLinearLoading());
     };
 
     getTables();
   }, []);
-
-  console.log(tables);
 
   return (
     <AdminLayout>
@@ -105,29 +146,33 @@ export const EditTableMap = () => {
       </ButtonGroup>
       <FloorMap>
         {tables.map((table) =>
-          table.type === TABLE_TYPE.circle ? (
-            <CircleTable
-              key={table.id}
-              id={table.id}
-              position={[table.positionX, table.positionY]}
-              state={table.state}
-              usage={0}
-              seats={table.seats ? table.seats.length : 0}
-              seated={0}
-              onChangePosition={onTableChangePosition}
-            />
+          table.deletedAt === null ? (
+            table.type === TABLE_TYPE.circle ? (
+              <CircleTable
+                key={table.id}
+                id={table.id}
+                position={[table.positionX, table.positionY]}
+                state={table.state}
+                usage={0}
+                seats={table.seats ? table.seats.length : 0}
+                seated={0}
+                onChangePosition={onTableChangePosition}
+              />
+            ) : (
+              <SquareTable
+                key={table.id}
+                id={table.id}
+                position={[table.positionX, table.positionY]}
+                state={table.state}
+                usage={0}
+                seats={table.seats ? table.seats.length : 0}
+                seated={0}
+                dir={table.direction}
+                onChangePosition={onTableChangePosition}
+              />
+            )
           ) : (
-            <SquareTable
-              key={table.id}
-              id={table.id}
-              position={[table.positionX, table.positionY]}
-              state={table.state}
-              usage={0}
-              seats={table.seats ? table.seats.length : 0}
-              seated={0}
-              dir={table.direction}
-              onChangePosition={onTableChangePosition}
-            />
+            <Fragment key={table.id} />
           ),
         )}
       </FloorMap>
@@ -136,7 +181,12 @@ export const EditTableMap = () => {
         onClose={onCloseCreateTableDialog}
         onSubmit={onCreateNewTable}
       />
-      <DataTableDialog open={isOpenDataTableDialog} onClose={onCloseDataTableDialog} />
+      <DataTableDialog
+        open={isOpenDataTableDialog}
+        onClose={onCloseDataTableDialog}
+        tables={tables}
+        onClickAction={onClickAction}
+      />
     </AdminLayout>
   );
 };

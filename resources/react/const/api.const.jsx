@@ -19,4 +19,6 @@ export const API_ENDPOINTS = {
   adminCreateTable: "/v1/admin/tables/create",
   adminChangeTablePosition: "/v1/admin/tables/:tableId/position/update",
   adminGetTables: "/v1/admin/tables",
+  adminDeleteTable: "/v1/admin/tables/:tableId/delete",
+  adminRestoreTable: "/v1/admin/tables/:tableId/restore",
 };

@@ -55,7 +55,7 @@ return [
     "records" => "records",
     "filters" => "filters",
     "block" => "block",
-    "active" => "active",
+    "active" => "Active",
     "block-confirm-message" => "Do you want to block this person?",
     "active-confirm-message" => "Do you want to active this person?",
     "cannot-block-admin" => "Cannot block administrator",
@@ -129,4 +129,7 @@ return [
     "admin-reset-staff-password-success-msg" => "Reset this staff's password successfully",
     "show-data-table" => "Show data-table",
     "create-table-success" => "Create table successfully",
+    "show-all-tables" => "Show all tables",
+    "seats" => "Seats",
+    "restore-table-confirm" => "Are you sure to restore this table (:table)?"
 ];

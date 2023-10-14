@@ -61,8 +61,10 @@ export const CircleTable = ({ id, position, state, usage, seats, seated, onChang
   }, [floorMapPosition.current.scale, seats]);
 
   useEffect(() => {
-    if (state === STATE_EDITING.value) {
-      onDbClick();
+    if (state === STATE_EDITING.value && activeTable === null) {
+      setActiveTable(id);
+      const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
+      dragElement(element);
     }
   }, [state]);
 
