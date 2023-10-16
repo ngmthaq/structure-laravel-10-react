@@ -87,7 +87,7 @@ return [
     "staff-title" => "staff",
     "staff-manage-tables-title" => "table management",
     "staff-manage-bills-title" => "bill management",
-    "staff-order-title" => "order",
+    "staff-order-title" => "Reservations",
     "staff-order-history-title" => "order history",
     "choose-correct-input-value" => "Please choose the correct input value",
     "default-password-label" => "Staff default password",
@@ -131,5 +131,17 @@ return [
     "create-table-success" => "Create table successfully",
     "show-all-tables" => "Show all tables",
     "seats" => "Seats",
-    "restore-table-confirm" => "Are you sure to restore this table (:table)?"
+    "restore-table-confirm" => "Are you sure to restore this table (:table)?",
+    "start-time" => "Start time",
+    "finish-time" => "Finish time",
+    "number-of-adults" => "Number of adults",
+    "number-of-children" => "Number of children",
+    "order" => "Order",
+    "bill-receipt" => "Bill receipt",
+    "select-table" => "Select table",
+    "customer-name" => "Customer name",
+    "customer-phone" => "Customer phone",
+    "selected-table" => "Selected table",
+    "staff-confirmed" => "Confirmed by",
+    "tmp-create-user-msg" => "Sorry, we cannot find this user in our system, create new user first and then you can continue make an order!"
 ];
