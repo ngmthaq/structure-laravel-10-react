@@ -49,7 +49,7 @@ return [
     "password-confirmation" => "Password confirmation",
     "update-password-success" => "Update your password successfully",
     "actions" => "actions",
-    "created-at" => "created at",
+    "created-at" => "Created at",
     "show" => "show",
     "showing" => "showing :start to :end of :total entries",
     "records" => "records",

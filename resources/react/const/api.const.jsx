@@ -21,4 +21,5 @@ export const API_ENDPOINTS = {
   adminGetTables: "/v1/admin/tables",
   adminDeleteTable: "/v1/admin/tables/:tableId/delete",
   adminRestoreTable: "/v1/admin/tables/:tableId/restore",
+  staffGetActiveUsers: "/v1/staffs/users/filter",
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Autocomplete,
   Box,
@@ -17,28 +17,37 @@ import {
   Typography,
   capitalize,
 } from "@mui/material";
-import { AdminPanelSettings, KeyboardArrowRight, Remove } from "@mui/icons-material";
+import { DateTimePicker } from "@mui/x-date-pickers";
+import { useDispatch } from "react-redux";
+import { AdminPanelSettings, KeyboardArrowRight } from "@mui/icons-material";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { theme } from "../../../plugins/material.plugin";
 import { __ } from "../../../plugins/i18n.plugin";
-import { DateTimePicker } from "@mui/x-date-pickers";
+import { userAsyncActions } from "../../../reducers/user.reducer";
+import { useLoaderData } from "react-router-dom";
+import dayjs from "dayjs";
 
 export const StaffOrder = () => {
+  const dispatch = useDispatch();
+
+  const { staff } = useLoaderData();
+
   const [payload, setPayload] = useState({
     phone: "",
-    user: "",
     startTime: "",
     finishTime: "",
-    adults: "",
-    children: "",
+    adults: 0,
+    children: 0,
     table: "",
-  });
-
-  const [user, setUser] = useState({
     name: "",
     email: "",
-    phone: "",
   });
+
+  const [users, setUsers] = useState([]);
+
+  const [phones, setPhones] = useState([]);
+
+  const [tables, setTables] = useState([]);
 
   const [isOpenDialog, setIsOpenDialog] = useState(false);
 
@@ -47,24 +56,54 @@ export const StaffOrder = () => {
   };
 
   const onChangeUserForm = (e) => {
-    setUser((state) => ({ ...state, [e.target.name]: e.target.value }));
+    setPayload((state) => ({ ...state, [e.target.name]: e.target.value }));
   };
 
-  const onChangePhone = (e, value) => {
-    setPayload((state) => ({ ...state, phone: value }));
+  const onChangePhone = (e) => {
+    const user = users.find((user) => user.phone === e.target.value);
+    if (user) {
+      setPayload((state) => ({ ...state, name: user.name, email: user.email, phone: user.phone }));
+    } else {
+      setPayload((state) => ({ ...state, name: "", email: "", phone: e.target.value }));
+    }
   };
 
   const onChangeStartTime = (value) => {
-    setPayload((state) => ({ ...state, startTime: value }));
+    setPayload((state) => ({ ...state, startTime: value.format("YYYY-MM-DD hh:mm A") }));
   };
 
   const onChangeFinishTime = (value) => {
-    setPayload((state) => ({ ...state, finishTime: value }));
+    setPayload((state) => ({ ...state, finishTime: value.format("YYYY-MM-DD hh:mm A") }));
   };
 
   const onChangeInput = (e) => {
     setPayload((state) => ({ ...state, [e.target.name]: e.target.value }));
   };
+
+  const getUsers = async (phone = null) => {
+    const response = await dispatch(userAsyncActions.staffGetUsers({ phone })).unwrap();
+    setUsers(response);
+    setPhones(response.map((user) => user.phone));
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  useEffect(() => {
+    if (payload.startTime && payload.finishTime && payload.adults + payload.children > 0 && payload.phone) {
+    }
+  }, [payload]);
+
+  const isEnableTableDropDown = Boolean(
+    payload.startTime && payload.finishTime && payload.adults + payload.children > 0 && payload.phone,
+  );
+
+  const isEnableSubmit = Boolean(
+    payload.startTime && payload.finishTime && payload.adults + payload.children > 0 && payload.phone && payload.table,
+  );
+
+  console.log(isEnableTableDropDown, payload);
 
   return (
     <AdminLayout>
@@ -98,14 +137,11 @@ export const StaffOrder = () => {
         <Box component="form" sx={{ paddingTop: "24px" }}>
           <Grid container>
             <Grid item xs={4}>
-              <Autocomplete
-                disablePortal
-                options={["11111"]}
+              <TextField
+                fullWidth
                 sx={{ width: "100%", marginBottom: "16px" }}
-                onChange={onChangePhone}
-                renderInput={(params) => (
-                  <TextField {...params} fullWidth label={capitalize(__("custom.phone-number"))} />
-                )}
+                label={capitalize(__("custom.phone-number"))}
+                onInput={onChangePhone}
               />
               <DateTimePicker
                 onChange={onChangeStartTime}
@@ -126,6 +162,7 @@ export const StaffOrder = () => {
                 name="adults"
                 label={__("custom.number-of-adults")}
                 onChange={onChangeInput}
+                defaultValue={0}
               />
               <TextField
                 fullWidth
@@ -134,6 +171,7 @@ export const StaffOrder = () => {
                 name="children"
                 label={__("custom.number-of-children")}
                 onChange={onChangeInput}
+                defaultValue={0}
               />
               <FormControl fullWidth sx={{ marginBottom: "16px" }}>
                 <InputLabel id="demo-simple-select-label">{__("custom.select-table")}</InputLabel>
@@ -142,23 +180,27 @@ export const StaffOrder = () => {
                   onChange={onChangeInput}
                   label={__("custom.select-table")}
                   labelId="demo-simple-select-label"
+                  defaultValue=""
+                  disabled={!isEnableTableDropDown}
                 >
+                  <MenuItem value="">{__("custom.select-table")}</MenuItem>
                   <MenuItem value={10}>Ten</MenuItem>
                   <MenuItem value={20}>Twenty</MenuItem>
                   <MenuItem value={30}>Thirty</MenuItem>
                 </Select>
               </FormControl>
-              <Button fullWidth variant="contained" size="large">
+              <Button fullWidth variant="contained" size="large" disabled={!isEnableSubmit}>
                 {__("custom.order")}
               </Button>
             </Grid>
             <Grid item xs={8}>
               <Box
                 sx={{
-                  margin: "0 160px",
                   padding: "24px",
+                  marginLeft: "64px",
+                  height: "100%",
+                  width: "600px",
                   border: "1px solid " + theme.palette.primary.main,
-                  boxShadow: "0px 0px 4px 1px grey",
                   borderRadius: "8px",
                 }}
               >
@@ -173,28 +215,31 @@ export const StaffOrder = () => {
                   {__("custom.bill-receipt")}
                 </Typography>
                 <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.customer-phone")}:</strong>
+                  <strong>{__("custom.customer-phone")}:</strong> {payload.phone}
                 </Typography>
                 <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.customer-name")}:</strong>
+                  <strong>{__("custom.customer-name")}:</strong> {payload.name}
                 </Typography>
                 <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.start-time")}:</strong>
+                  <strong>{__("custom.start-time")}:</strong> {payload.startTime}
                 </Typography>
                 <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.finish-time")}:</strong>
+                  <strong>{__("custom.finish-time")}:</strong> {payload.finishTime}
                 </Typography>
                 <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.number-of-adults")}:</strong>
+                  <strong>{__("custom.number-of-adults")}:</strong> {payload.adults}
                 </Typography>
                 <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.number-of-children")}:</strong>
+                  <strong>{__("custom.number-of-children")}:</strong> {payload.children}
                 </Typography>
                 <Typography sx={{ margin: "16px" }}>
                   <strong>{__("custom.selected-table")}:</strong>
                 </Typography>
                 <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.staff-confirmed")}:</strong>
+                  <strong>{__("custom.staff-confirmed")}:</strong> {staff.name}
+                </Typography>
+                <Typography sx={{ margin: "16px" }}>
+                  <strong>{__("custom.created-at")}:</strong> {dayjs().format("YYYY/MM/DD")}
                 </Typography>
               </Box>
             </Grid>

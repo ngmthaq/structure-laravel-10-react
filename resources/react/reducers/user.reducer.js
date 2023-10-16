@@ -83,6 +83,24 @@ export const userAsyncActions = {
       );
     }
   }),
+
+  staffGetUsers: createAsyncThunk("user/staffGetUsers", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.get(API_ENDPOINTS.staffGetActiveUsers, decamelizeKeys(payload));
+
+      return thunk.fulfillWithValue(response.data);
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
 };
 
 const slice = createSlice({
