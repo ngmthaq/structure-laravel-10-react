@@ -84,10 +84,6 @@ export const StaffOrder = () => {
     }
   }, [payload]);
 
-  const isEnableTableDropDown = Boolean(
-    payload.startTime && payload.finishTime && payload.adults + payload.children > 0 && payload.phone,
-  );
-
   const isEnableSubmit = Boolean(
     payload.startTime && payload.finishTime && payload.adults + payload.children > 0 && payload.phone && payload.table,
   );
