@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Autocomplete,
   Box,
   Button,
   Dialog,
@@ -8,29 +7,21 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControl,
   Grid,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
-  capitalize,
 } from "@mui/material";
-import { DateTimePicker } from "@mui/x-date-pickers";
 import { useDispatch } from "react-redux";
 import { AdminPanelSettings, KeyboardArrowRight } from "@mui/icons-material";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { theme } from "../../../plugins/material.plugin";
 import { __ } from "../../../plugins/i18n.plugin";
 import { userAsyncActions } from "../../../reducers/user.reducer";
-import { useLoaderData } from "react-router-dom";
-import dayjs from "dayjs";
+import { OrderForm } from "./OrderForm";
+import { FloorMap } from "../../../components/FloorMap";
 
 export const StaffOrder = () => {
   const dispatch = useDispatch();
-
-  const { staff } = useLoaderData();
 
   const [payload, setPayload] = useState({
     phone: "",
@@ -38,14 +29,13 @@ export const StaffOrder = () => {
     finishTime: "",
     adults: 0,
     children: 0,
-    table: "",
+    tables: [],
+    seats: [],
     name: "",
     email: "",
   });
 
   const [users, setUsers] = useState([]);
-
-  const [phones, setPhones] = useState([]);
 
   const [tables, setTables] = useState([]);
 
@@ -83,7 +73,6 @@ export const StaffOrder = () => {
   const getUsers = async (phone = null) => {
     const response = await dispatch(userAsyncActions.staffGetUsers({ phone })).unwrap();
     setUsers(response);
-    setPhones(response.map((user) => user.phone));
   };
 
   useEffect(() => {
@@ -102,8 +91,6 @@ export const StaffOrder = () => {
   const isEnableSubmit = Boolean(
     payload.startTime && payload.finishTime && payload.adults + payload.children > 0 && payload.phone && payload.table,
   );
-
-  console.log(isEnableTableDropDown, payload);
 
   return (
     <AdminLayout>
@@ -136,111 +123,26 @@ export const StaffOrder = () => {
         </Box>
         <Box component="form" sx={{ paddingTop: "24px" }}>
           <Grid container>
-            <Grid item xs={4}>
-              <TextField
-                fullWidth
-                sx={{ width: "100%", marginBottom: "16px" }}
-                label={capitalize(__("custom.phone-number"))}
-                onInput={onChangePhone}
+            <Grid item xs={4} sx={{ height: "100%" }}>
+              <OrderForm
+                onChangeFinishTime={onChangeFinishTime}
+                onChangeStartTime={onChangeStartTime}
+                onChangeInput={onChangeInput}
+                onChangePhone={onChangePhone}
+                payload={payload}
+                isEnableSubmit={isEnableSubmit}
               />
-              <DateTimePicker
-                onChange={onChangeStartTime}
-                sx={{ width: "100%", marginBottom: "16px" }}
-                label={__("custom.start-time")}
-                views={["year", "month", "day", "hours", "minutes"]}
-              />
-              <DateTimePicker
-                onChange={onChangeFinishTime}
-                sx={{ width: "100%", marginBottom: "16px" }}
-                label={__("custom.finish-time")}
-                views={["year", "month", "day", "hours", "minutes"]}
-              />
-              <TextField
-                fullWidth
-                sx={{ marginBottom: "16px" }}
-                type="number"
-                name="adults"
-                label={__("custom.number-of-adults")}
-                onChange={onChangeInput}
-                defaultValue={0}
-              />
-              <TextField
-                fullWidth
-                sx={{ marginBottom: "16px" }}
-                type="number"
-                name="children"
-                label={__("custom.number-of-children")}
-                onChange={onChangeInput}
-                defaultValue={0}
-              />
-              <FormControl fullWidth sx={{ marginBottom: "16px" }}>
-                <InputLabel id="demo-simple-select-label">{__("custom.select-table")}</InputLabel>
-                <Select
-                  name="table"
-                  onChange={onChangeInput}
-                  label={__("custom.select-table")}
-                  labelId="demo-simple-select-label"
-                  defaultValue=""
-                  disabled={!isEnableTableDropDown}
-                >
-                  <MenuItem value="">{__("custom.select-table")}</MenuItem>
-                  <MenuItem value={10}>Ten</MenuItem>
-                  <MenuItem value={20}>Twenty</MenuItem>
-                  <MenuItem value={30}>Thirty</MenuItem>
-                </Select>
-              </FormControl>
-              <Button fullWidth variant="contained" size="large" disabled={!isEnableSubmit}>
-                {__("custom.order")}
-              </Button>
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={8} sx={{ height: "100%" }}>
               <Box
                 sx={{
-                  padding: "24px",
-                  marginLeft: "64px",
-                  height: "100%",
-                  width: "600px",
+                  marginLeft: "32px",
                   border: "1px solid " + theme.palette.primary.main,
-                  borderRadius: "8px",
+                  height: "600px",
+                  borderRadius: "2px",
                 }}
               >
-                <Typography
-                  variant="h5"
-                  sx={{
-                    textAlign: "center",
-                    borderBottom: "1px solid " + theme.palette.primary.main,
-                    color: theme.palette.primary.dark,
-                  }}
-                >
-                  {__("custom.bill-receipt")}
-                </Typography>
-                <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.customer-phone")}:</strong> {payload.phone}
-                </Typography>
-                <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.customer-name")}:</strong> {payload.name}
-                </Typography>
-                <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.start-time")}:</strong> {payload.startTime}
-                </Typography>
-                <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.finish-time")}:</strong> {payload.finishTime}
-                </Typography>
-                <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.number-of-adults")}:</strong> {payload.adults}
-                </Typography>
-                <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.number-of-children")}:</strong> {payload.children}
-                </Typography>
-                <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.selected-table")}:</strong>
-                </Typography>
-                <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.staff-confirmed")}:</strong> {staff.name}
-                </Typography>
-                <Typography sx={{ margin: "16px" }}>
-                  <strong>{__("custom.created-at")}:</strong> {dayjs().format("YYYY/MM/DD")}
-                </Typography>
+                <FloorMap zoom={false}></FloorMap>
               </Box>
             </Grid>
           </Grid>

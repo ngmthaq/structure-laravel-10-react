@@ -107,6 +107,8 @@ export const tableAsyncActions = {
       );
     }
   }),
+
+  staffGetAvailableTables: createAsyncThunk("table/staffGetAvailableTables", async (payload, thunk) => {}),
 };
 
 const slice = createSlice({

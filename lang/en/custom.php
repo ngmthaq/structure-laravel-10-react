@@ -143,5 +143,6 @@ return [
     "customer-phone" => "Customer phone",
     "selected-table" => "Selected table",
     "staff-confirmed" => "Confirmed by",
-    "tmp-create-user-msg" => "Sorry, we cannot find this user in our system, create new user first and then you can continue make an order!"
+    "tmp-create-user-msg" => "Sorry, we cannot find this user in our system, create new user first and then you can continue make an order!",
+    "user-not-found" => "User not found"
 ];

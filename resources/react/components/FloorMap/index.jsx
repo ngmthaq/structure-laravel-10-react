@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useRef, useState } from "react";
+import React, { Fragment, createContext, useEffect, useRef, useState } from "react";
 import { useLoaderData } from "react-router-dom";
 import { Box, Button, ButtonGroup } from "@mui/material";
 import { Add, Remove } from "@mui/icons-material";
@@ -14,7 +14,7 @@ export const FloorMapContext = createContext();
 
 export const floorMapZoomEvent = "floorMapZoomEvent";
 
-export const FloorMap = ({ children }) => {
+export const FloorMap = ({ children, zoom = true }) => {
   const { conf } = useLoaderData();
 
   const eventBus = useEventBus();
@@ -152,24 +152,28 @@ export const FloorMap = ({ children }) => {
 
   return (
     <FloorMapContext.Provider value={contextValue}>
-      <ButtonGroup orientation="vertical" sx={{ position: "absolute", top: "16px", left: "16px", zIndex: 2 }}>
-        <Button
-          sx={{ width: "40px", height: "40px", background: "#fff !important", color: theme.palette.primary.main }}
-          title={__("custom.zoom-in")}
-          variant="outlined"
-          onClick={zoomIn}
-        >
-          <Add fontSize="small" />
-        </Button>
-        <Button
-          sx={{ width: "40px", height: "40px", background: "#fff !important", color: theme.palette.primary.main }}
-          title={__("custom.zoom-out")}
-          variant="outlined"
-          onClick={zoomOut}
-        >
-          <Remove fontSize="small" />
-        </Button>
-      </ButtonGroup>
+      {zoom ? (
+        <ButtonGroup orientation="vertical" sx={{ position: "absolute", top: "16px", left: "16px", zIndex: 2 }}>
+          <Button
+            sx={{ width: "40px", height: "40px", background: "#fff !important", color: theme.palette.primary.main }}
+            title={__("custom.zoom-in")}
+            variant="outlined"
+            onClick={zoomIn}
+          >
+            <Add fontSize="small" />
+          </Button>
+          <Button
+            sx={{ width: "40px", height: "40px", background: "#fff !important", color: theme.palette.primary.main }}
+            title={__("custom.zoom-out")}
+            variant="outlined"
+            onClick={zoomOut}
+          >
+            <Remove fontSize="small" />
+          </Button>
+        </ButtonGroup>
+      ) : (
+        <Fragment />
+      )}
       <Box sx={{ width: "100%", height: "100%", overflow: "auto", cursor: "grab" }} ref={floorContainer}>
         <Box
           ref={floor}
