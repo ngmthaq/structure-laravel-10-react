@@ -222,6 +222,10 @@ export const STATE_EDITING = { value: "Editing", color: "#FFF" };
 export const STATE_EDITED = { value: "Edited", color: "#FFF" };
 export const STATE_IN_USE = { value: "In Use", color: "#A9EAFF" };
 export const STATE_AVAILABLE = { value: "Available", color: "#FFF" };
+export const STATE_ORDER_IN_USE = { value: "Order In Use", color: "#A9EAFF" };
+export const STATE_ORDER_AVAILABLE = { value: "Order Available", color: "#FFF" };
+export const STATE_ORDERED = { value: "Ordered", color: "#FFF" };
+export const STATE_ORDER_BLOCKED = { value: "Order Blocked", color: "#DFDFDF" };
 export const STATE_OVERSTAY = { value: "Overstay", color: "#FFA4A4" };
 export const STATE_BLOCKED = { value: "Blocked", color: "#DFDFDF" };
 export const STATE_RESERVED = { value: "Reserved", color: "#A260DD" };
@@ -257,6 +261,22 @@ export const getTableColor = (state) => {
     case STATE_RESERVED.value:
       color.main = STATE_RESERVED.color;
       color.light = STATE_RESERVED.color;
+      break;
+    case STATE_ORDER_AVAILABLE.value:
+      color.main = STATE_ORDER_AVAILABLE.color;
+      color.light = STATE_ORDER_AVAILABLE.color;
+      break;
+    case STATE_ORDER_BLOCKED.value:
+      color.main = STATE_ORDER_BLOCKED.color;
+      color.light = STATE_ORDER_BLOCKED.color;
+      break;
+    case STATE_ORDER_IN_USE.value:
+      color.main = STATE_ORDER_IN_USE.color;
+      color.light = STATE_ORDER_IN_USE.color;
+      break;
+    case STATE_ORDERED.value:
+      color.main = STATE_ORDERED.color;
+      color.light = STATE_ORDERED.color;
       break;
     default:
       color.main = STATE_EDITING.color;

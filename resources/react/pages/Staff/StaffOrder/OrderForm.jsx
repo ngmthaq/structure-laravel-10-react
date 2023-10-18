@@ -13,6 +13,7 @@ export const OrderForm = ({
   onChangeInput,
   payload,
   isEnableSubmit,
+  onSubmit,
 }) => {
   const { staff } = useLoaderData();
 
@@ -47,6 +48,7 @@ export const OrderForm = ({
           sx={{ width: "100%", marginBottom: "16px" }}
           label={capitalize(__("custom.phone-number"))}
           onInput={onChangePhone}
+          value={payload.phone}
         />
         <Typography sx={{ marginBottom: "16px" }}>
           <strong>{__("custom.customer-name")}:</strong> {payload.name || __("custom.user-not-found")}
@@ -71,7 +73,7 @@ export const OrderForm = ({
             name="adults"
             label={__("custom.number-of-adults")}
             onChange={onChangeInput}
-            defaultValue={0}
+            value={payload.adults}
           />
           <TextField
             fullWidth
@@ -80,7 +82,7 @@ export const OrderForm = ({
             name="children"
             label={__("custom.number-of-children")}
             onChange={onChangeInput}
-            defaultValue={0}
+            value={payload.children}
           />
         </Box>
         <Typography sx={{ marginBottom: "16px" }}>
@@ -94,7 +96,7 @@ export const OrderForm = ({
           {payload.tables.length > 0 ? payload.tables.join(", ") : __("custom.no-table-selected")}
         </Typography>
       </Box>
-      <Button fullWidth variant="contained" size="large" disabled={!isEnableSubmit}>
+      <Button fullWidth variant="contained" size="large" disabled={!isEnableSubmit} onClick={onSubmit}>
         {__("custom.order")}
       </Button>
     </Box>

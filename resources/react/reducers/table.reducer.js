@@ -108,7 +108,26 @@ export const tableAsyncActions = {
     }
   }),
 
-  staffGetAvailableTables: createAsyncThunk("table/staffGetAvailableTables", async (payload, thunk) => {}),
+  staffGetAvailableTables: createAsyncThunk("table/staffGetAvailableTables", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.get(
+        API_ENDPOINTS.staffGetAvailableTables.replace(":tableId", payload.id),
+        decamelizeKeys({ ...payload }),
+      );
+
+      return thunk.fulfillWithValue(camelizeKeys(response.data));
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
 };
 
 const slice = createSlice({

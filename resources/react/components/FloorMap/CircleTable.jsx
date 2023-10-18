@@ -5,7 +5,9 @@ import {
   FloorMapContext,
   STATE_EDITED,
   STATE_EDITING,
-  floorMapZoomEvent,
+  STATE_ORDERED,
+  STATE_ORDER_AVAILABLE,
+  STATE_ORDER_IN_USE,
   getTableColor,
 } from "./index";
 import { CheckCircle } from "@mui/icons-material";
@@ -16,7 +18,7 @@ import { __ } from "../../plugins/i18n.plugin";
 
 const minSize = 50;
 
-export const CircleTable = ({ id, position, state, usage, seats, seated, onChangePosition }) => {
+export const CircleTable = ({ id, position, state, usage, seats, seated, onChangePosition, onReservation }) => {
   const { position: floorMapPosition, activeTable, setActiveTable } = useContext(FloorMapContext);
 
   const initSize = minSize;
@@ -30,8 +32,11 @@ export const CircleTable = ({ id, position, state, usage, seats, seated, onChang
       setActiveTable(id);
       const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
       dragElement(element);
-    } else {
-      // TODO: Handle db click in another mode
+    } else if (
+      (state === STATE_ORDER_AVAILABLE.value || state === STATE_ORDER_IN_USE.value || state === STATE_ORDERED.value) &&
+      onReservation
+    ) {
+      onReservation(id);
     }
   };
 
@@ -125,7 +130,10 @@ export const CircleTable = ({ id, position, state, usage, seats, seated, onChang
           filter: `drop-shadow(0px 1px 3px rgba(0, 0, 0, 0.20)) 
                     drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.12)) 
                     drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.14))`,
-          boxShadow: activeTable === id ? "0px 0px 8px 2px " + theme.palette.primary.main : "unset",
+          boxShadow:
+            activeTable === id || state === STATE_ORDERED.value
+              ? "0px 0px 8px 2px " + theme.palette.primary.main
+              : "unset",
         }}
       >
         <Box

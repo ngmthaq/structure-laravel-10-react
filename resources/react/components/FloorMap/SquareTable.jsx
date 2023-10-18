@@ -1,6 +1,6 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/material";
-import { BLOCKED_TABLE_STATES, FloorMapContext, STATE_EDITED, STATE_EDITING, getTableColor } from "./index";
+import { BLOCKED_TABLE_STATES, FloorMapContext, STATE_EDITED, STATE_EDITING, STATE_ORDERED, STATE_ORDER_AVAILABLE, STATE_ORDER_IN_USE, getTableColor } from "./index";
 import { CheckCircle } from "@mui/icons-material";
 import { createArrayFromNumber, isObjDeepEqual } from "../../helpers/reference.helper";
 import { theme } from "../../plugins/material.plugin";
@@ -10,7 +10,7 @@ import { TABLE_DIR } from "../../const/app.const";
 
 const minSize = 50;
 
-export const SquareTable = ({ id, position, state, usage, seats, seated, onChangePosition, dir }) => {
+export const SquareTable = ({ id, position, state, usage, seats, seated, onChangePosition, dir, onReservation }) => {
   const { position: floorMapPosition, activeTable, setActiveTable } = useContext(FloorMapContext);
 
   const initSize = minSize;
@@ -24,8 +24,11 @@ export const SquareTable = ({ id, position, state, usage, seats, seated, onChang
       setActiveTable(id);
       const element = document.querySelector(`.floor-circle-table[data-id="${id}"]`);
       dragElement(element);
-    } else {
-      // TODO: Handle db click in another mode
+    } else if (
+      (state === STATE_ORDER_AVAILABLE.value || state === STATE_ORDER_IN_USE.value || state === STATE_ORDERED.value) &&
+      onReservation
+    ) {
+      onReservation(id);
     }
   };
 
@@ -118,7 +121,10 @@ export const SquareTable = ({ id, position, state, usage, seats, seated, onChang
           filter: `drop-shadow(0px 1px 3px rgba(0, 0, 0, 0.20)) 
                     drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.12)) 
                     drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.14))`,
-          boxShadow: activeTable === id ? "0px 0px 8px 2px " + theme.palette.primary.main : "unset",
+          boxShadow:
+            activeTable === id || state === STATE_ORDERED.value
+              ? "0px 0px 8px 2px " + theme.palette.primary.main
+              : "unset",
         }}
       >
         <Box

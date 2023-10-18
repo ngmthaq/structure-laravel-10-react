@@ -23,10 +23,8 @@ class GetAvailableTablesRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            "phone" => "required|exists:users,phone",
             "start_time" => "required|date|after_or_equal:today",
             "finish_time" => "required|date|after_or_equal:today",
-            "seats" => "required|integer|min:1"
         ];
     }
 }

@@ -123,7 +123,7 @@ return [
     "square" => "Square",
     "circle" => "Circle",
     "seat-number" => "Seat number",
-    "db-click-table-tooltips" => "Double click to change this table position",
+    "db-click-table-tooltips" => "Double click to select this table",
     "create-new-staff-subtitle" => "To create new staff, please fill out all fields in the form below.",
     "admin-create-staff-success-msg" => "Create new staff successfully",
     "admin-reset-staff-password-success-msg" => "Reset this staff's password successfully",
@@ -143,6 +143,6 @@ return [
     "customer-phone" => "Customer phone",
     "selected-table" => "Selected table",
     "staff-confirmed" => "Confirmed by",
-    "tmp-create-user-msg" => "Sorry, we cannot find this user in our system, create new user first and then you can continue make an order!",
+    "tmp-create-user-msg" => "Sorry, we cannot find this user in our system, create new user first and then you can continue make the order!",
     "user-not-found" => "User not found"
 ];
