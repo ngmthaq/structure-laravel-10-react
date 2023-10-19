@@ -144,5 +144,7 @@ return [
     "selected-table" => "Selected table",
     "staff-confirmed" => "Confirmed by",
     "tmp-create-user-msg" => "Sorry, we cannot find this user in our system, create new user first and then you can continue make the order!",
-    "user-not-found" => "User not found"
+    "user-not-found" => "User not found",
+    "create-order-success" => "Create order successfully",
+    "quick-create-user-success" => "Create user successfully, you can continue to make the order for your client"
 ];

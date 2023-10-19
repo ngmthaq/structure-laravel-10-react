@@ -32,6 +32,7 @@ export const userAsyncActions = {
       );
     }
   }),
+
   adminBlockUser: createAsyncThunk("user/adminBlockUser", async (payload, thunk) => {
     try {
       const api = new AuthStaffApi();
@@ -49,6 +50,7 @@ export const userAsyncActions = {
       );
     }
   }),
+
   adminUnBlockUser: createAsyncThunk("user/adminUnBlockUser", async (payload, thunk) => {
     try {
       const api = new AuthStaffApi();
@@ -66,6 +68,7 @@ export const userAsyncActions = {
       );
     }
   }),
+
   adminCreateUser: createAsyncThunk("user/adminCreateUser", async (payload, thunk) => {
     try {
       const api = new AuthStaffApi();
@@ -88,6 +91,24 @@ export const userAsyncActions = {
     try {
       const api = new AuthStaffApi();
       const response = await api.get(API_ENDPOINTS.staffGetActiveUsers, decamelizeKeys(payload));
+
+      return thunk.fulfillWithValue(response.data);
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
+
+  staffQuickCreateUser: createAsyncThunk("user/staffQuickCreateUser", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.post(API_ENDPOINTS.staffQuickCreateUser, decamelizeKeys(payload));
 
       return thunk.fulfillWithValue(response.data);
     } catch (error) {

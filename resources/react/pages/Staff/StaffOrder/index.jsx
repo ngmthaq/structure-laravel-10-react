@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { AdminPanelSettings, KeyboardArrowRight } from "@mui/icons-material";
+import dayjs from "dayjs";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { theme } from "../../../plugins/material.plugin";
 import { __ } from "../../../plugins/i18n.plugin";
@@ -30,21 +31,24 @@ import { tableAsyncActions } from "../../../reducers/table.reducer";
 import { CircleTable } from "../../../components/FloorMap/CircleTable";
 import { SquareTable } from "../../../components/FloorMap/SquareTable";
 import { TABLE_TYPE } from "../../../const/app.const";
-import { generateRandomString } from "../../../helpers/primitive.helper";
+import { commonActions } from "../../../reducers/common.reducer";
+import { billAsyncActions } from "../../../reducers/bill.reducer";
+import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
 
 export const StaffOrder = () => {
   const dispatch = useDispatch();
 
   const [payload, setPayload] = useState({
     phone: "",
-    startTime: "",
-    finishTime: "",
+    startTime: dayjs().format("YYYY-MM-DD hh:mm A"),
+    finishTime: dayjs().format("YYYY-MM-DD hh:mm A"),
     adults: 0,
     children: 0,
     tables: [],
     seats: [],
     name: "",
     email: "",
+    id: "",
   });
 
   const [users, setUsers] = useState([]);
@@ -58,27 +62,94 @@ export const StaffOrder = () => {
   };
 
   const onCloseDialog = () => {
-    setIsOpenDialog(false);
+    if (payload.name !== "" && payload.email !== "" && confirm(__("custom.confirm-lost-changed"))) {
+      setIsOpenDialog(false);
+      setPayload((state) => ({ ...state, name: "", email: "" }));
+    }
   };
 
   const onSubmit = () => {
-    if (payload.name === "") {
+    if (payload.id === "") {
       onOpenDialog();
     } else {
-      console.log(payload);
+      onCreateOrder();
+    }
+  };
+
+  const onCreateOrder = async () => {
+    try {
+      dispatch(commonActions.openLinearLoading());
+      const availableSeats = tables.reduce((array, currentTable) => {
+        if (payload.tables.includes(currentTable.id)) {
+          console.log(currentTable);
+          const seats = currentTable.seats.filter((seat) => seat.isSeated === false).map((seat) => seat.id);
+          array = array.concat(seats);
+        }
+        return array;
+      }, []);
+      await dispatch(
+        billAsyncActions.staffOrder({
+          userId: payload.id,
+          startAt: payload.startTime,
+          endAt: payload.finishTime,
+          adults: payload.adults,
+          children: payload.children,
+          availableSeats: availableSeats,
+        }),
+      ).unwrap();
+      alert(__("custom.create-order-success"));
+      location.reload();
+      dispatch(commonActions.closeLinearLoading());
+    } catch (error) {
+      dispatch(commonActions.closeLinearLoading());
+      if (error.status && error.status === 422) {
+        const notifications = Object.values(error.data.errors).map((e) => PrimaryNotificationModel("error", e[0]));
+        dispatch(commonActions.appendPrimaryNotification(JSON.stringify(notifications)));
+      } else {
+        dispatch(
+          commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+        );
+      }
+    }
+  };
+
+  const onQuickCreateUser = async () => {
+    try {
+      dispatch(commonActions.openLinearLoading());
+      const response = await dispatch(userAsyncActions.staffQuickCreateUser(payload)).unwrap();
+      setPayload((state) => ({ ...state, id: response.id }));
+      dispatch(commonActions.closeLinearLoading());
+      setIsOpenDialog(false);
+      alert(__("custom.quick-create-user-success"));
+    } catch (error) {
+      dispatch(commonActions.closeLinearLoading());
+      if (error.status && error.status === 422) {
+        const notifications = Object.values(error.data.errors).map((e) => PrimaryNotificationModel("error", e[0]));
+        dispatch(commonActions.appendPrimaryNotification(JSON.stringify(notifications)));
+      } else {
+        dispatch(
+          commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+        );
+      }
     }
   };
 
   const onChangeUserForm = (e) => {
-    setPayload((state) => ({ ...state, [e.target.name]: e.target.value, tables: [] }));
+    setPayload((state) => ({ ...state, [e.target.name]: e.target.value }));
   };
 
   const onChangePhone = (e) => {
     const user = users.find((user) => user.phone === e.target.value);
     if (user) {
-      setPayload((state) => ({ ...state, name: user.name, email: user.email, phone: user.phone, tables: [] }));
+      setPayload((state) => ({
+        ...state,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        id: user.id,
+      }));
     } else {
-      setPayload((state) => ({ ...state, name: "", email: "", phone: e.target.value, tables: [] }));
+      setPayload((state) => ({ ...state, name: "", email: "", phone: e.target.value, id: "" }));
     }
   };
 
@@ -111,7 +182,7 @@ export const StaffOrder = () => {
   };
 
   const getAvailableTables = async () => {
-    if (payload.startTime && payload.finishTime && payload.adults + payload.children > 0 && payload.phone) {
+    if (payload.startTime && payload.finishTime && payload.adults + payload.children > 0) {
       const response = await dispatch(
         tableAsyncActions.staffGetAvailableTables({ ...payload, seats: payload.adults + payload.children }),
       ).unwrap();
@@ -144,7 +215,7 @@ export const StaffOrder = () => {
 
   useEffect(() => {
     getAvailableTables();
-  }, [payload.adults, payload.children, payload.phone, payload.startTime, payload.finishTime]);
+  }, [payload.adults, payload.children, payload.startTime, payload.finishTime]);
 
   const isEnableSubmit = Boolean(
     payload.startTime &&
@@ -248,6 +319,7 @@ export const StaffOrder = () => {
             label={__("custom.name")}
             name="name"
             onChange={onChangeUserForm}
+            value={payload.name}
             sx={{
               marginBottom: "16px",
               textTransform: "capitalize",
@@ -256,6 +328,7 @@ export const StaffOrder = () => {
           <TextField
             fullWidth
             label={__("custom.email")}
+            value={payload.email}
             name="email"
             onChange={onChangeUserForm}
             sx={{
@@ -265,7 +338,7 @@ export const StaffOrder = () => {
           />
         </DialogContent>
         <DialogActions>
-          <Button>{__("custom.create")}</Button>
+          <Button onClick={onQuickCreateUser}>{__("custom.create")}</Button>
         </DialogActions>
       </Dialog>
     </AdminLayout>
