@@ -7,7 +7,9 @@ use App\Http\Requests\V1\Staff\GetAvailableTablesRequest;
 use App\Models\Bill;
 use App\Models\Seat;
 use App\Models\Table;
+use DateTimeZone;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class TableController extends Controller
 {
@@ -26,16 +28,34 @@ class TableController extends Controller
     {
         $bills = $this->bill->with(["seats", "seats.table"])->get();
 
+        $bills = $bills->filter(function ($bill) {
+            return $bill->cancel_at === null;
+        });
+
+        $bills = $bills->map(function ($bill) {
+            if ($bill->completed_at === null) {
+                if (Carbon::now()->greaterThanOrEqualTo(Carbon::createFromTimeString($bill->end_at))) {
+                    $bill->handle_end_at = Carbon::now()->addMinutes(5)->toAtomString();
+                } else {
+                    $bill->handle_end_at = $bill->end_at;
+                }
+            } else {
+                $bill->handle_end_at = $bill->completed_at;
+            }
+
+            return $bill;
+        });
+
         $bills = $bills->filter(function ($bill) use ($request) {
             return (
                 (strtotime($bill->start_at) < strtotime($request->query("finish_time"))
                     && strtotime($bill->start_at) > strtotime($request->query("start_time")))
-                || (strtotime($bill->end_at) > strtotime($request->query("start_time"))
-                    && strtotime($bill->end_at) < strtotime($request->query("finish_time")))
+                || (strtotime($bill->handle_end_at) > strtotime($request->query("start_time"))
+                    && strtotime($bill->handle_end_at) < strtotime($request->query("finish_time")))
                 || (strtotime($bill->start_at) < strtotime($request->query("start_time"))
-                    && strtotime($bill->end_at) > strtotime($request->query("finish_time")))
+                    && strtotime($bill->handle_end_at) > strtotime($request->query("finish_time")))
                 || (strtotime($bill->start_at) > strtotime($request->query("start_time"))
-                    && strtotime($bill->end_at) < strtotime($request->query("finish_time")))
+                    && strtotime($bill->handle_end_at) < strtotime($request->query("finish_time")))
             );
         });
 
