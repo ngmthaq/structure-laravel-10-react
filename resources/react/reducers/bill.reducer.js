@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { camelizeKeys, decamelize, decamelizeKeys } from "humps";
+import { camelizeKeys, decamelizeKeys } from "humps";
 import { AuthStaffApi } from "../api/auth.staff.api";
 import { API_ENDPOINTS } from "../const/api.const";
 
@@ -13,7 +13,25 @@ export const billAsyncActions = {
       const api = new AuthStaffApi();
       const response = await api.post(API_ENDPOINTS.staffOrder, decamelizeKeys(payload));
 
-      return thunk.fulfillWithValue(response.data);
+      return thunk.fulfillWithValue(camelizeKeys(response.data));
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
+
+  getAllBills: createAsyncThunk("bill/getAllBills", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.get(API_ENDPOINTS.getAllBills, decamelizeKeys(payload));
+
+      return thunk.fulfillWithValue(camelizeKeys(response.data));
     } catch (error) {
       console.error(error);
 

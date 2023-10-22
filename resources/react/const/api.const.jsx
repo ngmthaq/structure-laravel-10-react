@@ -25,4 +25,5 @@ export const API_ENDPOINTS = {
   staffQuickCreateUser: "/v1/staffs/users/create",
   staffGetAvailableTables: "/v1/staffs/tables/available",
   staffOrder: "/v1/staffs/reservations/create",
+  getAllBills: "/v1/staffs/bills",
 };

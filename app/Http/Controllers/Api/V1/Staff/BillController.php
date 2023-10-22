@@ -52,4 +52,17 @@ class BillController extends Controller
             ], 500);
         }
     }
+
+    public function getAllBills()
+    {
+        $bills = $this->bill->with(["user", "staff", "seats", "seats.table"])->get();
+
+        $bills = $bills->map(function ($bill) {
+            $bill->tables = array_unique($bill->seats->pluck("table_id")->toArray());
+
+            return $bill;
+        });
+
+        return response()->json($bills);
+    }
 }
