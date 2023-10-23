@@ -33,7 +33,8 @@ class BillController extends Controller
             $bill->staff_id = request()->user('staff')->id;
             $bill->save();
 
-            foreach ($request->input("available_seats") as $seat) {
+            for ($i = 0; $i < $bill->adults + $bill->children; $i++) {
+                $seat = $request->input("available_seats")[$i];
                 $bill->seats()->attach(["seat_id" => $seat]);
             }
 
@@ -55,10 +56,10 @@ class BillController extends Controller
 
     public function getAllBills()
     {
-        $bills = $this->bill->with(["user", "staff", "seats", "seats.table"])->get();
+        $bills = $this->bill->with(["user", "staff", "seats", "seats.table"])->orderByDesc("id")->get();
 
         $bills = $bills->map(function ($bill) {
-            $bill->tables = array_unique($bill->seats->pluck("table_id")->toArray());
+            $bill->tables = array_values(array_unique($bill->seats->pluck("table_id")->toArray()));
 
             return $bill;
         });

@@ -81,7 +81,6 @@ export const StaffOrder = () => {
       dispatch(commonActions.openLinearLoading());
       const availableSeats = tables.reduce((array, currentTable) => {
         if (payload.tables.includes(currentTable.id)) {
-          console.log(currentTable);
           const seats = currentTable.seats.filter((seat) => seat.isSeated === false).map((seat) => seat.id);
           array = array.concat(seats);
         }
@@ -97,9 +96,9 @@ export const StaffOrder = () => {
           availableSeats: availableSeats,
         }),
       ).unwrap();
+      dispatch(commonActions.closeLinearLoading());
       alert(__("custom.create-order-success"));
       location.reload();
-      dispatch(commonActions.closeLinearLoading());
     } catch (error) {
       dispatch(commonActions.closeLinearLoading());
       if (error.status && error.status === 422) {

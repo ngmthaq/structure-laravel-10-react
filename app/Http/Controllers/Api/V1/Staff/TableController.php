@@ -63,13 +63,13 @@ class TableController extends Controller
             return $bill->seats->map(function ($seat) {
                 return $seat->id;
             });
-        });
+        })->flatten();
 
         $tables = $this->table->with("seats")->get();
 
         $tables = $tables->map(function ($table) use ($seated_ids) {
             $table->seats = $table->seats->map(function ($seat) use ($seated_ids) {
-                $seat->is_seated = in_array($seat->id, $seated_ids->flatten()->unique()->toArray());
+                $seat->is_seated = $seated_ids->contains($seat->id);
             });
 
             return $table;
