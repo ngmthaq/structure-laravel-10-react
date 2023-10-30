@@ -1,8 +1,28 @@
 import React, { Fragment } from "react";
 import dayjs from "dayjs";
-import { Avatar, Box, Button, Card, CardActions, CardHeader, Dialog, DialogContent, Typography } from "@mui/material";
+import {
+  Avatar,
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardHeader,
+  Dialog,
+  DialogContent,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Typography,
+} from "@mui/material";
 import { Cancel, DoneAll, PeopleAlt, RocketLaunch, TableBar, Verified } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
 import { getStatusOfBill } from "./BillCard";
+import { commonActions } from "../../../reducers/common.reducer";
+import { billAsyncActions } from "../../../reducers/bill.reducer";
 
 export const SelectedBillDialog = ({ bill, onClose }) => {
   return (
@@ -61,6 +81,56 @@ export const SelectedBillDialog = ({ bill, onClose }) => {
                 {getStatusOfBill(bill)?.icon}
               </Box>
             </CardActions>
+            <CardContent>
+              <TableContainer component={Paper}>
+                <Table aria-label="simple table">
+                  <TableBody>
+                    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      <TableCell component="th" scope="row">
+                        Reservation Start At
+                      </TableCell>
+                      <TableCell align="right">{dayjs(bill.startAt).format("DD/MM/YYYY HH:mm")}</TableCell>
+                    </TableRow>
+                    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      <TableCell component="th" scope="row">
+                        Reservation End At
+                      </TableCell>
+                      <TableCell align="right">{dayjs(bill.endAt).format("DD/MM/YYYY HH:mm")}</TableCell>
+                    </TableRow>
+                    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      <TableCell component="th" scope="row">
+                        Confirmed At
+                      </TableCell>
+                      <TableCell align="right">{dayjs(bill.confirmedAt).format("DD/MM/YYYY HH:mm")}</TableCell>
+                    </TableRow>
+                    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      <TableCell component="th" scope="row">
+                        User Start At
+                      </TableCell>
+                      <TableCell align="right">
+                        {bill.userStartedAt ? dayjs(bill.userStartedAt).format("DD/MM/YYYY HH:mm") : ""}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      <TableCell component="th" scope="row">
+                        Completed At
+                      </TableCell>
+                      <TableCell align="right">
+                        {bill.completedAt ? dayjs(bill.completedAt).format("DD/MM/YYYY HH:mm") : ""}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                      <TableCell component="th" scope="row">
+                        Cancel At
+                      </TableCell>
+                      <TableCell align="right">
+                        {bill.cancelAt ? dayjs(bill.cancelAt).format("DD/MM/YYYY HH:mm") : ""}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </CardContent>
             <ButtonContainer bill={bill} />
           </Card>
         </DialogContent>
@@ -72,15 +142,24 @@ export const SelectedBillDialog = ({ bill, onClose }) => {
 };
 
 const ButtonContainer = ({ bill }) => {
-  if (bill.cancelAt) {
+  const dispatch = useDispatch();
+
+  const onChangeStatus = async (type) => {
+    dispatch(commonActions.openLinearLoading());
+    await dispatch(billAsyncActions.changeStatus({ id: bill.id, type: type })).unwrap();
+    location.reload();
+    dispatch(commonActions.closeLinearLoading());
+  };
+
+  if (bill.cancelAt || (bill.startAt && bill.endAt && bill.confirmedAt && bill.userStartedAt && bill.completedAt)) {
     return <Fragment />;
   }
 
   if (bill.startAt && bill.endAt && bill.confirmedAt && bill.userStartedAt) {
     return (
       <CardActions>
-        <ActionButton Icon={Verified} text="Complete" />
-        <ActionButton Icon={Cancel} text="Cancel" />
+        <ActionButton Icon={Verified} text="Complete" onClick={() => onChangeStatus("completed_at")} />
+        <ActionButton Icon={Cancel} text="Cancel" onClick={() => onChangeStatus("cancel_at")} />
       </CardActions>
     );
   }
@@ -88,8 +167,8 @@ const ButtonContainer = ({ bill }) => {
   if (bill.startAt && bill.endAt && bill.confirmedAt) {
     return (
       <CardActions>
-        <ActionButton Icon={RocketLaunch} text="Start" />
-        <ActionButton Icon={Cancel} text="Cancel" />
+        <ActionButton Icon={RocketLaunch} text="Start" onClick={() => onChangeStatus("user_started_at")} />
+        <ActionButton Icon={Cancel} text="Cancel" onClick={() => onChangeStatus("cancel_at")} />
       </CardActions>
     );
   }
@@ -97,19 +176,20 @@ const ButtonContainer = ({ bill }) => {
   if (bill.startAt && bill.endAt && !bill.confirmedAt) {
     return (
       <CardActions>
-        <ActionButton Icon={DoneAll} text="Confirm" />
-        <ActionButton Icon={Cancel} text="Cancel" />
+        <ActionButton Icon={DoneAll} text="Confirm" onClick={() => onChangeStatus("confirmed_at")} />
+        <ActionButton Icon={Cancel} text="Cancel" onClick={() => onChangeStatus("cancel_at")} />
       </CardActions>
     );
   }
 };
 
-const ActionButton = ({ Icon, text }) => {
+const ActionButton = ({ Icon, text, onClick }) => {
   return (
     <Button
       variant="contained"
       color={text === "Cancel" ? "error" : "primary"}
       sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
+      onClick={onClick}
     >
       <Typography>
         <Icon />

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Staff;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\Bill\ChangeStatusRequest;
 use App\Http\Requests\V1\Bill\StaffCreateBillRequest;
 use App\Models\Bill;
 use Illuminate\Http\Request;
@@ -65,5 +66,15 @@ class BillController extends Controller
         });
 
         return response()->json($bills);
+    }
+
+    public function changeStatus(ChangeStatusRequest $request, Bill $bill)
+    {
+        $type = $request->input("type");
+        $bill->$type = Carbon::now();
+        $bill->save();
+        $bill->refresh();
+
+        return response()->json($bill);
     }
 }

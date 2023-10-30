@@ -43,6 +43,27 @@ export const billAsyncActions = {
       );
     }
   }),
+
+  changeStatus: createAsyncThunk("bill/changeStatus", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.put(
+        API_ENDPOINTS.changeBillStatus.replace(":billId", payload.id),
+        decamelizeKeys({ ...payload, _method: "PUT" }),
+      );
+
+      return thunk.fulfillWithValue(camelizeKeys(response.data));
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
 };
 
 const slice = createSlice({

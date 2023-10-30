@@ -26,4 +26,5 @@ export const API_ENDPOINTS = {
   staffGetAvailableTables: "/v1/staffs/tables/available",
   staffOrder: "/v1/staffs/reservations/create",
   getAllBills: "/v1/staffs/bills",
+  changeBillStatus: "/v1/staffs/bills/:billId/status/update",
 };

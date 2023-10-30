@@ -21,6 +21,7 @@ Route::prefix("v1/staffs")->name("api.v1.staffs")->middleware("auth.staff")->gro
     Route::get("/users/filter", [UserController::class, "getUsers"])->name("getUsers");
     Route::get("/tables/available", [TableController::class, "getAvailableTables"])->name("getAvailableTables");
     Route::get("/bills", [BillController::class, "getAllBills"])->name("getAllBills");
+    Route::put("/bills/{bill}/status/update", [BillController::class, "changeStatus"])->name("getAllBills");
     Route::post("/users/create", [UserController::class, "quickCreateUser"])->name("quickCreateUser");
     Route::post("/reservations/create", [BillController::class, "create"])->name("createReservation");
 });

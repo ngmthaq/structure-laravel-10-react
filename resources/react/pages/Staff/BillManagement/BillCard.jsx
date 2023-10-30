@@ -79,7 +79,13 @@ export const getStatusOfBill = (bill) => {
     return { title: "Cancel", icon: <Cancel htmlColor="#757575" fontSize="small" /> };
   }
 
-  if (bill.startAt && bill.endAt && new Date(bill.endAt).valueOf() < Date.now() && !bill.userStartedAt) {
+  if (
+    bill.startAt &&
+    bill.endAt &&
+    bill.confirmedAt &&
+    new Date(bill.startAt).valueOf() < Date.now() &&
+    !bill.userStartedAt
+  ) {
     return { title: "Late", icon: <AccessAlarm htmlColor="#757575" fontSize="small" /> };
   }
 
