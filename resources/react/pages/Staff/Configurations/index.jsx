@@ -63,7 +63,7 @@ export const Configurations = () => {
 
       setConfigurations(newConfigurations);
     } catch (error) {
-      dispatch(commonActions.openLinearLoading());
+      dispatch(commonActions.closeLinearLoading());
       dispatch(
         commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
       );

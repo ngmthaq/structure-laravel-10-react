@@ -23,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { getStatusOfBill } from "./BillCard";
 import { commonActions } from "../../../reducers/common.reducer";
 import { billAsyncActions } from "../../../reducers/bill.reducer";
+import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
 
 export const SelectedBillDialog = ({ bill, onClose }) => {
   return (
@@ -101,7 +102,9 @@ export const SelectedBillDialog = ({ bill, onClose }) => {
                       <TableCell component="th" scope="row">
                         Confirmed At
                       </TableCell>
-                      <TableCell align="right">{dayjs(bill.confirmedAt).format("DD/MM/YYYY HH:mm")}</TableCell>
+                      <TableCell align="right">
+                        {bill.confirmedAt ? dayjs(bill.confirmedAt).format("DD/MM/YYYY HH:mm") : ""}
+                      </TableCell>
                     </TableRow>
                     <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
                       <TableCell component="th" scope="row">
@@ -145,10 +148,29 @@ const ButtonContainer = ({ bill }) => {
   const dispatch = useDispatch();
 
   const onChangeStatus = async (type) => {
-    dispatch(commonActions.openLinearLoading());
-    await dispatch(billAsyncActions.changeStatus({ id: bill.id, type: type })).unwrap();
-    location.reload();
-    dispatch(commonActions.closeLinearLoading());
+    if (type === "cancel_at") {
+      if (confirm("Do you want to cancel this reservation?")) {
+        onHandleChangeStatus(type);
+      }
+    } else {
+      onHandleChangeStatus(type);
+    }
+  };
+
+  const onHandleChangeStatus = async (type) => {
+    try {
+      dispatch(commonActions.openLinearLoading());
+      await dispatch(billAsyncActions.changeStatus({ id: bill.id, type: type })).unwrap();
+      alert("Change reservation status successfully!");
+      location.reload();
+      dispatch(commonActions.closeLinearLoading());
+    } catch (error) {
+      console.error(error);
+      dispatch(commonActions.closeLinearLoading());
+      dispatch(
+        commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+      );
+    }
   };
 
   if (bill.cancelAt || (bill.startAt && bill.endAt && bill.confirmedAt && bill.userStartedAt && bill.completedAt)) {
