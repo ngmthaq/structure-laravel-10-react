@@ -64,12 +64,23 @@ class TableController extends Controller
             });
         })->flatten();
 
-        $tables = $this->table->with("seats")->get();
+        $tables = $this->table->with(["seats", "seats.bills"])->get();
 
         $tables = $tables->map(function ($table) use ($seated_ids) {
             $table->seats = $table->seats->map(function ($seat) use ($seated_ids) {
                 $seat->is_seated = $seated_ids->contains($seat->id);
+                return $seat;
             });
+
+            $table->bills = $table->seats
+                ->map(function ($seat) {
+                    return $seat->bills;
+                })->flatten()
+                ->unique("id")
+                ->filter(function ($bill) {
+                    return $bill->cancel_at === null && $bill->completed_at === null;
+                })
+                ->values();
 
             return $table;
         });

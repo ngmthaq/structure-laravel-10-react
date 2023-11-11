@@ -7,7 +7,6 @@ import {
   Bookmark,
   ContentPaste,
   Dashboard,
-  History,
   Settings,
   SupervisedUserCircle,
   TableBarRounded,
@@ -95,13 +94,6 @@ export const AdminAside = () => {
       path: staffRoutes.order.path,
       title: __("custom.staff-order-title"),
       Icon: Bookmark,
-      role: ROLES.staff,
-    },
-    {
-      type: "route",
-      path: staffRoutes.orderHistory.path,
-      title: __("custom.staff-order-history-title"),
-      Icon: History,
       role: ROLES.staff,
     },
   ]);

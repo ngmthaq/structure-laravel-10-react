@@ -45,7 +45,7 @@ export const AdminLayout = ({ children }) => {
             id="admin-layout-content"
             sx={{
               height: `calc(100vh - ${ADMIN_HEADER_HEIGHT}px - (${ADMIN_HEADER_MARGIN}px * 2))`,
-              margin: "0 16px",
+              margin: "0 8px",
               marginRight: "0px",
               padding: "8px",
               background: "white",

@@ -6,7 +6,6 @@ import { TableManagement } from "../pages/Staff/TableManagement";
 import { BillManagement } from "../pages/Staff/BillManagement";
 import { Dashboard } from "../pages/Staff/Dashboard";
 import { StaffOrder } from "../pages/Staff/StaffOrder";
-import { StaffOrderHistory } from "../pages/Staff/StaffOrderHistory";
 import { EditTableMap } from "../pages/Staff/EditTableMap";
 import { PageError } from "../pages/Error";
 import { Configurations } from "../pages/Staff/Configurations";
@@ -38,12 +37,6 @@ export const staffRoutes = {
   order: {
     path: "/staff/orders/create",
     element: <StaffOrder />,
-    errorElement: <PageError />,
-    loader: staffLoader,
-  },
-  orderHistory: {
-    path: "/staff/orders/history",
-    element: <StaffOrderHistory />,
     errorElement: <PageError />,
     loader: staffLoader,
   },

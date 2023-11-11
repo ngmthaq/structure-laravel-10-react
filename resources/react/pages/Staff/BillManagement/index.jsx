@@ -8,6 +8,7 @@ import { __ } from "../../../plugins/i18n.plugin";
 import { billAsyncActions } from "../../../reducers/bill.reducer";
 import { BillCard } from "./BillCard";
 import { SelectedBillDialog } from "./SelectedBillDialog";
+import { commonActions } from "../../../reducers/common.reducer";
 
 export const BillManagement = () => {
   const dispatch = useDispatch();
@@ -36,7 +37,9 @@ export const BillManagement = () => {
 
   useEffect(() => {
     const getBills = async () => {
+      dispatch(commonActions.openLinearLoading());
       const response = await dispatch(billAsyncActions.getAllBills()).unwrap();
+      dispatch(commonActions.closeLinearLoading());
       setBills(response);
     };
 

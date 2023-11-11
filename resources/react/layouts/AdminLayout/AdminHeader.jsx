@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLoaderData, useLocation } from "react-router-dom";
 import {
@@ -6,34 +6,44 @@ import {
   Box,
   Button,
   Divider,
+  Input,
   ListItemIcon,
   ListItemText,
   MenuItem,
   MenuList,
   Paper,
   Popover,
+  TextField,
   Typography,
 } from "@mui/material";
-import { Logout, Password, Person } from "@mui/icons-material";
+import { Logout, Password, Person, Refresh } from "@mui/icons-material";
 import { __ } from "../../plugins/i18n.plugin";
 import { theme } from "../../plugins/material.plugin";
 import { authAsyncActions } from "../../reducers/auth.reducer";
 import { AdminLayoutContext } from "./index";
+import { staffRoutes } from "../../const/path.const";
+import dayjs from "dayjs";
+import { useEventBus } from "../../plugins/bus.plugin";
+import { EVENT_BUS } from "../../const/event.const";
 
 export const HEIGHT = 48;
 
-export const MARGIN = 16;
+export const MARGIN = 8;
 
 export const AdminHeader = () => {
   const dispatch = useDispatch();
 
   const location = useLocation();
 
+  const eventBus = useEventBus();
+
   const { staff } = useLoaderData();
 
   const { setIsOpenStaffInfoDialog, setIsOpenChangePasswordDialog } = useContext(AdminLayoutContext);
 
   const [avatarElement, setAvatarElement] = useState(null);
+
+  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD hh:mm:ss"));
 
   const onClickAvatar = (e) => {
     setAvatarElement(e.currentTarget);
@@ -57,6 +67,17 @@ export const AdminHeader = () => {
     onClosePopup();
   };
 
+  const onRefresh = () => {
+    const date = dayjs().format("YYYY-MM-DD hh:mm:ss");
+    setDate(date);
+    eventBus.emit(EVENT_BUS.refreshGetAvailableTable, date);
+  };
+
+  const onChangeDatetime = (e) => {
+    setDate(e.target.value || dayjs().format("YYYY-MM-DD hh:mm:ss"));
+    eventBus.emit(EVENT_BUS.refreshGetAvailableTable, e.target.value || dayjs().format("YYYY-MM-DD hh:mm:ss"));
+  };
+
   return (
     <Box
       id="admin-header"
@@ -73,7 +94,23 @@ export const AdminHeader = () => {
         justifyContent: "center",
       }}
     >
-      <Box sx={{ flex: 8 }}></Box>
+      <Box sx={{ flex: 8 }}>
+        {location.pathname === staffRoutes.tableManagement.path && (
+          <Box display="flex" alignItems="center">
+            <TextField
+              type="datetime-local"
+              variant="outlined"
+              size="small"
+              onChange={onChangeDatetime}
+              sx={{ width: "30%" }}
+              value={date}
+            />
+            <Button variant="outlined" title="Refresh" onClick={onRefresh} sx={{ height: 40, marginLeft: "4px" }}>
+              <Refresh fontSize="small" />
+            </Button>
+          </Box>
+        )}
+      </Box>
       <Box
         sx={{
           flex: 2,

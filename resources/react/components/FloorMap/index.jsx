@@ -229,6 +229,7 @@ export const STATE_ORDER_BLOCKED = { value: "Order Blocked", color: "#DFDFDF" };
 export const STATE_OVERSTAY = { value: "Overstay", color: "#FFA4A4" };
 export const STATE_BLOCKED = { value: "Blocked", color: "#DFDFDF" };
 export const STATE_RESERVED = { value: "Reserved", color: "#A260DD" };
+export const STATE_LATED = { value: "Lated", color: "#A260DD" };
 export const BLOCKED_TABLE_STATES = [STATE_EDITING.value, STATE_EDITED.value, STATE_BLOCKED.value];
 
 export const getTableColor = (state) => {
@@ -277,6 +278,10 @@ export const getTableColor = (state) => {
     case STATE_ORDERED.value:
       color.main = STATE_ORDERED.color;
       color.light = STATE_ORDERED.color;
+      break;
+    case STATE_LATED.value:
+      color.main = STATE_LATED.color;
+      color.light = STATE_LATED.color;
       break;
     default:
       color.main = STATE_EDITING.color;

@@ -35,13 +35,15 @@ import { commonActions } from "../../../reducers/common.reducer";
 import { billAsyncActions } from "../../../reducers/bill.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
 
+const now = dayjs();
+
 export const StaffOrder = () => {
   const dispatch = useDispatch();
 
   const [payload, setPayload] = useState({
     phone: "",
-    startTime: dayjs().format("YYYY-MM-DD hh:mm A"),
-    finishTime: dayjs().format("YYYY-MM-DD hh:mm A"),
+    startTime: now.clone().format("YYYY-MM-DD hh:mm A"),
+    finishTime: now.clone().format("YYYY-MM-DD hh:mm A"),
     adults: 0,
     children: 0,
     tables: [],

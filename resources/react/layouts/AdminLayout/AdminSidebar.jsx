@@ -3,7 +3,7 @@ import { Box, Typography } from "@mui/material";
 import { AdminAside } from "./AdminAside";
 import { useLoaderData } from "react-router-dom";
 
-export const WIDTH = 320;
+export const WIDTH = 260;
 
 export const LOGO_HEIGHT = 60;
 
