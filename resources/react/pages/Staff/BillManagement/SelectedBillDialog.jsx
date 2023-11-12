@@ -29,7 +29,7 @@ import { REFRESH_BILLS } from ".";
 
 export const SelectedBillDialog = ({ bill, onClose }) => {
   return (
-    <Dialog open={Boolean(bill)} onClose={onClose} fullWidth maxWidth="xs">
+    <Dialog open={Boolean(bill)} onClose={onClose} fullWidth maxWidth="sm">
       {Boolean(bill) ? (
         <DialogContent sx={{ padding: "4px" }}>
           <Card elevation={0}>
@@ -182,7 +182,11 @@ const ButtonContainer = ({ bill, onClose }) => {
 
   if (bill.startAt && bill.endAt && bill.confirmedAt && bill.userStartedAt) {
     return (
-      <CardActions>
+      <CardActions
+        sx={{
+          padding: "4px 15px 8px",
+        }}
+      >
         <ActionButton Icon={Verified} text="Complete" onClick={() => onChangeStatus("completed_at")} />
         <ActionButton Icon={Cancel} text="Cancel" onClick={() => onChangeStatus("cancel_at")} />
       </CardActions>
@@ -191,7 +195,11 @@ const ButtonContainer = ({ bill, onClose }) => {
 
   if (bill.startAt && bill.endAt && bill.confirmedAt) {
     return (
-      <CardActions>
+      <CardActions
+        sx={{
+          padding: "4px 15px 8px",
+        }}
+      >
         <ActionButton Icon={RocketLaunch} text="Start" onClick={() => onChangeStatus("user_started_at")} />
         <ActionButton Icon={Cancel} text="Cancel" onClick={() => onChangeStatus("cancel_at")} />
       </CardActions>
@@ -200,7 +208,11 @@ const ButtonContainer = ({ bill, onClose }) => {
 
   if (bill.startAt && bill.endAt && !bill.confirmedAt) {
     return (
-      <CardActions>
+      <CardActions
+        sx={{
+          padding: "4px 15px 8px",
+        }}
+      >
         <ActionButton Icon={DoneAll} text="Confirm" onClick={() => onChangeStatus("confirmed_at")} />
         <ActionButton Icon={Cancel} text="Cancel" onClick={() => onChangeStatus("cancel_at")} />
       </CardActions>
@@ -213,12 +225,17 @@ const ActionButton = ({ Icon, text, onClick }) => {
     <Button
       variant="contained"
       color={text === "Cancel" ? "error" : "primary"}
-      sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}
+      sx={{
+        flex: 1,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexDirection: "column",
+        gap: "4px",
+      }}
       onClick={onClick}
     >
-      <Typography>
-        <Icon />
-      </Typography>
+      <Icon />
       <Typography>{text}</Typography>
     </Button>
   );
