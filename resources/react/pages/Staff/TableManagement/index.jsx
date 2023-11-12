@@ -26,8 +26,8 @@ export const TableManagement = () => {
   const eventBus = useEventBus();
 
   const [payload, setPayload] = useState({
-    startTime: dayjs().format("YYYY-MM-DD hh:mm:ss"),
-    finishTime: dayjs().add(1, "hour").format("YYYY-MM-DD hh:mm:ss"),
+    startTime: dayjs().format("YYYY-MM-DD hh:mm A"),
+    finishTime: dayjs().add(1, "hour").format("YYYY-MM-DD hh:mm A"),
   });
 
   const [tables, setTables] = useState([]);
@@ -109,8 +109,8 @@ export const TableManagement = () => {
   useEffect(() => {
     const refresh = (date) => {
       setPayload({
-        startTime: date,
-        finishTime: dayjs(date).add(1, "hour").format("YYYY-MM-DD hh:mm:ss"),
+        startTime: dayjs(date).format("YYYY-MM-DD hh:mm A"),
+        finishTime: dayjs(date).add(1, "hour").format("YYYY-MM-DD hh:mm A"),
       });
     };
 
@@ -134,6 +134,7 @@ export const TableManagement = () => {
               usage={table.usage}
               seats={table.seatNumber}
               seated={table.seatedNumber}
+              bills={table.bills}
             />
           ) : (
             <SquareTable
@@ -145,6 +146,7 @@ export const TableManagement = () => {
               seats={table.seatNumber}
               seated={table.seatedNumber}
               dir={table.direction}
+              bills={table.bills}
             />
           ),
         )}

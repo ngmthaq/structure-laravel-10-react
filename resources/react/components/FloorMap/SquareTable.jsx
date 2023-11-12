@@ -3,10 +3,10 @@ import { Box, IconButton } from "@mui/material";
 import {
   BLOCKED_TABLE_STATES,
   FloorMapContext,
+  STATE_AVAILABLE,
   STATE_BLOCKED,
   STATE_EDITED,
   STATE_EDITING,
-  STATE_IN_USE,
   STATE_ORDERED,
   STATE_ORDER_AVAILABLE,
   STATE_ORDER_IN_USE,
@@ -33,7 +33,7 @@ export const SquareTable = ({
   onReservation,
   bills,
 }) => {
-  const { position: floorMapPosition, activeTable, setActiveTable } = useContext(FloorMapContext);
+  const { position: floorMapPosition, activeTable, setActiveTable, setBills } = useContext(FloorMapContext);
 
   const initSize = minSize;
 
@@ -51,8 +51,8 @@ export const SquareTable = ({
       onReservation
     ) {
       onReservation(id);
-    } else if (state !== STATE_IN_USE.value && state !== STATE_BLOCKED.value && bills && bills.length > 0) {
-      // Open dialog show bills
+    } else if (state !== STATE_AVAILABLE.value && state !== STATE_BLOCKED.value && bills && bills.length > 0) {
+      setBills(bills.map((bill) => ({ ...bill, tableId: id })));
     }
   };
 

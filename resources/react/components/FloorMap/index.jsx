@@ -7,6 +7,7 @@ import { shadeColor } from "../../helpers/primitive.helper";
 import { useEventBus } from "../../plugins/bus.plugin";
 import { EVENT_BUS } from "../../const/event.const";
 import { __ } from "../../plugins/i18n.plugin";
+import { BillsDialog } from "./BillsDialog";
 
 const square = 50;
 
@@ -46,6 +47,8 @@ export const FloorMap = ({ children, zoom = true }) => {
   const [longs, setLongs] = useState([]);
 
   const [activeTable, setActiveTable] = useState(null);
+
+  const [bills, setBills] = useState([]);
 
   const mouseMoveHandler = (e) => {
     const dx = e.clientX - position.current.x;
@@ -100,6 +103,10 @@ export const FloorMap = ({ children, zoom = true }) => {
     floor.current.style.height = newHeight + "px";
   };
 
+  const onCloseBillsDialog = () => {
+    setBills([]);
+  };
+
   useEffect(() => {
     floorContainer.current.addEventListener("mousedown", mouseDownHandler);
   }, []);
@@ -148,6 +155,7 @@ export const FloorMap = ({ children, zoom = true }) => {
     position,
     activeTable,
     setActiveTable,
+    setBills,
   };
 
   return (
@@ -214,22 +222,23 @@ export const FloorMap = ({ children, zoom = true }) => {
           ))}
         </Box>
       </Box>
+      <BillsDialog bills={bills} onClose={onCloseBillsDialog} />
     </FloorMapContext.Provider>
   );
 };
 
 export const STATE_EDITING = { value: "Editing", color: "#FFF" };
 export const STATE_EDITED = { value: "Edited", color: "#FFF" };
-export const STATE_IN_USE = { value: "In Use", color: "#A9EAFF" };
 export const STATE_AVAILABLE = { value: "Available", color: "#FFF" };
+export const STATE_ORDERED = { value: "Ordered", color: "#cfe2ff" };
+export const STATE_RESERVED = { value: "Reserved", color: "#9ec5fe" };
+export const STATE_LATED = { value: "Lated", color: "#f1aeb5" };
+export const STATE_IN_USE = { value: "In Use", color: "#a3cfbb" };
+export const STATE_OVERSTAY = { value: "Overstay", color: "#fecba1" };
+export const STATE_BLOCKED = { value: "Blocked", color: "#DFDFDF" };
 export const STATE_ORDER_IN_USE = { value: "Order In Use", color: "#FFF" };
 export const STATE_ORDER_AVAILABLE = { value: "Order Available", color: "#FFF" };
-export const STATE_ORDERED = { value: "Ordered", color: "#FFF" };
 export const STATE_ORDER_BLOCKED = { value: "Order Blocked", color: "#DFDFDF" };
-export const STATE_OVERSTAY = { value: "Overstay", color: "#FFA4A4" };
-export const STATE_BLOCKED = { value: "Blocked", color: "#DFDFDF" };
-export const STATE_RESERVED = { value: "Reserved", color: "#A260DD" };
-export const STATE_LATED = { value: "Lated", color: "#A260DD" };
 export const BLOCKED_TABLE_STATES = [STATE_EDITING.value, STATE_EDITED.value, STATE_BLOCKED.value];
 
 export const getTableColor = (state) => {

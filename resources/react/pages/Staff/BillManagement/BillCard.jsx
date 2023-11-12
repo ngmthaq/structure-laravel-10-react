@@ -4,6 +4,7 @@ import {
   Cancel,
   Check,
   DoneAllSharp,
+  LocalFireDepartment,
   PeopleAlt,
   RocketLaunch,
   TableBar,
@@ -90,6 +91,16 @@ export const getStatusOfBill = (bill) => {
 
   if (bill.startAt && bill.endAt && bill.confirmedAt && bill.userStartedAt && bill.completedAt) {
     return { title: "Completed", icon: <Verified htmlColor="#757575" fontSize="small" /> };
+  }
+
+  if (
+    bill.startAt &&
+    bill.endAt &&
+    bill.confirmedAt &&
+    bill.userStartedAt &&
+    new Date(bill.endAt).valueOf() < Date.now()
+  ) {
+    return { title: "Overstay", icon: <LocalFireDepartment htmlColor="#757575" fontSize="small" /> };
   }
 
   if (bill.startAt && bill.endAt && bill.confirmedAt && bill.userStartedAt) {

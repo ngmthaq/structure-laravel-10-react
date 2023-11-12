@@ -64,7 +64,7 @@ class TableController extends Controller
             });
         })->flatten();
 
-        $tables = $this->table->with(["seats", "seats.bills"])->get();
+        $tables = $this->table->with(["seats", "seats.bills", "seats.bills.user", "seats.bills.staff"])->get();
 
         $tables = $tables->map(function ($table) use ($seated_ids) {
             $table->seats = $table->seats->map(function ($seat) use ($seated_ids) {
@@ -80,6 +80,7 @@ class TableController extends Controller
                 ->filter(function ($bill) {
                     return $bill->cancel_at === null && $bill->completed_at === null;
                 })
+                ->sortBy('start_at')
                 ->values();
 
             return $table;
