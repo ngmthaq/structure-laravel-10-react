@@ -33,7 +33,7 @@ Route::prefix("v1")->name("api.v1.")->group(function () {
             Route::get("/", [StaffController::class, "getAllStaffs"])->name("staffs");
             Route::get("/{staff}", [StaffController::class, "getStaffInfoWithTrash"])->withTrashed()->name("staffs.staff");
             Route::get("/{staff}/strict", [StaffController::class, "getStaffInfo"])->name("staffs.staff.strict");
-            Route::put("/{staff}/block", [StaffController::class, "blockStaff"])->name("staffs.staff.block");
+            Route::put("/{staff}/block", [StaffController::class, "blockStaff"])->withTrashed()->name("staffs.staff.block");
             Route::put("/{staff}/unblock", [StaffController::class, "unblockStaff"])->withTrashed()->name("staffs.staff.unblock");
             Route::put("/{staff}/update", [StaffController::class, "updateStaffInfo"])->withTrashed()->name("staffs.staff.update");
             Route::put("/{staff}/password/reset", [StaffController::class, "resetPassword"])->name("staffs.staff.password.reset");

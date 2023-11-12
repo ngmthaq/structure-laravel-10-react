@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { camelizeKeys, decamelize, decamelizeKeys } from "humps";
 import { AuthStaffApi } from "../api/auth.staff.api";
 import { API_ENDPOINTS } from "../const/api.const";
+import dayjs from "dayjs";
 
 const state = {
   name: "user",
@@ -130,6 +131,10 @@ const slice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(userAsyncActions.getAllUsers.fulfilled, (state, action) => {
+      action.payload.data = action.payload.data.map((user) => ({
+        ...user,
+        createdAt: dayjs(user.createdAt).format("YYYY-MM-DD"),
+      }));
       state.users = action.payload;
     });
   },

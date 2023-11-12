@@ -41,23 +41,21 @@ export const OrderForm = memo(
             sx={{ width: "100%", marginBottom: "16px" }}
             label={capitalize(__("custom.phone-number"))}
             onChange={onChangePhone}
+            value={payload.phone}
           />
-          <Typography sx={{ marginBottom: "16px" }}>
-            <strong>{__("custom.customer-name")}:</strong> {payload.name || __("custom.user-not-found")}
-          </Typography>
           <DateTimePicker
             onChange={onChangeStartTime}
             sx={{ width: "100%", marginBottom: "16px" }}
             label={__("custom.start-time")}
             views={["year", "month", "day", "hours", "minutes"]}
-            defaultValue={dayjs()}
+            value={dayjs(payload.startTime)}
           />
           <DateTimePicker
             onChange={onChangeFinishTime}
             sx={{ width: "100%", marginBottom: "16px" }}
             label={__("custom.finish-time")}
             views={["year", "month", "day", "hours", "minutes"]}
-            defaultValue={dayjs()}
+            value={dayjs(payload.finishTime)}
           />
           <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <TextField
@@ -79,6 +77,9 @@ export const OrderForm = memo(
               value={payload.children}
             />
           </Box>
+          <Typography sx={{ marginBottom: "16px" }}>
+            <strong>{__("custom.customer-name")}:</strong> {payload.name || __("custom.user-not-found")}
+          </Typography>
           <Typography sx={{ marginBottom: "16px" }}>
             <strong>{__("custom.staff-confirmed")}:</strong> {staff.name}
           </Typography>

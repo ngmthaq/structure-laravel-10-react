@@ -27,7 +27,7 @@ export const TableManagement = () => {
 
   const [payload, setPayload] = useState({
     startTime: dayjs().format("YYYY-MM-DD hh:mm:ss"),
-    finishTime: dayjs().format("YYYY-MM-DD hh:mm:ss"),
+    finishTime: dayjs().add(1, "hour").format("YYYY-MM-DD hh:mm:ss"),
   });
 
   const [tables, setTables] = useState([]);
@@ -110,7 +110,7 @@ export const TableManagement = () => {
     const refresh = (date) => {
       setPayload({
         startTime: date,
-        finishTime: date,
+        finishTime: dayjs(date).add(1, "hour").format("YYYY-MM-DD hh:mm:ss"),
       });
     };
 

@@ -9,9 +9,15 @@ import { billAsyncActions } from "../../../reducers/bill.reducer";
 import { BillCard } from "./BillCard";
 import { SelectedBillDialog } from "./SelectedBillDialog";
 import { commonActions } from "../../../reducers/common.reducer";
+import dayjs from "dayjs";
+import { useEventBus } from "../../../plugins/bus.plugin";
+
+export const REFRESH_BILLS = "STAFF_REFRESH_BILL";
 
 export const BillManagement = () => {
   const dispatch = useDispatch();
+
+  const eventBus = useEventBus();
 
   const [bills, setBills] = useState([]);
 
@@ -19,8 +25,14 @@ export const BillManagement = () => {
 
   const [selectedBill, setSelectedBill] = useState(null);
 
+  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD"));
+
   const onChangePhoneInput = (e) => {
     setPhone(e.target.value);
+  };
+
+  const onChangeDate = (e) => {
+    setDate(e.target.value);
   };
 
   const filterBills = () => {
@@ -35,15 +47,23 @@ export const BillManagement = () => {
     setSelectedBill(null);
   };
 
-  useEffect(() => {
-    const getBills = async () => {
-      dispatch(commonActions.openLinearLoading());
-      const response = await dispatch(billAsyncActions.getAllBills()).unwrap();
-      dispatch(commonActions.closeLinearLoading());
-      setBills(response);
-    };
+  const getBills = async () => {
+    dispatch(commonActions.openLinearLoading());
+    const response = await dispatch(billAsyncActions.getAllBills({ date })).unwrap();
+    dispatch(commonActions.closeLinearLoading());
+    setBills(response);
+  };
 
+  useEffect(() => {
     getBills();
+  }, [date]);
+
+  useEffect(() => {
+    eventBus.on(REFRESH_BILLS, getBills);
+
+    return () => {
+      eventBus.off(REFRESH_BILLS, getBills);
+    };
   }, []);
 
   return (
@@ -76,27 +96,41 @@ export const BillManagement = () => {
             <Box component="span">{__("custom.staff-manage-bills-title")}</Box>
           </Typography>
         </Box>
-        <TextField
-          label={__("custom.search-bill-with-phone")}
-          variant="outlined"
-          size="small"
-          sx={{ width: "300px" }}
-          onInput={onChangePhoneInput}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="start">
-                <Search />
-              </InputAdornment>
-            ),
-          }}
-        />
+        <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <TextField
+            value={date}
+            variant="outlined"
+            size="small"
+            type="date"
+            sx={{ width: "200px" }}
+            onInput={onChangeDate}
+          />
+          <TextField
+            label={__("custom.search-bill-with-phone")}
+            variant="outlined"
+            size="small"
+            sx={{ width: "300px" }}
+            onInput={onChangePhoneInput}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
       </Box>
       <Grid container spacing={2} sx={{ padding: "8px" }}>
-        {filterBills().map((bill) => (
-          <Grid item xs={3} key={bill.id}>
-            <BillCard bill={bill} onClick={onClickBill} />
-          </Grid>
-        ))}
+        {filterBills().length > 0 ? (
+          filterBills().map((bill) => (
+            <Grid item xs={3} key={bill.id}>
+              <BillCard bill={bill} onClick={onClickBill} />
+            </Grid>
+          ))
+        ) : (
+          <Typography sx={{ textAlign: "center", width: "100%", marginTop: "32px" }}>No results were found</Typography>
+        )}
       </Grid>
       <SelectedBillDialog bill={selectedBill} onClose={onCloseBillDialog} />
     </AdminLayout>

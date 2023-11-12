@@ -11,9 +11,15 @@ import { commonActions } from "../../../reducers/common.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
 import { theme } from "../../../plugins/material.plugin";
 import { CreateUserDialog } from "./CreateUserDialog";
+import { useEventBus } from "../../../plugins/bus.plugin";
+import { EVENT_BUS } from "../../../const/event.const";
+
+export const CLEAR_FORM = "ADMIN_USER_MANAGEMENT_CLEAR_FORM";
 
 export const UserManagement = () => {
   const dispatch = useDispatch();
+
+  const eventBus = useEventBus();
 
   const header = useMemo(
     () => [
@@ -83,7 +89,9 @@ export const UserManagement = () => {
       await dispatch(userAsyncActions.adminCreateUser(payload)).unwrap();
       dispatch(commonActions.closeLinearLoading());
       alert(__("custom.admin-create-user-success-msg"));
-      location.reload();
+      onCloseCreateUserDialog();
+      eventBus.emit(EVENT_BUS.refreshDataTable);
+      eventBus.emit(CLEAR_FORM);
     } catch (error) {
       dispatch(commonActions.closeLinearLoading());
       if (error.status && error.status === 422) {

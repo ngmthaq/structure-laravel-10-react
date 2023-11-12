@@ -24,8 +24,8 @@ class CreateStaffRequest extends ApiRequest
     {
         return [
             "name" => "required|string",
-            "email" => "required|email|unique:users,email",
-            "phone" => "required|unique:users,phone",
+            "email" => "required|email|unique:staffs,email",
+            "phone" => "required|unique:staffs,phone",
             "date_of_birth" => "required|date",
             "address" => "required",
             "role" => "required"

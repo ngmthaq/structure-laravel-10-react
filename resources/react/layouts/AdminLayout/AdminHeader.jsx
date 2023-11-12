@@ -16,7 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { Logout, Password, Person, Refresh } from "@mui/icons-material";
+import { Logout, Password, Person, Sync } from "@mui/icons-material";
 import { __ } from "../../plugins/i18n.plugin";
 import { theme } from "../../plugins/material.plugin";
 import { authAsyncActions } from "../../reducers/auth.reducer";
@@ -106,7 +106,7 @@ export const AdminHeader = () => {
               value={date}
             />
             <Button variant="outlined" title="Refresh" onClick={onRefresh} sx={{ height: 40, marginLeft: "4px" }}>
-              <Refresh fontSize="small" />
+              <Sync fontSize="small" />
             </Button>
           </Box>
         )}

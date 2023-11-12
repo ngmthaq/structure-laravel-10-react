@@ -14,8 +14,14 @@ import { isObjDeepEqual } from "../../../helpers/reference.helper";
 import { theme } from "../../../plugins/material.plugin";
 import { CreateStaffDialog } from "./CreateStaffDialog";
 import { EditStaffDialog } from "./EditStaffDialog";
+import { useEventBus } from "../../../plugins/bus.plugin";
+import { EVENT_BUS } from "../../../const/event.const";
+
+export const CLEAR_FORM = "ADMIN_STAFF_MANAGEMENT_CLEAR_FORM";
 
 export const StaffManagement = () => {
+  const eventBus = useEventBus();
+
   const dispatch = useDispatch();
 
   const header = useMemo(
@@ -194,7 +200,8 @@ export const StaffManagement = () => {
       await dispatch(staffAsyncActions.adminUpdateStaff(staffEditDialog.data)).unwrap();
       dispatch(commonActions.closeLinearLoading());
       alert(__("custom.admin-update-staff-success-msg"));
-      location.reload();
+      setStaffEditDialog({ isEdit: false, data: null, originalData: null });
+      eventBus.emit(EVENT_BUS.refreshDataTable);
     } catch (error) {
       dispatch(commonActions.closeLinearLoading());
       if (error.status && error.status === 422) {
@@ -222,7 +229,9 @@ export const StaffManagement = () => {
       await dispatch(staffAsyncActions.adminCreateStaff(payload)).unwrap();
       dispatch(commonActions.closeLinearLoading());
       alert(__("custom.admin-create-staff-success-msg"));
-      location.reload();
+      onCloseCreateStaffDialog();
+      eventBus.emit(EVENT_BUS.refreshDataTable);
+      eventBus.emit(CLEAR_FORM);
     } catch (error) {
       dispatch(commonActions.closeLinearLoading());
       if (error.status && error.status === 422) {
@@ -248,6 +257,7 @@ export const StaffManagement = () => {
           staff.dateOfBirth,
           staff.role,
           staff.createdAt,
+          staff.deletedAt,
         );
 
         const isDeleted = staff.deletedAt;

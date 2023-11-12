@@ -273,11 +273,8 @@ export const Configurations = () => {
               <Box component="input" type="file" display="none" id="logo" onChange={onChangeLogo} />
             </Box>
           </Box>
-          <Box display="flex" justifyContent="flex-end" gap="16px">
-            <Button variant="text" size="large" type="button" onClick={() => location.reload()}>
-              {__("custom.reset")}
-            </Button>
-            <Button variant="contained" size="large" type="submit">
+          <Box>
+            <Button variant="contained" size="large" type="submit" fullWidth>
               {__("custom.submit")}
             </Button>
           </Box>

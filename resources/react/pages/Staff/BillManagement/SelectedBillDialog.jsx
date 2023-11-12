@@ -24,6 +24,8 @@ import { getStatusOfBill } from "./BillCard";
 import { commonActions } from "../../../reducers/common.reducer";
 import { billAsyncActions } from "../../../reducers/bill.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
+import { useEventBus } from "../../../plugins/bus.plugin";
+import { REFRESH_BILLS } from ".";
 
 export const SelectedBillDialog = ({ bill, onClose }) => {
   return (
@@ -34,9 +36,11 @@ export const SelectedBillDialog = ({ bill, onClose }) => {
             <CardHeader
               avatar={<Avatar>{bill.user.name.charAt(0)}</Avatar>}
               title={bill.user.name}
-              subheader={dayjs(bill.startAt).format("DD/MM/YYYY HH:mm")}
+              subheader={bill.user.phone}
             />
-            <CardActions sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <CardActions
+              sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 16px" }}
+            >
               <Box
                 sx={{
                   display: "flex",
@@ -134,7 +138,7 @@ export const SelectedBillDialog = ({ bill, onClose }) => {
                 </Table>
               </TableContainer>
             </CardContent>
-            <ButtonContainer bill={bill} />
+            <ButtonContainer bill={bill} onClose={onClose} />
           </Card>
         </DialogContent>
       ) : (
@@ -144,15 +148,13 @@ export const SelectedBillDialog = ({ bill, onClose }) => {
   );
 };
 
-const ButtonContainer = ({ bill }) => {
+const ButtonContainer = ({ bill, onClose }) => {
   const dispatch = useDispatch();
 
+  const eventBus = useEventBus();
+
   const onChangeStatus = async (type) => {
-    if (type === "cancel_at") {
-      if (confirm("Do you want to cancel this reservation?")) {
-        onHandleChangeStatus(type);
-      }
-    } else {
+    if (confirm("Do you want to change status of this reservation?")) {
       onHandleChangeStatus(type);
     }
   };
@@ -162,8 +164,9 @@ const ButtonContainer = ({ bill }) => {
       dispatch(commonActions.openLinearLoading());
       await dispatch(billAsyncActions.changeStatus({ id: bill.id, type: type })).unwrap();
       alert("Change reservation status successfully!");
-      location.reload();
       dispatch(commonActions.closeLinearLoading());
+      eventBus.emit(REFRESH_BILLS);
+      onClose();
     } catch (error) {
       console.error(error);
       dispatch(commonActions.closeLinearLoading());

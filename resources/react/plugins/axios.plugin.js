@@ -48,6 +48,8 @@ export class AxiosPlugin {
 
   // Config general api request
   async _request(method, url, params, data, headers = {}, config = {}) {
+    params.__TIMESTAMP__ = Date.now();
+
     return await this.api.request({
       ...config,
       url,

@@ -10,7 +10,6 @@ import {
   Verified,
 } from "@mui/icons-material";
 import { Avatar, Box, Card, CardActions, CardHeader, Typography } from "@mui/material";
-import dayjs from "dayjs";
 
 export const BillCard = ({ bill, onClick }) => {
   const onClickCard = () => {
@@ -22,9 +21,9 @@ export const BillCard = ({ bill, onClick }) => {
       <CardHeader
         avatar={<Avatar>{bill.user.name.charAt(0)}</Avatar>}
         title={bill.user.name}
-        subheader={dayjs(bill.startAt).format("DD/MM/YYYY HH:mm")}
+        subheader={bill.user.phone}
       />
-      <CardActions sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+      <CardActions sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 16px" }}>
         <Box
           sx={{
             display: "flex",

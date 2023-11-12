@@ -17,14 +17,18 @@ import {
 } from "@mui/material";
 import { __ } from "../../plugins/i18n.plugin";
 import { isArray } from "../../helpers/reference.helper";
-import { ArrowDownward, ArrowUpward, MoreVert, Search, SwapVert } from "@mui/icons-material";
+import { ArrowDownward, ArrowUpward, MoreVert, Refresh, Search, SwapVert } from "@mui/icons-material";
 import { theme } from "../../plugins/material.plugin";
+import { useEventBus } from "../../plugins/bus.plugin";
+import { EVENT_BUS } from "../../const/event.const";
 
 export const SORT_DIR_ASC = "asc";
 
 export const SORT_DIR_DESC = "desc";
 
 export const DataTable = ({ header, fullWidth, body, total, initPage, actions, onChange }) => {
+  const eventBus = useEventBus();
+
   const [filterTimeout, setFilterTimeout] = useState(null);
 
   const [headerColumns, setHeaderColumns] = useState([]);
@@ -46,6 +50,8 @@ export const DataTable = ({ header, fullWidth, body, total, initPage, actions, o
     { number: 800, selected: false },
     { number: 1600, selected: false },
   ]);
+
+  const [refresh, setRefresh] = useState(0);
 
   const onChangeLimitation = (e) => {
     const value = e.target.value;
@@ -110,6 +116,10 @@ export const DataTable = ({ header, fullWidth, body, total, initPage, actions, o
     onCloseActionPopover();
   };
 
+  const onRefresh = () => {
+    setRefresh(refresh + 1);
+  };
+
   useEffect(() => {
     if (isArray(header) && header.length > 0) {
       const newHeaderColumns = header.map((h) => ({
@@ -139,7 +149,15 @@ export const DataTable = ({ header, fullWidth, body, total, initPage, actions, o
       filter: input,
       page: page,
     });
-  }, [headerColumns, page, limitation, input]);
+  }, [headerColumns, page, limitation, input, refresh]);
+
+  useEffect(() => {
+    eventBus.on(EVENT_BUS.refreshDataTable, onRefresh);
+
+    return () => {
+      eventBus.off(EVENT_BUS.refreshDataTable, onRefresh);
+    };
+  }, []);
 
   return (
     <Box>
@@ -151,15 +169,20 @@ export const DataTable = ({ header, fullWidth, body, total, initPage, actions, o
           justifyContent: "space-between",
         }}
       >
-        <Typography>
-          {capitalize(
-            __("custom.showing", {
-              start: getLimit() * (page - 1) + 1,
-              end: getLimit() * (page - 1) + bodyRows.length,
-              total: total,
-            }),
-          )}
-        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <Typography>
+            {capitalize(
+              __("custom.showing", {
+                start: getLimit() * (page - 1) + 1,
+                end: getLimit() * (page - 1) + bodyRows.length,
+                total: total,
+              }),
+            )}
+          </Typography>
+          <IconButton size="small" title="Refresh Data Table" onClick={onRefresh}>
+            <Refresh fontSize="small" />
+          </IconButton>
+        </Box>
         <FormControl variant="standard">
           <Input
             onChange={onChangeFilterInput}

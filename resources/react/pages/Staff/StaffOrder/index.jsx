@@ -35,15 +35,13 @@ import { commonActions } from "../../../reducers/common.reducer";
 import { billAsyncActions } from "../../../reducers/bill.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
 
-const now = dayjs();
-
 export const StaffOrder = () => {
   const dispatch = useDispatch();
 
   const [payload, setPayload] = useState({
     phone: "",
-    startTime: now.clone().format("YYYY-MM-DD hh:mm A"),
-    finishTime: now.clone().format("YYYY-MM-DD hh:mm A"),
+    startTime: dayjs().format("YYYY-MM-DD hh:mm A"),
+    finishTime: dayjs().add(1, "hour").format("YYYY-MM-DD hh:mm A"),
     adults: 0,
     children: 0,
     tables: [],
@@ -100,7 +98,19 @@ export const StaffOrder = () => {
       ).unwrap();
       dispatch(commonActions.closeLinearLoading());
       alert(__("custom.create-order-success"));
-      location.reload();
+      setTables([]);
+      setPayload({
+        phone: "",
+        startTime: dayjs().format("YYYY-MM-DD hh:mm A"),
+        finishTime: dayjs().add(1, "hour").format("YYYY-MM-DD hh:mm A"),
+        adults: 0,
+        children: 0,
+        tables: [],
+        seats: [],
+        name: "",
+        email: "",
+        id: "",
+      });
     } catch (error) {
       dispatch(commonActions.closeLinearLoading());
       if (error.status && error.status === 422) {

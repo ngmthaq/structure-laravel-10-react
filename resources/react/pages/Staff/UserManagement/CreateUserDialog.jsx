@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { __ } from "../../../plugins/i18n.plugin";
 import { isObjDeepEqual } from "../../../helpers/reference.helper";
+import { useEventBus } from "../../../plugins/bus.plugin";
+import { CLEAR_FORM } from ".";
 
 const initPayload = {
   name: "",
@@ -21,6 +23,8 @@ const initPayload = {
 };
 
 export const CreateUserDialog = ({ open, onClose, onSubmit }) => {
+  const eventBus = useEventBus();
+
   const [isFocusDob, setIsFocusDob] = useState(false);
 
   const [payload, setPayload] = useState({ ...initPayload });
@@ -43,6 +47,18 @@ export const CreateUserDialog = ({ open, onClose, onSubmit }) => {
     e.preventDefault();
     onSubmit(payload);
   };
+
+  const onClearForm = () => {
+    setPayload(initPayload);
+  };
+
+  useEffect(() => {
+    eventBus.on(CLEAR_FORM, onClearForm);
+
+    return () => {
+      eventBus.off(CLEAR_FORM, onClearForm);
+    };
+  }, []);
 
   return (
     <Dialog open={open} onClose={onCloseDialog}>

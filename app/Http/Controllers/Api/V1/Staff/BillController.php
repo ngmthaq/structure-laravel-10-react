@@ -55,9 +55,13 @@ class BillController extends Controller
         }
     }
 
-    public function getAllBills()
+    public function getAllBills(Request $request)
     {
-        $bills = $this->bill->with(["user", "staff", "seats", "seats.table"])->orderByDesc("id")->get();
+        $bills = $this->bill
+            ->with(["user", "staff", "seats", "seats.table"])
+            ->whereDay("created_at", new Carbon($request->query("date")) ?? Carbon::now())
+            ->orderByDesc("id")
+            ->get();
 
         $bills = $bills->map(function ($bill) {
             $bill->tables = array_values(array_unique($bill->seats->pluck("table_id")->toArray()));

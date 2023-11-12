@@ -18,7 +18,7 @@ import { __ } from "../../plugins/i18n.plugin";
 
 const minSize = 50;
 
-export const CircleTable = ({ id, position, state, usage, seats, seated, onChangePosition, onReservation }) => {
+export const CircleTable = ({ id, position, state, usage, seats, seated, onChangePosition, onReservation, bills }) => {
   const { position: floorMapPosition, activeTable, setActiveTable } = useContext(FloorMapContext);
 
   const initSize = minSize;
@@ -37,6 +37,8 @@ export const CircleTable = ({ id, position, state, usage, seats, seated, onChang
       onReservation
     ) {
       onReservation(id);
+    } else if (state !== STATE_IN_USE.value && state !== STATE_BLOCKED.value && bills && bills.length > 0) {
+      // Open dialog show bills
     }
   };
 

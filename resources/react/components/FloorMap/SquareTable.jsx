@@ -1,6 +1,17 @@
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Box, IconButton } from "@mui/material";
-import { BLOCKED_TABLE_STATES, FloorMapContext, STATE_EDITED, STATE_EDITING, STATE_ORDERED, STATE_ORDER_AVAILABLE, STATE_ORDER_IN_USE, getTableColor } from "./index";
+import {
+  BLOCKED_TABLE_STATES,
+  FloorMapContext,
+  STATE_BLOCKED,
+  STATE_EDITED,
+  STATE_EDITING,
+  STATE_IN_USE,
+  STATE_ORDERED,
+  STATE_ORDER_AVAILABLE,
+  STATE_ORDER_IN_USE,
+  getTableColor,
+} from "./index";
 import { CheckCircle } from "@mui/icons-material";
 import { createArrayFromNumber, isObjDeepEqual } from "../../helpers/reference.helper";
 import { theme } from "../../plugins/material.plugin";
@@ -10,7 +21,18 @@ import { TABLE_DIR } from "../../const/app.const";
 
 const minSize = 50;
 
-export const SquareTable = ({ id, position, state, usage, seats, seated, onChangePosition, dir, onReservation }) => {
+export const SquareTable = ({
+  id,
+  position,
+  state,
+  usage,
+  seats,
+  seated,
+  onChangePosition,
+  dir,
+  onReservation,
+  bills,
+}) => {
   const { position: floorMapPosition, activeTable, setActiveTable } = useContext(FloorMapContext);
 
   const initSize = minSize;
@@ -29,6 +51,8 @@ export const SquareTable = ({ id, position, state, usage, seats, seated, onChang
       onReservation
     ) {
       onReservation(id);
+    } else if (state !== STATE_IN_USE.value && state !== STATE_BLOCKED.value && bills && bills.length > 0) {
+      // Open dialog show bills
     }
   };
 

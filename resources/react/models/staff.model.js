@@ -1,6 +1,6 @@
 import { ROLES } from "../const/app.const";
 
-export const StaffModel = (id, name, email, phone, address, dateOfBirth, role, createdAt) => {
+export const StaffModel = (id, name, email, phone, address, dateOfBirth, role, createdAt, deletedAt) => {
   const isAdmin = role === ROLES.admin;
 
   return {
@@ -13,5 +13,6 @@ export const StaffModel = (id, name, email, phone, address, dateOfBirth, role, c
     role,
     isAdmin,
     createdAt,
+    deletedAt,
   };
 };
