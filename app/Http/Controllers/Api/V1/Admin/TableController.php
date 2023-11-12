@@ -71,15 +71,70 @@ class TableController extends Controller
 
     public function deleteTable(Table $table)
     {
-        $table->delete();
+        try {
+            DB::beginTransaction();
+            $table->seats()->delete();
+            $table->delete();
+            DB::commit();
 
-        return response()->json(["deleted" => true]);
+            return response()->json(["deleted" => true]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return FailedValidateResponse::send([
+                "error" => __("custom.something-wrong"),
+                "message" => $th->getMessage(),
+            ]);
+        }
     }
 
     public function restoreTable(Table $table)
     {
-        $table->restore();
+        try {
+            DB::beginTransaction();
+            $table->restore();
+            $table->seats()->withTrashed()->restore();
+            DB::commit();
 
-        return response()->json(["restored" => true]);
+            return response()->json(["restored" => true]);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return FailedValidateResponse::send([
+                "error" => __("custom.something-wrong"),
+                "message" => $th->getMessage(),
+            ]);
+        }
+    }
+
+    public function updateTable(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+            $table = new Table();
+            $table->is_block = $request->input("is_block");
+            $table->type = $request->input("type");
+            $table->direction = $request->input("direction");
+            $table->save();
+
+            $table->seats()->delete();
+
+            for ($i = 0; $i < $request->input('seats'); $i++) {
+                $table->seats()->create([]);
+            }
+
+            $table->refresh();
+            $table = $this->table->with('seats')->find($table->id);
+            DB::commit();
+
+            return response()->json($table);
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return FailedValidateResponse::send([
+                "error" => __("custom.something-wrong"),
+                "message" => $th->getMessage(),
+            ]);
+        }
     }
 }
