@@ -34,6 +34,7 @@ export const authAsyncActions = {
       );
     }
   }),
+
   staffLogout: createAsyncThunk("auth/staffLogout", async (payload, thunk) => {
     try {
       const api = new AuthStaffApi();
@@ -44,6 +45,7 @@ export const authAsyncActions = {
       return thunk.fulfillWithValue(true);
     }
   }),
+
   staffUpdateInfo: createAsyncThunk("auth/staffUpdateInfo", async (payload, thunk) => {
     try {
       const api = new AuthStaffApi();
@@ -61,12 +63,31 @@ export const authAsyncActions = {
       );
     }
   }),
+
   staffChangePassword: createAsyncThunk("auth/staffChangePassword", async (payload, thunk) => {
     try {
       const api = new AuthStaffApi();
       const response = await api.put(API_ENDPOINTS.staffChangePassword, decamelizeKeys(payload));
 
       return thunk.fulfillWithValue(response.data);
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
+
+  dashboard: createAsyncThunk("auth/dashboard", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.get(API_ENDPOINTS.dashboard, decamelizeKeys(payload));
+
+      return thunk.fulfillWithValue(camelizeKeys(response.data));
     } catch (error) {
       console.error(error);
 

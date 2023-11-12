@@ -23,7 +23,6 @@ class DashboardRequest extends ApiRequest
     public function rules(): array
     {
         return [
-            "view_by" => "required|string",
             "time" => "required|string"
         ];
     }

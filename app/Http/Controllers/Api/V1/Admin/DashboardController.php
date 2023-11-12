@@ -33,62 +33,194 @@ class DashboardController extends Controller
 
     public function index(DashboardRequest $request)
     {
-        if (!in_array($request->query("view_by"), self::TYPES)) {
-            return FailedValidateResponse::send([
-                "error" => __("custom.choose-correct-input-value"),
-            ]);
-        }
-
-        $type = $request->query("view_by");
         $value = $request->query("time");
+        $new_users = $this->getNewUsers($value);
+        $new_bills = $this->getNewBills($value);
+        $user_reservation_rate = $this->getUserReservationRate($value);
+        $table_reservation_rate = $this->getTableReservationRate($value);
+        $new_staffs = $this->getNewStaffs($value);
+        $fired_staffs = $this->getFiredStaffs($value);
 
-        $new_users = $this->getNewUsers($type, $value);
-
-        return response()->json($new_users);
+        return response()->json(compact(
+            "new_users",
+            "new_bills",
+            "user_reservation_rate",
+            "table_reservation_rate",
+            "new_staffs",
+            "fired_staffs"
+        ));
     }
 
-    protected function getNewUsers(string $type, string $value)
+    protected function getNewUsers(string $year)
     {
-        $builder = $this->user;
+        $labels = [];
+        $data = [];
+        $users = $this->user->whereYear("created_at", $year)->get();
 
-        $year = date("Y", strtotime($value));
-        $month = date("m", strtotime($value));
-
-        if ($type === self::TYPE_DAY) {
-            $builder = $builder->whereDate('created_at', '=', $value);
+        foreach (__("months") as $key => $month) {
+            $labels[] = $month;
+            $data[$key] = 0;
         }
 
-        if ($type === self::TYPE_MONTH) {
-            $builder = $builder->whereMonth('created_at', '=', $month)->whereYear('created_at', '=', $year);
+        $users->each(function ($user) use (&$data) {
+            $month = date("m", strtotime($user->created_at));
+            $data[$month] = $data[$month] + 1;
+        });
+
+        $data = array_values($data);
+
+        return compact("labels", "data");
+    }
+
+    protected function getNewBills(string $year)
+    {
+        $labels = [];
+        $data = [];
+        $bills = $this->bill->whereYear("created_at", $year)->get();
+
+        foreach (__("months") as $key => $month) {
+            $labels[] = $month;
+            $data[$key] = 0;
         }
 
-        if ($type === self::TYPE_YEAR) {
-            $builder = $builder->whereYear('created_at', '=', $year);
+        $bills->each(function ($bill) use (&$data) {
+            $month = date("m", strtotime($bill->created_at));
+            $data[$month] = $data[$month] + 1;
+        });
+
+        $data = array_values($data);
+
+        return compact("labels", "data");
+    }
+
+    protected function getUserReservationRate(string $year)
+    {
+        $labels = [];
+        $data = [];
+        $percent = [];
+        $colors = [];
+
+        $bills = $this->bill
+            ->with("user")
+            ->whereYear("created_at", $year)
+            ->get();
+
+        foreach ($bills as $bill) {
+            $labels[$bill->user->id] = $bill->user->name;
+            $colors[$bill->user->id] = $this->color();
+            if (empty($data[$bill->user->id])) {
+                $data[$bill->user->id] = 1;
+            } else {
+                $data[$bill->user->id] = $data[$bill->user->id] + 1;
+            }
         }
 
-        $users = $builder->get();
-        $users->each(fn (User $user) => $user->separateCreatedAtDate());
-
-        $output = ["labels" => [], "data" => []];
-
-        if ($type === self::TYPE_DAY) {
-            $day = date("d", strtotime($value));
-            $output['labels'] = [$day];
-            $output['data'] = [$users->count()];
+        foreach ($data as $key => $value) {
+            $rate = round($value / count($bills) * 100, 2);
+            $percent[$key] = $rate;
         }
 
-        if ($type === self::TYPE_MONTH) {
-            $labels = $users->countBy(fn (User $user) => (int)$user->created_at_day);
-            $output['labels'] = array_map(fn (int $label) => $label < 10 ? "0" . $label : $label, array_keys($labels->all()));
-            $output['data'] = array_values($labels->all());
+        $labels = array_values($labels);
+        $data = array_values($data);
+        $percent = array_values($percent);
+        $colors = array_values($colors);
+
+        return compact("labels", "data", "percent", "colors");
+    }
+
+    protected function getTableReservationRate(string $year)
+    {
+        $labels = [];
+        $data = [];
+        $percent = [];
+        $colors = [];
+
+        $bills = $this->bill
+            ->with("seats.table")
+            ->whereYear("created_at", $year)
+            ->get();
+
+        $tables = $bills->reduce(function ($carry, $bill) {
+            $seats = $bill->seats;
+            $seat_tables = $seats->map(function ($seat) {
+                return $seat->table;
+            })->unique("id")->toArray();
+
+            $carry = array_merge($carry, $seat_tables);
+
+            return $carry;
+        }, []);
+
+        foreach ($tables as $table) {
+            $labels[$table["id"]] = "Table " . $table["id"];
+            $colors[$table["id"]] = $this->color();
+            if (empty($data[$table["id"]])) {
+                $data[$table["id"]] = 1;
+            } else {
+                $data[$table["id"]] = $data[$table["id"]] + 1;
+            }
         }
 
-        if ($type === self::TYPE_YEAR) {
-            $labels = $users->sortBy('created_at_month')->countBy(fn (User $user) => (int)$user->created_at_month);
-            $output['labels'] = array_map(fn (int $label) => __("months." . $label), array_keys($labels->all()));
-            $output['data'] = array_values($labels->all());
+        foreach ($data as $key => $value) {
+            $rate = round($value / count($bills) * 100, 2);
+            $percent[$key] = $rate;
         }
 
-        return $output;
+        $labels = array_values($labels);
+        $data = array_values($data);
+        $percent = array_values($percent);
+        $colors = array_values($colors);
+
+        return compact("labels", "data", "percent", "colors");
+    }
+
+    protected function getNewStaffs(string $year)
+    {
+        $labels = [];
+        $data = [];
+        $staffs = $this->staff->whereYear("created_at", $year)->get();
+
+        foreach (__("months") as $key => $month) {
+            $labels[] = $month;
+            $data[$key] = 0;
+        }
+
+        $staffs->each(function ($staff) use (&$data) {
+            $month = date("m", strtotime($staff->created_at));
+            $data[$month] = $data[$month] + 1;
+        });
+
+        $data = array_values($data);
+
+        return compact("labels", "data");
+    }
+
+    protected function getFiredStaffs(string $year)
+    {
+        $labels = [];
+        $data = [];
+        $staffs = $this->staff
+            ->withTrashed()
+            ->whereYear("deleted_at", $year)
+            ->get();
+
+        foreach (__("months") as $key => $month) {
+            $labels[] = $month;
+            $data[$key] = 0;
+        }
+
+        $staffs->each(function ($staff) use (&$data) {
+            $month = date("m", strtotime($staff->deleted_at));
+            $data[$month] = $data[$month] + 1;
+        });
+
+        $data = array_values($data);
+
+        return compact("labels", "data");
+    }
+
+    protected function color()
+    {
+        return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
     }
 }

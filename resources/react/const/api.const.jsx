@@ -27,4 +27,5 @@ export const API_ENDPOINTS = {
   staffOrder: "/v1/staffs/reservations/create",
   getAllBills: "/v1/staffs/bills",
   changeBillStatus: "/v1/staffs/bills/:billId/status/update",
+  dashboard: "/v1/admin/dashboard",
 };
