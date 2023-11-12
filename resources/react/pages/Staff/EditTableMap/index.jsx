@@ -16,6 +16,8 @@ import { DataTableDialog } from "./DataTableDialog";
 import { useEventBus } from "../../../plugins/bus.plugin";
 import { EVENT_BUS } from "../../../const/event.const";
 
+export const REFRESH_TABLES = "ADMIN_REFRESH_TABLES";
+
 export const EditTableMap = () => {
   const dispatch = useDispatch();
 
@@ -113,15 +115,23 @@ export const EditTableMap = () => {
     }
   };
 
-  useEffect(() => {
-    const getTables = async () => {
-      dispatch(commonActions.openLinearLoading());
-      const data = await dispatch(tableAsyncActions.getTables()).unwrap();
-      setTables(data.map((table) => ({ ...table, state: STATE_EDITED.value })));
-      dispatch(commonActions.closeLinearLoading());
-    };
+  const getTables = async () => {
+    dispatch(commonActions.openLinearLoading());
+    const data = await dispatch(tableAsyncActions.getTables()).unwrap();
+    setTables(data.map((table) => ({ ...table, state: STATE_EDITED.value })));
+    dispatch(commonActions.closeLinearLoading());
+  };
 
+  useEffect(() => {
     getTables();
+  }, []);
+
+  useEffect(() => {
+    eventBus.on(REFRESH_TABLES, getTables);
+
+    return () => {
+      eventBus.off(REFRESH_TABLES, getTables);
+    };
   }, []);
 
   return (

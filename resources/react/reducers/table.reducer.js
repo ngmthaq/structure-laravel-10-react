@@ -111,9 +111,27 @@ export const tableAsyncActions = {
   staffGetAvailableTables: createAsyncThunk("table/staffGetAvailableTables", async (payload, thunk) => {
     try {
       const api = new AuthStaffApi();
-      const response = await api.get(
-        API_ENDPOINTS.staffGetAvailableTables.replace(":tableId", payload.id),
-        decamelizeKeys({ ...payload }),
+      const response = await api.get(API_ENDPOINTS.staffGetAvailableTables, decamelizeKeys({ ...payload }));
+
+      return thunk.fulfillWithValue(camelizeKeys(response.data));
+    } catch (error) {
+      console.error(error);
+
+      return thunk.rejectWithValue(
+        camelizeKeys({
+          status: error.response.status,
+          data: error.response.data,
+        }),
+      );
+    }
+  }),
+
+  updateTable: createAsyncThunk("table/updateTable", async (payload, thunk) => {
+    try {
+      const api = new AuthStaffApi();
+      const response = await api.post(
+        API_ENDPOINTS.adminUpdateTable.replace(":tableId", payload.id),
+        decamelizeKeys({ ...payload, _method: "PUT" }),
       );
 
       return thunk.fulfillWithValue(camelizeKeys(response.data));

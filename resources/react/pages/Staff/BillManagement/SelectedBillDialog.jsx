@@ -69,7 +69,9 @@ export const SelectedBillDialog = ({ bill, onClose }) => {
                   }}
                 >
                   <TableBar htmlColor="#757575" fontSize="small" />
-                  <Typography sx={{ margin: "2px 4px 0" }}>{bill.tables.join(", ")}</Typography>
+                  <Typography sx={{ margin: "2px 4px 0" }}>
+                    {bill.tables.length > 0 ? bill.tables.join(", ") : "???"}
+                  </Typography>
                 </Box>
               </Box>
               <Box
@@ -175,6 +177,18 @@ const ButtonContainer = ({ bill, onClose }) => {
       );
     }
   };
+
+  if (bill.tables.length <= 0 && !bill.completedAt && !bill.cancelAt) {
+    return (
+      <CardActions
+        sx={{
+          padding: "4px 15px 8px",
+        }}
+      >
+        <ActionButton Icon={Cancel} text="Cancel" onClick={() => onChangeStatus("cancel_at")} />
+      </CardActions>
+    );
+  }
 
   if (bill.cancelAt || (bill.startAt && bill.endAt && bill.confirmedAt && bill.userStartedAt && bill.completedAt)) {
     return <Fragment />;

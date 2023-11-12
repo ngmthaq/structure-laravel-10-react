@@ -28,4 +28,5 @@ export const API_ENDPOINTS = {
   getAllBills: "/v1/staffs/bills",
   changeBillStatus: "/v1/staffs/bills/:billId/status/update",
   dashboard: "/v1/admin/dashboard",
+  adminUpdateTable: "v1/admin/tables/:tableId/update",
 };

@@ -9,9 +9,9 @@ export class AxiosPlugin {
     this.api.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
     this.api.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
     this.api.defaults.headers.common["Accept"] = "application/json";
-    this.api.defaults.headers.common["Cache-Control"] = "no-cache";
+    this.api.defaults.headers.common["Cache-Control"] = "no-cache, no-store, max-age=0";
+    this.api.defaults.headers.common["Expires"] = "Thu, 1 Jan 1970 00:00:00 GMT";
     this.api.defaults.headers.common["Pragma"] = "no-cache";
-    this.api.defaults.headers.common["Expires"] = "0";
 
     // Config axios request interceptor
     this.api.interceptors.request.use(

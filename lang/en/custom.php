@@ -80,7 +80,7 @@ return [
     "admin-title" => "admin",
     "admin-manage-users-title" => "user management",
     "admin-manage-staffs-title" => "staff management",
-    "admin-tables-edit-title" => "Edit table map",
+    "admin-tables-edit-title" => "Edit tables",
     "admin-tables-create-title" => "Create New Table",
     "admin-dashboard-title" => "dashboard",
     "admin-configurations-title" => "configurations",

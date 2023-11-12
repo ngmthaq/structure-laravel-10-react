@@ -21,8 +21,17 @@ import { Circle, East, Edit, South } from "@mui/icons-material";
 import { __ } from "../../../plugins/i18n.plugin";
 import { TABLE_DIR, TABLE_TYPE } from "../../../const/app.const";
 import { EditTableDialog } from "./EditTableDialog";
+import { REFRESH_TABLES } from ".";
+import { useEventBus } from "../../../plugins/bus.plugin";
+import { tableAsyncActions } from "../../../reducers/table.reducer";
+import { useDispatch } from "react-redux";
+import { commonActions } from "../../../reducers/common.reducer";
 
 export const DataTableDialog = ({ open, onClose, tables, onClickAction }) => {
+  const eventBus = useEventBus();
+
+  const dispatch = useDispatch();
+
   const [selectedTable, setSelectedTable] = useState(null);
 
   const onClick = (table) => {
@@ -37,8 +46,21 @@ export const DataTableDialog = ({ open, onClose, tables, onClickAction }) => {
     setSelectedTable({ ...table });
   };
 
-  const onSubmit = (payload) => {
-    console.log(payload);
+  const onSubmit = async (payload) => {
+    try {
+      dispatch(commonActions.openLinearLoading());
+      await dispatch(tableAsyncActions.updateTable(payload)).unwrap();
+      alert("Edit table successfully!");
+      dispatch(commonActions.closeLinearLoading());
+      onCloseEditDialog();
+      eventBus.emit(REFRESH_TABLES);
+    } catch (error) {
+      console.error(error);
+      dispatch(commonActions.closeLinearLoading());
+      dispatch(
+        commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+      );
+    }
   };
 
   return (

@@ -43,7 +43,7 @@ export const AdminHeader = () => {
 
   const [avatarElement, setAvatarElement] = useState(null);
 
-  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD hh:mm:ss"));
+  const [date, setDate] = useState(dayjs().format("YYYY-MM-DD HH:mm:ss"));
 
   const onClickAvatar = (e) => {
     setAvatarElement(e.currentTarget);
@@ -68,13 +68,13 @@ export const AdminHeader = () => {
   };
 
   const onRefresh = () => {
-    const date = dayjs().format("YYYY-MM-DD hh:mm:ss");
+    const date = dayjs().format("YYYY-MM-DD HH:mm:ss");
     setDate(date);
     eventBus.emit(EVENT_BUS.refreshGetAvailableTable, date);
   };
 
   const onChangeDatetime = (e) => {
-    setDate(e.target.value || dayjs().format("YYYY-MM-DD hh:mm:ss"));
+    setDate(e.target.value || dayjs().format("YYYY-MM-DD HH:mm:ss"));
     eventBus.emit(EVENT_BUS.refreshGetAvailableTable, e.target.value || dayjs().format("YYYY-MM-DD hh:mm:ss"));
   };
 

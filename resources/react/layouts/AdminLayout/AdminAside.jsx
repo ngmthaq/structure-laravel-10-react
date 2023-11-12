@@ -55,7 +55,7 @@ export const AdminAside = () => {
     {
       type: "route",
       path: adminRoutes.editTableMap.path,
-      title: __("custom.staff-manage-tables-title"),
+      title: __("custom.admin-tables-edit-title"),
       Icon: TableRestaurant,
       role: ROLES.admin,
     },

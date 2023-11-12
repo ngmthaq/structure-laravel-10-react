@@ -53,7 +53,9 @@ export const BillCard = ({ bill, onClick }) => {
             }}
           >
             <TableBar htmlColor="#757575" fontSize="small" />
-            <Typography sx={{ margin: "2px 4px 0" }}>{bill.tables.join(", ")}</Typography>
+            <Typography sx={{ margin: "2px 4px 0" }}>
+              {bill.tables.length > 0 ? bill.tables.join(", ") : "???"}
+            </Typography>
           </Box>
         </Box>
         <Box

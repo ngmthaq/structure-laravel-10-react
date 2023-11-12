@@ -17,7 +17,7 @@ import { isObjDeepEqual } from "../../../helpers/reference.helper";
 import { TABLE_DIR, TABLE_TYPE } from "../../../const/app.const";
 
 export const EditTableDialog = ({ open, onClose, onSubmit, table }) => {
-  const [payload, setPayload] = useState(table);
+  const [payload, setPayload] = useState(null);
 
   const onSubmitForm = (e) => {
     e.preventDefault();
@@ -27,17 +27,24 @@ export const EditTableDialog = ({ open, onClose, onSubmit, table }) => {
   const onCloseDialog = () => {
     if (!payload) {
       onClose();
-    } else if (isObjDeepEqual(payload, table)) {
+    } else if (isObjDeepEqual(payload, { ...table, seatNumber: table.seats.length })) {
       onClose();
-      setPayload(table);
+      setPayload({ ...table, seatNumber: table.seats.length });
     } else if (confirm(__("custom.confirm-lost-changed"))) {
       onClose();
-      setPayload(table);
+      setPayload({ ...table, seatNumber: table.seats.length });
     }
   };
 
   const onChange = (e) => {
-    setPayload((state) => ({ ...state, [e.target.name]: Number(e.target.value) || null }));
+    let value = e.target.value;
+    if (e.target.name === "seatNumber" && e.target.value === "") {
+      value = payload.seatNumber;
+    }
+
+    value = Number(value);
+
+    setPayload((state) => ({ ...state, [e.target.name]: value }));
   };
 
   const onChangeStatus = (e) => {
@@ -45,7 +52,9 @@ export const EditTableDialog = ({ open, onClose, onSubmit, table }) => {
   };
 
   useEffect(() => {
-    setPayload(table);
+    if (table) {
+      setPayload({ ...table, seatNumber: table.seats.length });
+    }
   }, [table]);
 
   return (
@@ -79,7 +88,7 @@ export const EditTableDialog = ({ open, onClose, onSubmit, table }) => {
                   value={payload.direction}
                   label={__("custom.table-dir")}
                   size="small"
-                  name="dir"
+                  name="direction"
                   onChange={onChange}
                 >
                   {Object.entries(TABLE_DIR).map(([dir, value]) => (
@@ -95,9 +104,9 @@ export const EditTableDialog = ({ open, onClose, onSubmit, table }) => {
                   label={__("custom.seat-number")}
                   size="small"
                   variant="outlined"
-                  value={payload.seats.length}
+                  value={payload.seatNumber}
                   type="number"
-                  name="seats"
+                  name="seatNumber"
                   onChange={onChange}
                 />
               </FormControl>

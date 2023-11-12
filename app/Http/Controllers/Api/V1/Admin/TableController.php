@@ -107,19 +107,18 @@ class TableController extends Controller
         }
     }
 
-    public function updateTable(Request $request)
+    public function updateTable(Request $request, Table $table)
     {
         try {
             DB::beginTransaction();
-            $table = new Table();
             $table->is_block = $request->input("is_block");
             $table->type = $request->input("type");
             $table->direction = $request->input("direction");
             $table->save();
 
-            $table->seats()->delete();
+            $table->seats()->forceDelete();
 
-            for ($i = 0; $i < $request->input('seats'); $i++) {
+            for ($i = 0; $i < $request->input('seat_number'); $i++) {
                 $table->seats()->create([]);
             }
 
