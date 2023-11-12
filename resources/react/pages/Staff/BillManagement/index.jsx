@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Box, Grid, InputAdornment, TextField, Typography } from "@mui/material";
-import { AdminPanelSettings, KeyboardArrowRight, Search } from "@mui/icons-material";
+import { Box, Grid, IconButton, InputAdornment, TextField, Typography } from "@mui/material";
+import { AdminPanelSettings, KeyboardArrowRight, Refresh, Search } from "@mui/icons-material";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { theme } from "../../../plugins/material.plugin";
 import { __ } from "../../../plugins/i18n.plugin";
@@ -97,6 +97,9 @@ export const BillManagement = () => {
           </Typography>
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <IconButton onClick={getBills} title="Refresh">
+            <Refresh />
+          </IconButton>
           <TextField
             value={date}
             variant="outlined"

@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
   Grid,
+  IconButton,
   TextField,
   Typography,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { AdminPanelSettings, KeyboardArrowRight } from "@mui/icons-material";
+import { AdminPanelSettings, KeyboardArrowRight, Refresh } from "@mui/icons-material";
 import dayjs from "dayjs";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { theme } from "../../../plugins/material.plugin";
@@ -56,6 +58,8 @@ export const StaffOrder = () => {
   const [tables, setTables] = useState([]);
 
   const [isOpenDialog, setIsOpenDialog] = useState(false);
+
+  const isOpenLoading = useRef(false);
 
   const onOpenDialog = () => {
     setIsOpenDialog(true);
@@ -193,10 +197,12 @@ export const StaffOrder = () => {
   };
 
   const getAvailableTables = async () => {
-    if (payload.startTime && payload.finishTime && payload.adults + payload.children > 0) {
+    if (payload.startTime && payload.finishTime) {
+      isOpenLoading.current = true;
       const response = await dispatch(
         tableAsyncActions.staffGetAvailableTables({ ...payload, seats: payload.adults + payload.children }),
       ).unwrap();
+      isOpenLoading.current = false;
       setTables(
         response.map((table) => {
           const seatNumber = table.seats.length;
@@ -218,6 +224,15 @@ export const StaffOrder = () => {
         }),
       );
     }
+  };
+
+  const onRefresh = () => {
+    setPayload((state) => ({
+      ...state,
+      startTime: dayjs().format("YYYY-MM-DD hh:mm A"),
+      finishTime: dayjs().add(1, "hour").format("YYYY-MM-DD hh:mm A"),
+      tables: [],
+    }));
   };
 
   useEffect(() => {
@@ -264,6 +279,9 @@ export const StaffOrder = () => {
               <Box component="span">{__("custom.staff-order-title")}</Box>
             </Typography>
           </Box>
+          <IconButton title="Refresh Available Tables" onClick={onRefresh}>
+            <Refresh />
+          </IconButton>
         </Box>
         <Box component="form" sx={{ paddingTop: "24px" }}>
           <Grid container>
@@ -288,6 +306,22 @@ export const StaffOrder = () => {
                   position: "relative",
                 }}
               >
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "0",
+                    left: "0",
+                    width: "100%",
+                    height: "100%",
+                    zIndex: "10",
+                    display: isOpenLoading.current ? "flex" : "none",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    background: "rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  <CircularProgress />
+                </Box>
                 <FloorMap zoom={false}>
                   {tables.map((table) =>
                     table.type === TABLE_TYPE.circle ? (
