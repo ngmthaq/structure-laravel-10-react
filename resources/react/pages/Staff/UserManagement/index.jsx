@@ -1,8 +1,31 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Box, Button, Switch, Typography, capitalize } from "@mui/material";
-import { AdminPanelSettings, KeyboardArrowRight } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Switch,
+  Typography,
+  capitalize,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Grid,
+  Card,
+  CardHeader,
+  Avatar,
+  CardActions,
+  CardContent,
+  TableContainer,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  OutlinedInput,
+} from "@mui/material";
+import { TableBar, AdminPanelSettings, Bookmark, KeyboardArrowRight, PeopleAlt } from "@mui/icons-material";
 import { camelizeKeys } from "humps";
+import dayjs from "dayjs";
 import { AdminLayout } from "../../../layouts/AdminLayout";
 import { DataTable } from "../../../components/DataTable";
 import { __ } from "../../../plugins/i18n.plugin";
@@ -13,6 +36,7 @@ import { theme } from "../../../plugins/material.plugin";
 import { CreateUserDialog } from "./CreateUserDialog";
 import { useEventBus } from "../../../plugins/bus.plugin";
 import { EVENT_BUS } from "../../../const/event.const";
+import { getStatusOfBill } from "../BillManagement/BillCard";
 
 export const CLEAR_FORM = "ADMIN_USER_MANAGEMENT_CLEAR_FORM";
 
@@ -20,6 +44,18 @@ export const UserManagement = () => {
   const dispatch = useDispatch();
 
   const eventBus = useEventBus();
+
+  const users = useSelector((state) => state.user.users);
+
+  const [processedUsers, setProcessedUsers] = useState([]);
+
+  const [isOpenCreateUserDialog, setIsOpenCreateUserDialog] = useState(false);
+
+  const [reservationDialog, setReservationDialog] = useState({
+    isOpen: false,
+    data: null,
+    search: dayjs().format("YYYY-MM-DD"),
+  });
 
   const header = useMemo(
     () => [
@@ -75,13 +111,19 @@ export const UserManagement = () => {
     [],
   );
 
-  const actions = useMemo(() => [], []);
-
-  const users = useSelector((state) => state.user.users);
-
-  const [processedUsers, setProcessedUsers] = useState([]);
-
-  const [isOpenCreateUserDialog, setIsOpenCreateUserDialog] = useState(false);
+  const actions = useMemo(
+    () => [
+      {
+        title: "Show all reservation",
+        icon: <Bookmark fontSize="small" />,
+        handler: (data) => {
+          console.log(data);
+          setReservationDialog((state) => ({ ...state, isOpen: true, data: { ...data } }));
+        },
+      },
+    ],
+    [],
+  );
 
   const onCreateNewUser = async (payload) => {
     try {
@@ -115,6 +157,10 @@ export const UserManagement = () => {
 
   const onChange = (data) => {
     dispatch(userAsyncActions.getAllUsers(data));
+  };
+
+  const onCloseReservationDialog = () => {
+    setReservationDialog((state) => ({ ...state, isOpen: false }));
   };
 
   const onChangeSwitch = async (userId, isActive) => {
@@ -151,6 +197,15 @@ export const UserManagement = () => {
         commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
       );
     }
+  };
+
+  const filterReservations = (reservations) => {
+    if (!reservations) return [];
+    return reservations.filter((reservation) => reservation.startAt.startsWith(reservationDialog.search));
+  };
+
+  const onChangeFilter = (e) => {
+    setReservationDialog((state) => ({ ...state, search: dayjs(e.target.value).format("YYYY-MM-DD") }));
   };
 
   useEffect(() => {
@@ -209,6 +264,140 @@ export const UserManagement = () => {
           onChange={onChange}
         />
         <CreateUserDialog open={isOpenCreateUserDialog} onClose={onCloseCreateUserDialog} onSubmit={onCreateNewUser} />
+        <Dialog open={reservationDialog.isOpen} onClose={onCloseReservationDialog} fullWidth maxWidth="md">
+          <DialogTitle sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Typography>User Reservations</Typography>
+            <OutlinedInput onChange={onChangeFilter} size="small" type="date" value={reservationDialog.search} />
+          </DialogTitle>
+          <DialogContent>
+            {Boolean(filterReservations(reservationDialog?.data?.bills)?.length) ? (
+              <DialogContent sx={{ padding: "4px" }}>
+                <Grid container>
+                  {filterReservations(reservationDialog.data.bills).map((bill) => (
+                    <Grid item xs={reservationDialog.data.bills.length > 1 ? 6 : 12} key={bill.id}>
+                      <Card elevation={0}>
+                        <CardHeader
+                          avatar={<Avatar>{reservationDialog.data.name.charAt(0)}</Avatar>}
+                          title={reservationDialog.data.name}
+                          subheader={reservationDialog.data.phone}
+                        />
+                        <CardActions
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            padding: "8px 16px",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              flexShrink: 0,
+                              width: "100%",
+                              gap: "8px",
+                              flex: 1,
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                flexShrink: 0,
+                              }}
+                            >
+                              <PeopleAlt htmlColor="#757575" fontSize="small" />
+                              <Typography sx={{ margin: "2px 4px 0" }}>{bill.adults + bill.children}</Typography>
+                            </Box>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                flexShrink: 0,
+                              }}
+                            >
+                              <TableBar htmlColor="#757575" fontSize="small" />
+                              <Typography sx={{ margin: "2px 4px 0" }}>{bill.tableId}</Typography>
+                            </Box>
+                          </Box>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "flex-end",
+                              flexShrink: 0,
+                              flex: 1,
+                              width: "100%",
+                            }}
+                          >
+                            <Typography sx={{ margin: "2px 4px 0" }}>{getStatusOfBill(bill)?.title}</Typography>
+                            {getStatusOfBill(bill)?.icon}
+                          </Box>
+                        </CardActions>
+                        <CardContent>
+                          <TableContainer component={Paper}>
+                            <Table aria-label="simple table">
+                              <TableBody>
+                                <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                  <TableCell component="th" scope="row">
+                                    Reservation Start At
+                                  </TableCell>
+                                  <TableCell align="right">{dayjs(bill.startAt).format("DD/MM/YYYY HH:mm")}</TableCell>
+                                </TableRow>
+                                <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                  <TableCell component="th" scope="row">
+                                    Reservation End At
+                                  </TableCell>
+                                  <TableCell align="right">{dayjs(bill.endAt).format("DD/MM/YYYY HH:mm")}</TableCell>
+                                </TableRow>
+                                <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                  <TableCell component="th" scope="row">
+                                    Confirmed At
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {bill.confirmedAt ? dayjs(bill.confirmedAt).format("DD/MM/YYYY HH:mm") : ""}
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                  <TableCell component="th" scope="row">
+                                    User Start At
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {bill.userStartedAt ? dayjs(bill.userStartedAt).format("DD/MM/YYYY HH:mm") : ""}
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                  <TableCell component="th" scope="row">
+                                    Completed At
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {bill.completedAt ? dayjs(bill.completedAt).format("DD/MM/YYYY HH:mm") : ""}
+                                  </TableCell>
+                                </TableRow>
+                                <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                                  <TableCell component="th" scope="row">
+                                    Cancel At
+                                  </TableCell>
+                                  <TableCell align="right">
+                                    {bill.cancelAt ? dayjs(bill.cancelAt).format("DD/MM/YYYY HH:mm") : ""}
+                                  </TableCell>
+                                </TableRow>
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              </DialogContent>
+            ) : (
+              <Typography textAlign="center">
+                <i>Empty</i>
+              </Typography>
+            )}
+          </DialogContent>
+        </Dialog>
       </Box>
     </AdminLayout>
   );

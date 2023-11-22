@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1\Staff;
 
 use App\Http\Requests\ApiRequest;
+use App\Rules\UserIsNotBlockedRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class QuickCreateUserRequest extends FormRequest
@@ -24,8 +25,7 @@ class QuickCreateUserRequest extends FormRequest
     {
         return [
             "name" => "required",
-            "phone" => "required|unique:users,phone",
-            "email" => "required|unique:users,email"
+            "phone" => ["required", new UserIsNotBlockedRule, "unique:users,phone"],
         ];
     }
 }

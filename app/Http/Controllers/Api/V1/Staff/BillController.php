@@ -58,7 +58,18 @@ class BillController extends Controller
     public function getAllBills(Request $request)
     {
         $bills = $this->bill
-            ->with(["user", "staff", "seats", "seats.table"])
+            ->with([
+                "user" => function ($user) {
+                    $user->withTrashed();
+                },
+                "staff" => function ($staff) {
+                    $staff->withTrashed();
+                },
+                "seats",
+                "seats.table" => function ($table) {
+                    $table->withTrashed();
+                },
+            ])
             ->whereDay("created_at", new Carbon($request->query("date")) ?? Carbon::now())
             ->orderByDesc("id")
             ->get();

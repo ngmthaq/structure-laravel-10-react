@@ -55,7 +55,7 @@ class DashboardController extends Controller
     {
         $labels = [];
         $data = [];
-        $users = $this->user->whereYear("created_at", $year)->get();
+        $users = $this->user->withTrashed()->whereYear("created_at", $year)->get();
 
         foreach (__("months") as $key => $month) {
             $labels[] = $month;
@@ -76,7 +76,7 @@ class DashboardController extends Controller
     {
         $labels = [];
         $data = [];
-        $bills = $this->bill->whereYear("created_at", $year)->get();
+        $bills = $this->bill->withTrashed()->whereYear("created_at", $year)->get();
 
         foreach (__("months") as $key => $month) {
             $labels[] = $month;
@@ -101,7 +101,12 @@ class DashboardController extends Controller
         $colors = [];
 
         $bills = $this->bill
-            ->with("user")
+            ->with([
+                "user" => function ($user) {
+                    $user->withTrashed();
+                }
+            ])
+            ->withTrashed()
             ->whereYear("created_at", $year)
             ->get();
 
@@ -136,7 +141,11 @@ class DashboardController extends Controller
         $colors = [];
 
         $bills = $this->bill
-            ->with("seats.table")
+            ->with([
+                "seats.table" => function ($table) {
+                    $table->withTrashed();
+                }
+            ])
             ->whereYear("created_at", $year)
             ->get();
 
@@ -178,7 +187,7 @@ class DashboardController extends Controller
     {
         $labels = [];
         $data = [];
-        $staffs = $this->staff->whereYear("created_at", $year)->get();
+        $staffs = $this->staff->withTrashed()->whereYear("created_at", $year)->get();
 
         foreach (__("months") as $key => $month) {
             $labels[] = $month;

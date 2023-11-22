@@ -38,17 +38,16 @@ class UserController extends Controller
         $user = new User();
         $password = Str::random();
         $user->name = $request->input("name");
-        $user->email = $request->input("email");
         $user->phone = $request->input("phone");
-        $user->address = fake()->address();
-        $user->date_of_birth = fake()->date();
         $user->password = Hash::make($password);
         $user->remember_token = Str::random(10);
         $user->email_verified_at = now();
         $user->save();
         $user->refresh();
 
-        Mail::to($user->email)->send(new AdminCreateUserEmail($user, $password));
+        if (isset($user->email)) {
+            Mail::to($user->email)->send(new AdminCreateUserEmail($user, $password));
+        }
 
         return response()->json($user);
     }

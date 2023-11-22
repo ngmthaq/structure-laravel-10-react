@@ -64,7 +64,16 @@ class TableController extends Controller
             });
         })->flatten();
 
-        $tables = $this->table->with(["seats", "seats.bills", "seats.bills.user", "seats.bills.staff"])->get();
+        $tables = $this->table->with([
+            "seats",
+            "seats.bills",
+            "seats.bills.user" => function ($user) {
+                $user->withTrashed();
+            },
+            "seats.bills.staff" => function ($staff) {
+                $staff->withTrashed();
+            }
+        ])->get();
 
         $tables = $tables->map(function ($table) use ($seated_ids) {
             $table->seats = $table->seats->map(function ($seat) use ($seated_ids) {

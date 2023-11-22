@@ -86,7 +86,7 @@ return [
     "admin-configurations-title" => "configurations",
     "staff-title" => "staff",
     "staff-manage-tables-title" => "table management",
-    "staff-manage-bills-title" => "bill management",
+    "staff-manage-bills-title" => "reservation management",
     "staff-order-title" => "Reservations",
     "staff-order-history-title" => "order history",
     "choose-correct-input-value" => "Please choose the correct input value",

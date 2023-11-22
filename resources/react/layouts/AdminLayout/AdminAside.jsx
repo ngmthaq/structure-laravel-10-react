@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useLoaderData } from "react-router-dom";
-import { Box, Divider, Typography } from "@mui/material";
+import { Box, Divider, Typography, capitalize } from "@mui/material";
 import {
   AccountCircle,
   Bookmark,
@@ -151,11 +151,14 @@ export const AdminAside = () => {
                 color: "white",
               },
             }}
+            title={capitalize(item.title)}
             onClick={() => onClick(item.path)}
             className={location.pathname === item.path ? "active" : ""}
           >
             <item.Icon />
-            <Typography>{item.title}</Typography>
+            <Typography sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {item.title}
+            </Typography>
           </Box>
         ) : item.type === "divider" ? (
           <Divider key={index} sx={{ marginBottom: "24px" }} />

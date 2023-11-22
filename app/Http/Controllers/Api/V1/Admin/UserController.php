@@ -21,7 +21,11 @@ class UserController extends Controller
     }
     public function getAllUsers(Request $request)
     {
-        $query_builder = $this->user->withTrashed();
+        $query_builder = $this->user->withTrashed()->with([
+            "bills" => function ($bills) {
+                $bills->withTrashed();
+            }
+        ]);
 
         $filter = $request->query("filter");
 

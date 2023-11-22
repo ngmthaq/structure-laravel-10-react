@@ -66,9 +66,11 @@ export const StaffOrder = () => {
   };
 
   const onCloseDialog = () => {
-    if (payload.name !== "" && payload.email !== "" && confirm(__("custom.confirm-lost-changed"))) {
+    if (payload.name !== "" && confirm(__("custom.confirm-lost-changed"))) {
       setIsOpenDialog(false);
-      setPayload((state) => ({ ...state, name: "", email: "" }));
+      setPayload((state) => ({ ...state, name: "" }));
+    } else if (payload.name === "") {
+      setIsOpenDialog(false);
     }
   };
 
@@ -370,20 +372,10 @@ export const StaffOrder = () => {
               textTransform: "capitalize",
             }}
           />
-          <TextField
-            fullWidth
-            label={__("custom.email")}
-            value={payload.email}
-            name="email"
-            onChange={onChangeUserForm}
-            sx={{
-              marginBottom: "16px",
-              textTransform: "capitalize",
-            }}
-          />
         </DialogContent>
         <DialogActions>
           <Button onClick={onQuickCreateUser}>{__("custom.create")}</Button>
+          <Button onClick={onCloseDialog}>{__("custom.close")}</Button>
         </DialogActions>
       </Dialog>
     </AdminLayout>
