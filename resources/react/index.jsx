@@ -20,6 +20,16 @@ const Container = () => {
   );
 };
 
+const pusher = new Pusher(import.meta.env.VITE_PUSHER_APP_KEY, {
+  cluster: "ap1",
+});
+
+const channel = pusher.subscribe("public-channel");
+channel.bind("reservation-created-event", function (data) {
+  console.log(data.message);
+  window.dispatchEvent(new CustomEvent("reservation-created-event", { detail: data.session_id }));
+});
+
 if (app) {
   createRoot(app).render(<Container />);
 }

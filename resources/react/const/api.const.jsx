@@ -29,4 +29,6 @@ export const API_ENDPOINTS = {
   changeBillStatus: "/v1/staffs/bills/:billId/status/update",
   dashboard: "/v1/admin/dashboard",
   adminUpdateTable: "v1/admin/tables/:tableId/update",
+  findUserByPhone: "v1/users/find/phone",
+  userReservation: "v1/users/reservations/create",
 };

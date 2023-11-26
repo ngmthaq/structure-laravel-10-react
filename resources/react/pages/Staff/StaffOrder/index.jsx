@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -36,9 +36,12 @@ import { TABLE_TYPE } from "../../../const/app.const";
 import { commonActions } from "../../../reducers/common.reducer";
 import { billAsyncActions } from "../../../reducers/bill.reducer";
 import { PrimaryNotificationModel } from "../../../models/primary.notification.model";
+import { generateRandomString } from "../../../helpers/primitive.helper";
 
 export const StaffOrder = () => {
   const dispatch = useDispatch();
+
+  const sessionId = useMemo(() => generateRandomString(), []);
 
   const [payload, setPayload] = useState({
     phone: "",
@@ -100,6 +103,7 @@ export const StaffOrder = () => {
           adults: payload.adults,
           children: payload.children,
           availableSeats: availableSeats,
+          sessionId: sessionId,
         }),
       ).unwrap();
       dispatch(commonActions.closeLinearLoading());
@@ -228,7 +232,11 @@ export const StaffOrder = () => {
     }
   };
 
-  const onRefresh = () => {
+  const onRefresh = (e = null) => {
+    if (e && e.detail && e.detail !== sessionId) {
+      alert("New reservation created, refresh current resercation");
+    }
+
     setPayload((state) => ({
       ...state,
       startTime: dayjs().format("YYYY-MM-DD hh:mm A"),
@@ -244,6 +252,13 @@ export const StaffOrder = () => {
   useEffect(() => {
     getAvailableTables();
   }, [payload.adults, payload.children, payload.startTime, payload.finishTime]);
+
+  useEffect(() => {
+    window.addEventListener("reservation-created-event", onRefresh);
+    return () => {
+      window.removeEventListener("reservation-created-event", onRefresh);
+    };
+  });
 
   const isEnableSubmit = Boolean(
     payload.startTime &&
@@ -281,7 +296,7 @@ export const StaffOrder = () => {
               <Box component="span">{__("custom.staff-order-title")}</Box>
             </Typography>
           </Box>
-          <IconButton title="Refresh Available Tables" onClick={onRefresh}>
+          <IconButton title="Refresh Available Tables" onClick={() => onRefresh()}>
             <Refresh />
           </IconButton>
         </Box>
