@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix("v1")->name("api.v1.")->group(function () {
-    Route::prefix("configurations")->middleware(['auth.staff'])->group(function () {
+    Route::prefix("configurations")->group(function () {
         Route::get("/get", [ConfigurationController::class, "get"])->name("configurations.get");
         Route::put("/set", [ConfigurationController::class, "set"])->name("configurations.set")->middleware('auth.admin');
     });

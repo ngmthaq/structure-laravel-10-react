@@ -12,12 +12,14 @@ import { Configurations } from "../pages/Staff/Configurations";
 import { notStaffLoader } from "../router/not.staff.loader";
 import { staffLoader } from "../router/staff.loader";
 import { adminLoader } from "../router/admin.loader";
+import { userLoader } from "../router/user.loader";
 
 export const userRoutes = {
   home: {
     path: "/",
     element: <PageUserHome />,
     errorElement: <PageError />,
+    loader: userLoader,
   },
 };
 
