@@ -8,6 +8,7 @@ import {
   STATE_ORDER_AVAILABLE,
   STATE_ORDER_BLOCKED,
   STATE_ORDER_IN_USE,
+  STATE_BLOCKED,
 } from "../../../components/FloorMap";
 import dayjs from "dayjs";
 import { GenericApi } from "../../../api/generic.api";
