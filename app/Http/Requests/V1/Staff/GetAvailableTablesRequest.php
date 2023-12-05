@@ -22,6 +22,10 @@ class GetAvailableTablesRequest extends ApiRequest
      */
     public function rules(): array
     {
+        if (request()->input('novalidate')) {
+            return [];
+        }
+
         return [
             "start_time" => "required|date|after_or_equal:today",
             "finish_time" => "required|date|after_or_equal:today",

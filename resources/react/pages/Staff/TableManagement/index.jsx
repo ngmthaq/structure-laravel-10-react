@@ -28,6 +28,7 @@ export const TableManagement = () => {
   const [payload, setPayload] = useState({
     startTime: dayjs().format("YYYY-MM-DD hh:mm A"),
     finishTime: dayjs().add(1, "hour").format("YYYY-MM-DD hh:mm A"),
+    novalidate: true,
   });
 
   const [tables, setTables] = useState([]);
@@ -108,10 +109,11 @@ export const TableManagement = () => {
 
   useEffect(() => {
     const refresh = (date) => {
-      setPayload({
+      setPayload((state) => ({
+        ...state,
         startTime: dayjs(date).format("YYYY-MM-DD hh:mm A"),
         finishTime: dayjs(date).add(1, "hour").format("YYYY-MM-DD hh:mm A"),
-      });
+      }));
     };
 
     eventBus.on(EVENT_BUS.refreshGetAvailableTable, refresh);
