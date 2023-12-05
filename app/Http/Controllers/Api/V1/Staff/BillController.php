@@ -92,7 +92,7 @@ class BillController extends Controller
                     $table->withTrashed();
                 },
             ])
-            ->whereDay("created_at", new Carbon($request->query("date")) ?? Carbon::now())
+            ->whereDay("start_at", new Carbon($request->query("date")) ?? Carbon::now())
             ->orderByDesc("id")
             ->get();
 

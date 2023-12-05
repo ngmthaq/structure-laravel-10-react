@@ -47,9 +47,9 @@ export const BillManagement = () => {
     setSelectedBill(null);
   };
 
-  const getBills = async () => {
+  const getBills = async (selectedDate) => {
     dispatch(commonActions.openLinearLoading());
-    const response = await dispatch(billAsyncActions.getAllBills({ date })).unwrap();
+    const response = await dispatch(billAsyncActions.getAllBills({ date: selectedDate || date })).unwrap();
     dispatch(commonActions.closeLinearLoading());
     setBills(response);
   };
@@ -59,12 +59,12 @@ export const BillManagement = () => {
   }, [date]);
 
   useEffect(() => {
-    eventBus.on(REFRESH_BILLS, getBills);
-
+    const handleEventBus = () => getBills(date);
+    eventBus.on(REFRESH_BILLS, handleEventBus);
     return () => {
-      eventBus.off(REFRESH_BILLS, getBills);
+      eventBus.off(REFRESH_BILLS, handleEventBus);
     };
-  }, []);
+  });
 
   return (
     <AdminLayout>

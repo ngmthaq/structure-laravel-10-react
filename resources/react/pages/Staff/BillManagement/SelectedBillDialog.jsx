@@ -178,6 +178,18 @@ const ButtonContainer = ({ bill, onClose }) => {
     }
   };
 
+  if (Date.now() < new Date(bill.startAt).valueOf() - 1 * 60 * 60 * 1000 && !bill.completedAt && !bill.cancelAt) {
+    return (
+      <CardActions
+        sx={{
+          padding: "4px 15px 8px",
+        }}
+      >
+        <ActionButton Icon={Cancel} text="Cancel" onClick={() => onChangeStatus("cancel_at")} />
+      </CardActions>
+    );
+  }
+
   if (bill.tables.length <= 0 && !bill.completedAt && !bill.cancelAt) {
     return (
       <CardActions
