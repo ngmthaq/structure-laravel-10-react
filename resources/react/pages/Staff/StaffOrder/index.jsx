@@ -45,7 +45,7 @@ export const StaffOrder = () => {
 
   const [payload, setPayload] = useState({
     phone: "",
-    startTime: dayjs().format("YYYY-MM-DD hh:mm A"),
+    startTime: dayjs().add(5, "minutes").format("YYYY-MM-DD hh:mm A"),
     finishTime: dayjs().add(1, "hour").format("YYYY-MM-DD hh:mm A"),
     adults: 0,
     children: 0,
@@ -203,32 +203,46 @@ export const StaffOrder = () => {
   };
 
   const getAvailableTables = async () => {
-    if (payload.startTime && payload.finishTime) {
-      isOpenLoading.current = true;
-      const response = await dispatch(
-        tableAsyncActions.staffGetAvailableTables({ ...payload, seats: payload.adults + payload.children }),
-      ).unwrap();
-      isOpenLoading.current = false;
-      setTables(
-        response.map((table) => {
-          const seatNumber = table.seats.length;
-          const seatedNumber = table.seats.filter((seat) => seat.isSeated).length;
-          const state = table.isBlock
-            ? STATE_BLOCKED.value
-            : seatNumber === seatedNumber
-            ? STATE_ORDER_BLOCKED.value
-            : seatedNumber > 0
-            ? STATE_ORDER_IN_USE.value
-            : STATE_ORDER_AVAILABLE.value;
+    try {
+      if (payload.startTime && payload.finishTime) {
+        isOpenLoading.current = true;
+        const response = await dispatch(
+          tableAsyncActions.staffGetAvailableTables({ ...payload, seats: payload.adults + payload.children }),
+        ).unwrap();
+        isOpenLoading.current = false;
+        setTables(
+          response.map((table) => {
+            const seatNumber = table.seats.length;
+            const seatedNumber = table.seats.filter((seat) => seat.isSeated).length;
+            const state = table.isBlock
+              ? STATE_BLOCKED.value
+              : seatNumber === seatedNumber
+              ? STATE_ORDER_BLOCKED.value
+              : seatedNumber > 0
+              ? STATE_ORDER_IN_USE.value
+              : STATE_ORDER_AVAILABLE.value;
 
-          return {
-            ...table,
-            seatNumber,
-            seatedNumber,
-            state,
-          };
-        }),
-      );
+            return {
+              ...table,
+              seatNumber,
+              seatedNumber,
+              state,
+            };
+          }),
+        );
+      }
+    } catch (error) {
+      dispatch(commonActions.closeLinearLoading());
+      setTables([]);
+      isOpenLoading.current = false;
+      if (error.status && error.status === 422) {
+        const notifications = Object.values(error.data.errors).map((e) => PrimaryNotificationModel("error", e[0]));
+        dispatch(commonActions.appendPrimaryNotification(JSON.stringify(notifications)));
+      } else {
+        dispatch(
+          commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+        );
+      }
     }
   };
 

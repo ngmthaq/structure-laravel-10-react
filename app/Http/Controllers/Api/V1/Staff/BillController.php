@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Staff;
 
+use App\Helpers\FailedValidateResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\Bill\ChangeStatusRequest;
 use App\Http\Requests\V1\Bill\StaffCreateBillRequest;
@@ -23,6 +24,12 @@ class BillController extends Controller
     public function create(StaffCreateBillRequest $request)
     {
         try {
+            if (count($request->input("available_seats")) < $request->input("adults") + $request->input("children")) {
+                return FailedValidateResponse::send([
+                    "available_seats" => "Please choose enough seats",
+                ]);
+            }
+
             DB::beginTransaction();
 
             $staff = request()->user('staff');

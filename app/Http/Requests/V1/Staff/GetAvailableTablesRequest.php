@@ -25,10 +25,10 @@ class GetAvailableTablesRequest extends ApiRequest
         if (request()->input('novalidate')) {
             return [];
         }
-
+        $now = date("Y-m-d H:i");
         return [
-            "start_time" => "required|date|after_or_equal:today",
-            "finish_time" => "required|date|after_or_equal:today",
+            "start_time" => "required|date|after_or_equal:" . $now,
+            "finish_time" => "required|date|after_or_equal:start_time",
         ];
     }
 }

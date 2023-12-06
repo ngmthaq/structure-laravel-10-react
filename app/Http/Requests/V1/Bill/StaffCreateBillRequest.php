@@ -22,10 +22,11 @@ class StaffCreateBillRequest extends ApiRequest
      */
     public function rules(): array
     {
+        $now = date("Y-m-d H:i");
         return [
             'user_id' => 'required|exists:users,id',
-            'start_at' => 'required|date|after_or_equal:today',
-            'end_at' => 'required|date|after_or_equal:today',
+            'start_at' => 'required|date|after_or_equal:' . $now,
+            'end_at' => 'required|date|after_or_equal:start_at',
             'adults' => 'required|integer',
             'children' => 'required|integer',
             'available_seats' => 'required|array',

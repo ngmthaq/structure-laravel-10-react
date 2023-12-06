@@ -39,7 +39,7 @@ export const PageUserHome = () => {
     name: "",
     adults: 0,
     children: 0,
-    startTime: dayjs().format("YYYY-MM-DDTHH:mm"),
+    startTime: dayjs().add(5, "minutes").format("YYYY-MM-DDTHH:mm"),
     finishTime: dayjs().add(1, "hour").format("YYYY-MM-DDTHH:mm"),
     status: "new",
     tables: [],
@@ -107,7 +107,7 @@ export const PageUserHome = () => {
 
   const onRefresh = (e = null) => {
     if (e && e.detail && e.detail !== sessionId) {
-      alert("New reservation created, refresh current resercation");
+      alert("New reservation created, refresh current reservation");
     }
 
     setPayload((state) => ({
@@ -128,35 +128,49 @@ export const PageUserHome = () => {
   };
 
   const getAvailableTables = async () => {
-    dispatch(commonActions.openLinearLoading());
-    if (payload.startTime && payload.finishTime) {
-      isOpenLoading.current = true;
-      const response = await dispatch(
-        tableAsyncActions.staffGetAvailableTables({ ...payload, seats: payload.adults + payload.children }),
-      ).unwrap();
-      isOpenLoading.current = false;
-      setTables(
-        response.map((table) => {
-          const seatNumber = table.seats.length;
-          const seatedNumber = table.seats.filter((seat) => seat.isSeated).length;
-          const state = table.isBlock
-            ? STATE_BLOCKED.value
-            : seatNumber === seatedNumber
-            ? STATE_ORDER_BLOCKED.value
-            : seatedNumber > 0
-            ? STATE_ORDER_IN_USE.value
-            : STATE_ORDER_AVAILABLE.value;
+    try {
+      dispatch(commonActions.openLinearLoading());
+      if (payload.startTime && payload.finishTime) {
+        isOpenLoading.current = true;
+        const response = await dispatch(
+          tableAsyncActions.staffGetAvailableTables({ ...payload, seats: payload.adults + payload.children }),
+        ).unwrap();
+        isOpenLoading.current = false;
+        setTables(
+          response.map((table) => {
+            const seatNumber = table.seats.length;
+            const seatedNumber = table.seats.filter((seat) => seat.isSeated).length;
+            const state = table.isBlock
+              ? STATE_BLOCKED.value
+              : seatNumber === seatedNumber
+              ? STATE_ORDER_BLOCKED.value
+              : seatedNumber > 0
+              ? STATE_ORDER_IN_USE.value
+              : STATE_ORDER_AVAILABLE.value;
 
-          return {
-            ...table,
-            seatNumber,
-            seatedNumber,
-            state,
-          };
-        }),
-      );
+            return {
+              ...table,
+              seatNumber,
+              seatedNumber,
+              state,
+            };
+          }),
+        );
+      }
+      dispatch(commonActions.closeLinearLoading());
+    } catch (error) {
+      dispatch(commonActions.closeLinearLoading());
+      setTables([]);
+      isOpenLoading.current = false;
+      if (error.status && error.status === 422) {
+        const notifications = Object.values(error.data.errors).map((e) => PrimaryNotificationModel("error", e[0]));
+        dispatch(commonActions.appendPrimaryNotification(JSON.stringify(notifications)));
+      } else {
+        dispatch(
+          commonActions.appendPrimaryNotification(PrimaryNotificationModel("error", __("custom.something-wrong"))),
+        );
+      }
     }
-    dispatch(commonActions.closeLinearLoading());
   };
 
   const onCreateOrder = async () => {
@@ -317,6 +331,7 @@ export const PageUserHome = () => {
                 InputLabelProps={{ shrink: true }}
                 onChange={onChangeInput}
                 name="startTime"
+                inputProps={{ min: new Date().toISOString().slice(0, 16) }}
                 value={payload.startTime}
                 disabled={payload.phone === "" || payload.status === "blocked"}
               />
@@ -331,6 +346,7 @@ export const PageUserHome = () => {
                 InputLabelProps={{ shrink: true }}
                 onChange={onChangeInput}
                 name="finishTime"
+                inputProps={{ min: payload.startTime }}
                 value={payload.finishTime}
                 disabled={payload.phone === "" || payload.status === "blocked"}
               />

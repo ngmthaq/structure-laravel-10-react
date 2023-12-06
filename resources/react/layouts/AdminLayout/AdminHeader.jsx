@@ -104,6 +104,7 @@ export const AdminHeader = () => {
               onChange={onChangeDatetime}
               sx={{ width: "30%" }}
               value={date}
+              inputProps={{ min: new Date().toISOString().slice(0, 16) }}
             />
             <Button variant="outlined" title="Refresh" onClick={onRefresh} sx={{ height: 40, marginLeft: "4px" }}>
               <Sync fontSize="small" />

@@ -46,6 +46,13 @@ class ReservationController extends Controller
         try {
             DB::beginTransaction();
 
+            $now = date("Y-m-d H:i");
+            if (Carbon::createFromTimeString($request->input("start_at"))->lessThan(Carbon::createFromTimeString($now))) {
+                return FailedValidateResponse::send([
+                    "start_at" => "The start time field must be a date after or equal to $now."
+                ]);
+            }
+
             $user = $this->user->where("phone", $request->input("phone"))->first();
             $email = $request->input("email");
 
