@@ -64,7 +64,7 @@ export const PageUserHome = () => {
         name: "",
         adults: 0,
         children: 0,
-        startTime: dayjs().format("YYYY-MM-DDTHH:mm"),
+        startTime: dayjs().add(5, "minutes").format("YYYY-MM-DDTHH:mm"),
         finishTime: dayjs().add(1, "hour").format("YYYY-MM-DDTHH:mm"),
         status: "new",
         tables: [],
