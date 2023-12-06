@@ -53,6 +53,12 @@ class ReservationController extends Controller
                 ]);
             }
 
+            if (count($request->input("available_seats")) < $request->input("adults") + $request->input("children")) {
+                return FailedValidateResponse::send([
+                    "available_seats" => "Please choose enough seats",
+                ]);
+            }
+
             $user = $this->user->where("phone", $request->input("phone"))->first();
             $email = $request->input("email");
 
